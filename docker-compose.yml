@@ -1,0 +1,16 @@
+# docker compose file with mongodb version 6
+version: "3"
+
+services:
+  mongodb:
+    image: mongo:6
+    ports:
+      - 27017:27017
+    volumes:
+      - mongodb_data:/data/db
+    environment:
+      MONGO_INITDB_ROOT_USERNAME: admin
+      MONGO_INITDB_ROOT_PASSWORD: password
+
+volumes:
+  mongodb_data:
