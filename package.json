@@ -20,8 +20,8 @@
     "eslint": "^8.48.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
+    "mongoose": "^7.5.0",
     "nuxt": "^3.0.0",
-    "nuxt-mongoose": "^0.0.9",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2"
   }

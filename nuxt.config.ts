@@ -1,8 +1,8 @@
 export default defineNuxtConfig({
+  modules: ["@nuxtjs/eslint-module", "@nuxtjs/i18n", "nuxt-mongoose"],
   nitro: {
     preset: "vercel-edge",
   },
-  modules: ["@nuxtjs/eslint-module", "@nuxtjs/i18n"],
   devtools: {
     enabled: true,
   },
