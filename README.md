@@ -23,7 +23,11 @@ DEV Server: http://localhost:3000
 pnpm dev
 ```
 
-## Production
+## Solução Básica e Ideia Arquitetural da Aplicação
+
+![Documentação Técnica](https://cdn.discordapp.com/attachments/954377671993856031/1147905664371400715/basicTecDoc.png)
+
+## Deployment
 
 Buildando para prod:
 
