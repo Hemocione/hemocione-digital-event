@@ -1,48 +1,40 @@
-# Nuxt Example
+# Hemocione Digital Events
 
-Deploy your [Nuxt](https://nuxt.com) project to Vercel with zero configuration.
+Eventos Digitais do Hemocione.
 
-[![Deploy with Vercel](https://vercel.com/button)](https://vercel.com/new/clone?repository-url=https://github.com/vercel/vercel/tree/main/examples/nuxtjs&template=nuxtjs)
+Uma colaboração [Hemocione](https://hemocione.com.br) e [Layers](https://layers.education)
 
-_Live Example: https://nuxtjs-template.vercel.app_
-
-Look at the [Nuxt 3 documentation](https://v3.nuxtjs.org) to learn more.
+Este projeto utiliza [Nuxt 3](https://v3.nuxtjs.org).
 
 ## Setup
 
-Make sure to install the dependencies:
+Instalar dependencias:
 
 ```bash
-# yarn
-yarn
-
-# npm
-npm install
-
 # pnpm
 pnpm install --shamefully-hoist
 ```
 
 ## Development Server
 
-Start the development server on http://localhost:3000
+DEV Server: http://localhost:3000
 
 ```bash
-npm run dev
+pnpm dev
 ```
 
 ## Production
 
-Build the application for production:
+Buildando para prod:
 
 ```bash
-npm run build
+pnpm build
 ```
 
 Locally preview production build:
 
 ```bash
-npm run preview
+pnpm preview
 ```
 
-Checkout the [deployment documentation](https://nuxt.com/docs/getting-started/deployment#presets) for more information.
+[Documentacao de Deploy do NUXT](https://nuxt.com/docs/getting-started/deployment#presets)
