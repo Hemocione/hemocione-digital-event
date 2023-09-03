@@ -5,9 +5,24 @@
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
-    "postinstall": "nuxt prepare"
+    "postinstall": "nuxt prepare",
+    "lint:js": "eslint --ext \".ts,.vue\" --ignore-path .gitignore .",
+    "lint:prettier": "prettier --check .",
+    "lint": "pnpm lint:js && pnpm lint:prettier",
+    "lint:fix": "prettier --write --list-different . && pnpm lint:js --fix"
   },
   "devDependencies": {
-    "nuxt": "^3.0.0"
+    "@nuxt/devtools": "^0.8.2",
+    "@nuxtjs/eslint-config-typescript": "^12.1.0",
+    "@nuxtjs/eslint-module": "^4.1.0",
+    "@nuxtjs/i18n": "8.0.0-rc.4",
+    "@typescript-eslint/parser": "^6.5.0",
+    "eslint": "^8.48.0",
+    "eslint-config-prettier": "^9.0.0",
+    "eslint-plugin-prettier": "^5.0.0",
+    "nuxt": "^3.0.0",
+    "nuxt-mongoose": "^0.0.9",
+    "prettier": "^3.0.3",
+    "typescript": "^5.2.2"
   }
 }
