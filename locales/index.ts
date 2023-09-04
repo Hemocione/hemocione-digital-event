@@ -1,25 +1,9 @@
-import fs from "fs";
+import ptBr from "./pt-BR.json";
+import en from "./en.json";
 
-interface KeyConfig {
-  [key: string]: KeyConfig | string;
-}
-
-const getLocales = () => {
-  let locales: {
-    [key: string]: KeyConfig;
-  } = {};
-  fs.readdirSync(__dirname)
-    .filter((file) => file.endsWith(".json"))
-    .forEach((file) => {
-      // eslint-disable-next-line @typescript-eslint/no-var-requires
-      const fileData = require(`./${file}`);
-      const language = file.replace(".json", "");
-      locales = { ...locales, [language]: fileData };
-    });
-  return locales;
+const locales = {
+  "pt-BR": ptBr,
+  en,
 };
 
-const locales = getLocales();
-
-console.log(locales);
 export default locales;
