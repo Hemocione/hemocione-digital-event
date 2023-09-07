@@ -27,4 +27,5 @@ export default inngest.createFunction(
     await sendSMS(phone, text);
 
     await setNotifiedCloseToCall(data._id);
+  },
 );
