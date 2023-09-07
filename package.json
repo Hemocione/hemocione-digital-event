@@ -13,6 +13,7 @@
     "lint:fix": "prettier --write --list-different . && pnpm lint:js --fix"
   },
   "devDependencies": {
+    "@aws-sdk/client-sns": "^3.405.0",
     "@nuxt/devtools": "^0.8.2",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
     "@nuxtjs/eslint-module": "^4.1.0",

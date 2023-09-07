@@ -79,8 +79,42 @@ export default inngest.createFunction(
         !participantIds.includes(String(p._id)) && !p.notifiedCloseToCallAt,
     );
 
-    console.log("calledParticipants", calledParticipants);
-    console.log("closeToCallParticipants", closeToCallParticipants);
-    // TODO: RUN JOBS THAT SEND SMS TO PARTICIPANTS
+    const calledParticipantsJobs = calledParticipants.map((p) =>
+      inngest.send({
+        // The event name
+        name: "notify/participant.called",
+        // The event's data
+        data: {
+          _id: String(p._id),
+          phone: p.participant.phone,
+          name: p.participant.name,
+        },
+      }),
+    );
+
+    const closeToCallParticipantsJobs = closeToCallParticipants.map((p) =>
+      inngest.send({
+        // The event name
+        name: "notify/participant.closeToCall",
+        // The event's data
+        data: {
+          _id: String(p._id),
+          phone: p.participant.phone,
+          name: p.participant.name,
+        },
+      }),
+    );
+
+    const jobs = calledParticipantsJobs.concat(closeToCallParticipantsJobs);
+    const results = await Promise.allSettled(jobs);
+    const failedResults = results.filter((r) => r.status === "rejected");
+
+    if (failedResults.length > 0) {
+      throw new Error(
+        `Failed to send ${failedResults.length} SMS messages: ${JSON.stringify(
+          failedResults,
+        )}`,
+      );
+    }
   },
 );

@@ -1,5 +1,6 @@
 import { inngest } from "~/server/inngest/client";
 import { QueueParticipant } from "~/server/models/queueParticipant";
+import { sendSMS } from "~/server/services/sms";
 
 export type NotifyCloseToCallParticipant = {
   data: {
@@ -23,8 +24,7 @@ export default inngest.createFunction(
     const { phone, name } = data;
 
     const text = `Olá ${name}, a sua vez de doar está próxima! Por favor, dirija-se ao local de doação. O Hemocione agradece!`;
-    console.log(`Sending SMS to ${phone}: ${text}`);
-    // TODO: Send SMS
+    await sendSMS(phone, text);
 
     await QueueParticipant.findOneAndUpdate(
       {

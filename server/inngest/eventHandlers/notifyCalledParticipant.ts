@@ -1,4 +1,5 @@
 import { inngest } from "~/server/inngest/client";
+import { sendSMS } from "~/server/services/sms";
 
 export type NotifyCalledParticipant = {
   data: {
@@ -17,12 +18,11 @@ export default inngest.createFunction(
   {
     event: eventName,
   },
-  ({ event }) => {
+  async ({ event }) => {
     const { data } = event;
     const { phone, name } = data;
 
     const text = `Olá ${name}, é a sua vez de doar! Por favor, dirija-se ao local de doação. O Hemocione agradece!`;
-    console.log(`Sending SMS to ${phone}: ${text}`);
-    // TODO: Send SMS
+    await sendSMS(phone, text);
   },
 );
