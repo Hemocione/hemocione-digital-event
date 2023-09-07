@@ -20,6 +20,7 @@ const EventSchema = new Schema(
       _id: {
         type: Types.ObjectId,
         default: () => new Types.ObjectId(),
+        unique: true,
       },
     },
   },
