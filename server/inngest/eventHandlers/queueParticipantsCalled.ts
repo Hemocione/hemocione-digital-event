@@ -25,19 +25,17 @@ export default inngest.createFunction(
     const toNotifySize = participantIds.length + CLOSE_TO_CALL_NUMBER;
 
     const participants = await QueueParticipant.find({
-      where: {
-        $or: [
-          {
-            _id: {
-              $in: participantIds,
-            },
+      $or: [
+        {
+          _id: {
+            $in: participantIds,
           },
-          {
-            queueId,
-            calledAt: null,
-          },
-        ],
-      },
+        },
+        {
+          queueId,
+          calledAt: null,
+        },
+      ],
     })
       .select({
         _id: 1,
@@ -50,9 +48,31 @@ export default inngest.createFunction(
       .limit(toNotifySize)
       .lean();
 
-    const calledParticipants = participants.filter((p) =>
+    let calledParticipants = participants.filter((p) =>
       participantIds.includes(String(p._id)),
     );
+
+    if (calledParticipants.length !== participantIds.length) {
+      const missingParticipantIds = participantIds.filter(
+        (id) => !calledParticipants.find((p) => String(p._id) === String(id)),
+      );
+
+      if (missingParticipantIds.length > 0) {
+        const missingParticipants = await QueueParticipant.find({
+          _id: {
+            $in: missingParticipantIds,
+          },
+        })
+          .select({
+            _id: 1,
+            participant: 1,
+            notifiedCloseToCallAt: 1,
+          })
+          .lean();
+
+        calledParticipants = calledParticipants.concat(missingParticipants);
+      }
+    }
 
     const closeToCallParticipants = participants.filter(
       (p) =>
