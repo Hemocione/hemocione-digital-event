@@ -9,6 +9,9 @@
 const route = useRoute();
 const query = route.query;
 const { event, eventRef, leadId, uuid } = query;
+if (!event || !eventRef || !leadId || !uuid) {
+  navigateTo("/queue/not-found");
+}
 
 const { data } = useFetch(`/api/v1/event/${event}`);
 

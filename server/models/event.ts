@@ -12,10 +12,6 @@ const EventSchema = new Schema(
       required: true,
       unique: true,
     },
-    communityId: {
-      type: String,
-      required: false,
-    },
     queue: {
       _id: {
         type: Types.ObjectId,
