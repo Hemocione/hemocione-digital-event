@@ -1,4 +1,4 @@
-import { QueueParticipant } from "~/server/models/queueParticipant";
+import { callQueueParticipants } from "~/server/services/queueParticipants";
 
 interface Body {
   participantIds: string[];
@@ -14,21 +14,9 @@ function validateBody(body: any): asserts body is Body {
 }
 
 export default defineEventHandler(async (event) => {
+  const queue = getRouterParam(event, "queueId");
   const body = await readBody(event);
   validateBody(body);
 
-  await QueueParticipant.updateMany(
-    {
-      _id: {
-        $in: body.participantIds,
-      },
-    },
-    {
-      $set: {
-        calledAt: new Date(),
-      },
-    },
-  );
-
-  // TODO: SEND JOB TO INNGEST
+  await callQueueParticipants(body.participantIds, String(queue));
 });

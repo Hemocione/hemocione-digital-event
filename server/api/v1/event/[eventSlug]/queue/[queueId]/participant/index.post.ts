@@ -1,16 +1,7 @@
-/*
-BODY: 
-{
-  "participant": {
-    "phone": "+1234567890",
-    "name": "John Doe",
-    "leadId": "1234567890",
-  },
-  "queueId": "5f9b2b0b9b0b0b0b0b0b0b0b",
-}
-*/
-
-import { QueueParticipant } from "~/server/models/queueParticipant";
+import {
+  callLonelyParticipantIfNeeded,
+  createQueueParticipant,
+} from "~/server/services/queueParticipants";
 
 interface Body {
   participant: {
@@ -33,15 +24,22 @@ function validateBody(body: any): asserts body is Body {
     });
   }
 }
+
 export default defineEventHandler(async (event) => {
-  const queueId = getRouterParam(event, "queueId");
+  const queueId = String(getRouterParam(event, "queueId"));
   const body = await readBody(event);
   validateBody(body);
 
-  await QueueParticipant.create({
+  const queueParticipant = await createQueueParticipant({
     participant: body.participant,
     queueId,
   });
+
+  try {
+    await callLonelyParticipantIfNeeded(queueId, queueParticipant._id);
+  } catch (error) {
+    console.error(error);
+  }
 
   setResponseStatus(event, 201);
 });

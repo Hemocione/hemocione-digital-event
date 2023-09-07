@@ -41,6 +41,11 @@ const QueueParticipantSchema = new Schema(
 );
 
 QueueParticipantSchema.index({ queueId: -1, calledAt: 1, createdAt: 1 });
+QueueParticipantSchema.index(
+  { queueId: 1, "participant.phone": 1 },
+  { unique: true },
+);
+
 QueueParticipantSchema.pre("validate", function (next) {
   this.participant.phone = this.participant.phone.replace(/\D/g, "");
   // include +55 at start if no international code is present

@@ -1,5 +1,5 @@
 import { inngest } from "~/server/inngest/client";
-import { QueueParticipant } from "~/server/models/queueParticipant";
+import { setNotifiedCloseToCall } from "~/server/services/queueParticipants";
 import { sendSMS } from "~/server/services/sms";
 
 export type NotifyCloseToCallParticipant = {
@@ -26,15 +26,5 @@ export default inngest.createFunction(
     const text = `Olá ${name}, a sua vez de doar está próxima! Por favor, dirija-se ao local de doação. O Hemocione agradece!`;
     await sendSMS(phone, text);
 
-    await QueueParticipant.findOneAndUpdate(
-      {
-        _id: data._id,
-      },
-      {
-        $set: {
-          notifiedCloseToCallAt: new Date(),
-        },
-      },
-    );
-  },
+    await setNotifiedCloseToCall(data._id);
 );

@@ -1,26 +1,8 @@
-import { Event } from "~/server/models/event";
+import { getOrCreateEvent } from "~/server/services/event";
 
 export default defineEventHandler(async (event) => {
-  const eventSlug = getRouterParam(event, "eventSlug");
-  if (!eventSlug) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: "Invalid event slug",
-    });
-  }
-
-  const hemoEvent = await Event.findOneAndUpdate(
-    {
-      slug: eventSlug,
-    },
-    {
-      slug: eventSlug,
-    },
-    {
-      upsert: true,
-      lean: true,
-    },
-  );
+  const eventSlug = String(getRouterParam(event, "eventSlug"));
+  const hemoEvent = await getOrCreateEvent(eventSlug);
 
   return {
     ...hemoEvent,

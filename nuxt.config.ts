@@ -5,7 +5,7 @@ export default defineNuxtConfig({
     dbName: process.env.DB_NAME ?? "hemo",
     inngestKey: process.env.INNGEST_EVENT_KEY ?? "mock-key",
   },
-  modules: ["@nuxtjs/eslint-module", "@nuxtjs/i18n"],
+  modules: ["@nuxtjs/eslint-module", "@nuxtjs/i18n", "@element-plus/nuxt"],
   nitro: {
     preset: "vercel",
     plugins: ["~/server/plugins/mongoose.ts"],

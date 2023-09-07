@@ -14,19 +14,21 @@
   },
   "devDependencies": {
     "@aws-sdk/client-sns": "^3.405.0",
+    "@element-plus/nuxt": "^1.0.5",
     "@nuxt/devtools": "^0.8.2",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
     "@nuxtjs/eslint-module": "^4.1.0",
     "@nuxtjs/i18n": "8.0.0-rc.4",
     "@typescript-eslint/parser": "^6.5.0",
     "aws-sdk": "^2.1450.0",
+    "element-plus": "^2.3.12",
     "eslint": "^8.48.0",
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "inngest": "^2.6.0",
     "inngest-cli": "^0.16.7",
     "mongoose": "^7.5.0",
-    "nuxt": "^3.0.0",
+    "nuxt": "^3.7.1",
     "prettier": "^3.0.3",
     "typescript": "^5.2.2"
   }
