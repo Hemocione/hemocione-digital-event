@@ -2,6 +2,7 @@
   "private": true,
   "scripts": {
     "build": "nuxt build",
+    "dev:inngest": "inngest-cli dev -u http://localhost:3000/api/inngest",
     "dev": "nuxt dev",
     "generate": "nuxt generate",
     "preview": "nuxt preview",
@@ -22,6 +23,7 @@
     "eslint-config-prettier": "^9.0.0",
     "eslint-plugin-prettier": "^5.0.0",
     "inngest": "^2.6.0",
+    "inngest-cli": "^0.16.7",
     "mongoose": "^7.5.0",
     "nuxt": "^3.0.0",
     "prettier": "^3.0.3",

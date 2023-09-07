@@ -18,9 +18,11 @@ pnpm install --shamefully-hoist
 ## Development Server
 
 DEV Server: http://localhost:3000
+DEV INNGEST SERVER: http://localhost:8288
 
 ```bash
-pnpm dev
+$ pnpm dev:inngest # executar inngest local
+$ pnpm dev # executar Nuxt local
 ```
 
 ## Solução Básica e Ideia Arquitetural da Aplicação

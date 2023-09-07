@@ -5,17 +5,19 @@ const QueueParticipantSchema = new Schema(
     queueId: Types.ObjectId,
     participant: {
       required: true,
-      phone: {
-        type: String,
-        required: true,
-      },
-      name: {
-        type: String,
-        required: true,
-      },
-      leadId: {
-        type: String,
-        required: false,
+      type: {
+        phone: {
+          type: String,
+          required: true,
+        },
+        name: {
+          type: String,
+          required: true,
+        },
+        leadId: {
+          type: String,
+          required: false,
+        },
       },
     },
     calledAt: {
@@ -35,7 +37,7 @@ const QueueParticipantSchema = new Schema(
 );
 
 QueueParticipantSchema.index({ queueId: -1, calledAt: 1, createdAt: 1 });
-QueueParticipantSchema.pre("save", async function (next) {
+QueueParticipantSchema.pre("save", function (next) {
   this.participant.phone = this.participant.phone.replace(/\D/g, "");
   // include +55 at start if no international code is present
   if (this.participant.phone.length === 11) {
