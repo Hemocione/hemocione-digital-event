@@ -1,23 +1,26 @@
-import queueParticipantsCalled, {
-  eventName as queueParticipantsCalledEventName,
+import type {
   QueueParticipantsCalledEvent,
+  eventName as queueParticipantsCalledEventName,
 } from "./queueParticipantsCalled";
+import queueParticipantsCalled from "./queueParticipantsCalled";
 
-import notifyCalledParticipant, {
+import type {
   NotifyCalledParticipant,
   eventName as notifyEventName,
 } from "./notifyCalledParticipant";
+import notifyCalledParticipant from "./notifyCalledParticipant";
 
-import notifyCloseToCallParticipant, {
+import type {
   NotifyCloseToCallParticipant,
   eventName as notifyCloseToCallEventName,
 } from "./notifyCloseToCallParticipant";
+import notifyCloseToCallParticipant from "./notifyCloseToCallParticipant";
 
-export type Events = {
+export interface Events {
   [queueParticipantsCalledEventName]: QueueParticipantsCalledEvent;
   [notifyEventName]: NotifyCalledParticipant;
   [notifyCloseToCallEventName]: NotifyCloseToCallParticipant;
-};
+}
 
 const eventHandlers = [
   queueParticipantsCalled,

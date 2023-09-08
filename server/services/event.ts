@@ -1,6 +1,6 @@
 import { Event } from "../models/event";
 
-export const getOrCreateEvent = async (eventSlug: string) => {
+export async function getOrCreateEvent(eventSlug: string) {
   return await Event.findOneAndUpdate(
     {
       slug: eventSlug,
@@ -10,7 +10,8 @@ export const getOrCreateEvent = async (eventSlug: string) => {
     },
     {
       upsert: true,
+      lean: true,
       setDefaultsOnInsert: true,
     },
   );
-};
+}

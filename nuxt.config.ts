@@ -8,7 +8,6 @@ export default defineNuxtConfig({
     inngestKey: process.env.INNGEST_EVENT_KEY ?? "mock-key",
   },
   modules: [
-    "@nuxtjs/eslint-module",
     "@nuxtjs/i18n",
     "@element-plus/nuxt",
     "@nuxtjs/google-fonts",
@@ -31,7 +30,7 @@ export default defineNuxtConfig({
     css: {
       preprocessorOptions: {
         scss: {
-          additionalData: `@use "@/assets/css/variables.scss" as *;`,
+          additionalData: '@use "@/assets/css/variables.scss" as *;',
         },
       },
     },

@@ -1,4 +1,5 @@
-import { Schema, model, InferSchemaType, Types } from "mongoose";
+import type { InferSchemaType } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 
 const EventSchema = new Schema(
   {

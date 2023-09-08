@@ -1,29 +1,29 @@
-$color-red: #CC151A;
-$color-gray: #F3F2F1;
-$color-green: #2AC769;
-$color-warn: #F6A609;
+$color-primary: #cc151a;
+$color-secondary: #f3f2f1;
+$color-success: #2ac769;
+$color-warn: #f6a609;
 
-@forward 'element-plus/theme-chalk/src/common/var.scss' with (
+@forward "element-plus/theme-chalk/src/common/var.scss" with (
   $colors: (
-    'white': $color-gray,
-    'primary': (
-      'base': $color-red,
+    "white": $color-secondary,
+    "primary": (
+      "base": $color-primary,
     ),
-    'black': #000000,
-    'success': (
-      'base': $color-green,
+    "black": #000000,
+    "success": (
+      "base": $color-success,
     ),
-    'warning': (
-      'base': $color-warn,
+    "warning": (
+      "base": $color-warn,
     ),
-    'danger': (
-      'base': $color-warn,
+    "danger": (
+      "base": $color-warn,
     ),
-    'error': (
-      'base': $color-warn,
+    "error": (
+      "base": $color-warn,
     ),
-    'info': (
-      'base': $color-red,
+    "info": (
+      "base": $color-primary,
     ),
   )
 );

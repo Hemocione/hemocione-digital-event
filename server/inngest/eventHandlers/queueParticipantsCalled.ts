@@ -1,13 +1,12 @@
 import { inngest } from "~/server/inngest/client";
-import { QueueParticipant } from "~/server/models/queueParticipant";
 import { getCalledAndCloseToCallParticipants } from "~/server/services/queueParticipants";
 
-export type QueueParticipantsCalledEvent = {
+export interface QueueParticipantsCalledEvent {
   data: {
     participantIds: string[];
     queueId: string;
   };
-};
+}
 
 export const eventName = "event/participants.called";
 

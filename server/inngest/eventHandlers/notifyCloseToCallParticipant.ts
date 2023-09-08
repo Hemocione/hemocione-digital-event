@@ -2,13 +2,13 @@ import { inngest } from "~/server/inngest/client";
 import { setNotifiedCloseToCall } from "~/server/services/queueParticipants";
 import { sendSMS } from "~/server/services/sms";
 
-export type NotifyCloseToCallParticipant = {
+export interface NotifyCloseToCallParticipant {
   data: {
     phone: string;
     name: string;
     _id: string;
   };
-};
+}
 
 export const eventName = "notify/participant.closeToCall";
 

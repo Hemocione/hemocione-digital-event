@@ -1,11 +1,11 @@
-import { Types } from "mongoose";
+import type { Types } from "mongoose";
 import { inngest } from "../inngest/client";
 import { QueueParticipant } from "../models/queueParticipant";
 
-export const callQueueParticipants = async (
+export async function callQueueParticipants(
   participantIds: string[],
   queueId: string,
-) => {
+) {
   await QueueParticipant.updateMany(
     {
       _id: {
@@ -26,7 +26,7 @@ export const callQueueParticipants = async (
       queueId,
     },
   });
-};
+}
 
 interface CreateQueueParticipant {
   participant: {
@@ -37,16 +37,16 @@ interface CreateQueueParticipant {
   queueId: string;
 }
 
-export const createQueueParticipant = async (data: CreateQueueParticipant) => {
+export async function createQueueParticipant(data: CreateQueueParticipant) {
   const { participant, queueId } = data;
 
   return await QueueParticipant.create({
     participant,
     queueId,
   });
-};
+}
 
-export const setNotifiedCloseToCall = async (_id: Types.ObjectId | String) => {
+export async function setNotifiedCloseToCall(_id: Types.ObjectId | string) {
   await QueueParticipant.updateOne(
     {
       _id,
@@ -57,13 +57,13 @@ export const setNotifiedCloseToCall = async (_id: Types.ObjectId | String) => {
       },
     },
   );
-};
+}
 
-export const getCalledAndCloseToCallParticipants = async (
-  calledParticipantsIds: (Types.ObjectId | String)[],
+export async function getCalledAndCloseToCallParticipants(
+  calledParticipantsIds: (Types.ObjectId | string)[],
   queueId: string,
   closedToCallToNotify: number = 3,
-) => {
+) {
   const toNotifySize = calledParticipantsIds.length + closedToCallToNotify;
 
   const participants = await QueueParticipant.find({
@@ -126,4 +126,4 @@ export const getCalledAndCloseToCallParticipants = async (
     calledParticipants,
     closeToCallParticipants,
   };
-};
+}

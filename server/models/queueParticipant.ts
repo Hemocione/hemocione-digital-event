@@ -1,4 +1,5 @@
-import { Schema, model, InferSchemaType, Types } from "mongoose";
+import type { InferSchemaType } from "mongoose";
+import { Schema, Types, model } from "mongoose";
 
 const QueueParticipantSchema = new Schema(
   {
@@ -47,11 +48,16 @@ QueueParticipantSchema.index(
 );
 
 QueueParticipantSchema.pre("validate", function (next) {
+  if (
+    this.participant.phone.startsWith("+55") &&
+    this.participant.phone.length === 14
+  )
+    return next();
+
   this.participant.phone = this.participant.phone.replace(/\D/g, "");
-  // include +55 at start if no international code is present
-  if (this.participant.phone.length === 11) {
+  if (this.participant.phone.length === 11)
     this.participant.phone = `+55${this.participant.phone}`;
-  }
+
   next();
 });
 

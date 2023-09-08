@@ -1,5 +1,5 @@
 import { EventSchemas, Inngest } from "inngest";
-import { Events } from "./eventHandlers";
+import type { Events } from "./eventHandlers";
 
 const runtimeConfig = useRuntimeConfig();
 

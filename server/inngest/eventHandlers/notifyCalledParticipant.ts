@@ -1,13 +1,13 @@
 import { inngest } from "~/server/inngest/client";
 import { sendSMS } from "~/server/services/sms";
 
-export type NotifyCalledParticipant = {
+export interface NotifyCalledParticipant {
   data: {
     _id: string;
     phone: string;
     name: string;
   };
-};
+}
 
 export const eventName = "notify/participant.called";
 

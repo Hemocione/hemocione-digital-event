@@ -12,9 +12,6 @@
     "@nuxtjs/eslint-config-typescript",
     "plugin:prettier/recommended"
   ],
-  "plugins": ["prettier"],
-  "rules": {
-    "prettier/prettier": "error",
-    "no-console": "off"
-  }
+  "plugins": [],
+  "rules": {}
 }
