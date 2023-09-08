@@ -21,6 +21,7 @@
     "@nuxtjs/eslint-module": "^4.1.0",
     "@nuxtjs/google-fonts": "^3.0.2",
     "@nuxtjs/i18n": "8.0.0-rc.4",
+    "@nuxt/image": "1.0.0-rc.1",
     "@typescript-eslint/parser": "^6.5.0",
     "aws-sdk": "^2.1450.0",
     "element-plus": "^2.3.12",

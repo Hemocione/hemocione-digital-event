@@ -12,6 +12,7 @@ export default defineNuxtConfig({
     "@nuxtjs/i18n",
     "@element-plus/nuxt",
     "@nuxtjs/google-fonts",
+    "@nuxt/image",
   ],
   nitro: {
     preset: "vercel",
