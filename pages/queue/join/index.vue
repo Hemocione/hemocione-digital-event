@@ -88,14 +88,10 @@ async function onSubmit() {
           :disabled="!allowClick"
           type="success"
           :loading="buttonLoading"
+          :icon="ElIconArrowRight"
           @click="onSubmit"
         >
-          Entrar na fila de Doação!<el-icon
-            v-show="!buttonLoading"
-            class="el-icon--right"
-          >
-            <el-icon-d-arrow-right />
-          </el-icon>
+          Entrar na fila de Doação!
         </el-button>
       </el-form-item>
     </el-form>
@@ -107,7 +103,7 @@ async function onSubmit() {
   </div>
 </template>
 
-<style scoped lang="scss">
+<style scoped>
 .queue-join-page {
   text-align: center;
   display: flex;
@@ -127,7 +123,7 @@ h1 {
 }
 
 .form-wrapper {
-  background-color: $color-secondary;
+  background-color: var(--hemo-color-secondary);
   padding: 1rem;
   border-radius: 1rem;
   width: 100%;

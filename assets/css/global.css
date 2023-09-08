@@ -1,0 +1,110 @@
+:root {
+  --hemo-color-primary: #cc151a;
+  --hemo-color-secondary: #f3f2f1;
+  --hemo-color-success: #2ac769;
+  --hemo-color-warn: #f6a609;
+  --hemo-color-text-secondary: #25282B;
+  --hemo-color-text-primary: #f3f2f1;
+  --el-color-primary: var(--hemo-color-primary) !important;
+  --el-color-main: var(--hemo-color-primary) !important;
+  --el-color-success: var(--hemo-color-success) !important;
+  --el-color-warning: var(--hemo-color-warn) !important;
+  --el-color-danger: var(--hemo-color-warn) !important;
+  --el-color-info: var(--hemo-color-primary) !important;
+  --el-color-text-primary: var(--hemo-color-text-primary) !important;
+  --el-color-text-secondary: var(--hemo-color-text-secondary) !important;
+  --el-color-text-third: var(--hemo-color-text-secondary) !important;
+  --el-color-text-placeholder: var(--hemo-color-text-secondary) !important;
+  --el-color-border-base: var(--hemo-color-text-secondary) !important;
+  --el-color-border-light: var(--hemo-color-text-secondary) !important;
+  --el-color-border-lighter: var(--hemo-color-text-secondary) !important;
+  --el-color-border-extra-light: var(--hemo-color-text-secondary) !important;
+  --el-color-border-base-hover: var(--hemo-color-text-secondary) !important;
+  --el-color-border-base-active: var(--hemo-color-text-secondary) !important;
+  --el-color-border-base-disabled: var(--hemo-color-text-secondary) !important;
+  --el-color-border-light-hover: var(--hemo-color-text-secondary) !important;
+  --el-color-border-light-active: var(--hemo-color-text-secondary) !important;
+  --el-color-border-light-disabled: var(--hemo-color-text-secondary) !important;
+}
+
+
+html,
+body {
+  background-color: var(--hemo-color-primary);
+  color: var(--hemo-color-secondary);
+  margin: 0;
+  padding: 0;
+  font-family:
+    "Roboto",
+    monospace,
+    -apple-system,
+    BlinkMacSystemFont,
+    "Segoe UI",
+    "Helvetica Neue",
+    Arial,
+    "Noto Sans",
+    sans-serif;
+}
+
+#__nuxt {
+  width: 100%;
+  height: 100%;
+}
+
+
+body {
+  height: 100dvh;
+  width: 100vw;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.blur-enter-active,
+.blur-leave-active {
+  transition: all 0.4s;
+}
+.blur-enter-from,
+.blur-leave-to {
+  opacity: 0;
+  filter: blur(1rem);
+}
+
+.slide-fade-down-enter-active {
+  transition: all 2s ease-out;
+}
+
+.slide-fade-down-leave-active {
+  transition: all 2s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-down-enter-from,
+.slide-fade-down-leave-to {
+  transform: translateY(-20px);
+  opacity: 0;
+}
+
+.slide-fade-right-enter-active {
+  transition: all 0.3s ease-out;
+}
+
+.slide-fade-right-leave-active {
+  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-fade-right-enter-from {
+  transform: translateX(-50px);
+  opacity: 0;
+}
+.slide-fade-right-leave-to {
+  transform: translateX(50px);
+  opacity: 0;
+}
+
+.page {
+  background-color: var(--hemo-color-primary);
+  padding: 2rem;
+  width: 100%;
+  height: 100%;
+}

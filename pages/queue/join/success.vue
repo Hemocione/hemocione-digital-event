@@ -26,7 +26,7 @@ onMounted(() => {
 });
 </script>
 
-<style scoped lang="scss">
+<style scoped>
 .success-queue-join-page {
   text-align: center;
   display: flex;
@@ -37,7 +37,7 @@ onMounted(() => {
 }
 
 .wrapper {
-  background-color: $color-secondary;
+  background-color: var(--hemo-color-secondary);
   padding: 1rem;
   border-radius: 1rem;
   width: 100%;
@@ -45,11 +45,11 @@ onMounted(() => {
   flex-direction: column;
   align-items: center;
   gap: 1rem;
-  color: $color-text-secondary;
+  color: var(--hemo-color-text-secondary);
 }
 
 .icon {
   width: 50%;
-  color: $color-success;
+  color: var(--hemo-color-success);
 }
 </style>

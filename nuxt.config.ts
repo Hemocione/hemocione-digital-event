@@ -1,5 +1,3 @@
-import ElementPlus from "unplugin-element-plus/vite";
-
 export default defineNuxtConfig({
   runtimeConfig: {
     mongodbUri:
@@ -18,7 +16,7 @@ export default defineNuxtConfig({
   devtools: {
     enabled: true,
   },
-  css: ["~/assets/css/global.scss"],
+  css: ["~/assets/css/global.css"],
   googleFonts: {
     families: {
       Roboto: true,
@@ -34,19 +32,5 @@ export default defineNuxtConfig({
       name: "slide-fade-right",
       mode: "out-in",
     },
-  },
-  vite: {
-    css: {
-      preprocessorOptions: {
-        scss: {
-          additionalData: '@use "@/assets/css/variables.scss" as *;',
-        },
-      },
-    },
-    plugins: [
-      ElementPlus({
-        useSource: true,
-      }),
-    ],
   },
 });
