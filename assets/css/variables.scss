@@ -2,6 +2,8 @@ $color-primary: #cc151a;
 $color-secondary: #f3f2f1;
 $color-success: #2ac769;
 $color-warn: #f6a609;
+$color-text-secondary: #25282B;
+$color-text-primary: #f3f2f1;
 
 @forward "element-plus/theme-chalk/src/common/var.scss" with (
   $colors: (

@@ -33,6 +33,7 @@ interface CreateQueueParticipant {
     phone: string;
     name: string;
     leadId?: string;
+    uuid?: string;
   };
   queueId: string;
 }

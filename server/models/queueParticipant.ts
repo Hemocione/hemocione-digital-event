@@ -23,6 +23,10 @@ const QueueParticipantSchema = new Schema(
           type: String,
           required: false,
         },
+        uuid: {
+          type: String,
+          required: false,
+        },
       },
     },
     calledAt: {

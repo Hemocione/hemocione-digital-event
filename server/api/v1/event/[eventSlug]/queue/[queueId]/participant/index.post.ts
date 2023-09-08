@@ -4,6 +4,7 @@ interface Body {
   phone: string;
   name: string;
   leadId?: string;
+  uuid?: string;
 }
 
 function validateBody(body: any): asserts body is Body {

@@ -32,6 +32,7 @@ async function onSubmit() {
     phone,
     name,
     leadId,
+    uuid,
   };
   try {
     const queueId = eventConfig?.value?.queue?._id;
@@ -42,6 +43,14 @@ async function onSubmit() {
       method: "POST",
       body: JSON.stringify(payload),
     });
+    await navigateTo({
+      path: "/queue/join/success",
+      query: {
+        name,
+        leadId,
+        uuid,
+      },
+    });
   } catch (error) {
     ElNotification({
       title: "Ops!",
@@ -51,69 +60,56 @@ async function onSubmit() {
     });
   }
   buttonLoading.value = false;
-
-  await navigateTo(
-    `https://estande-digital.layers.digital/leadIntent/?leadId=${leadId}&uuid=${uuid}`,
-    { external: true },
-  );
 }
 </script>
 
 <template>
-  <transition name="slide-fade-down" mode="out-in" appear>
-    <div class="page">
-      <h1>{{ eventConfig?.name || event }}</h1>
-      <el-form :model="form" class="form-wrapper">
-        <el-form-item size="large" class="form-item">
-          <el-input
-            v-model="form.phone"
-            :prefix-icon="ElIconPhone"
-            placeholder="Telefone"
-            max-length="14"
-          />
-        </el-form-item>
-        <el-form-item size="large" class="form-item">
-          <el-input
-            v-model="form.name"
-            :prefix-icon="ElIconUser"
-            placeholder="Insira seu nome"
-          />
-        </el-form-item>
-        <el-form-item size="large" class="form-item join-item">
-          <el-button
-            class="form-item"
-            :disabled="!allowClick"
-            type="success"
-            :loading="buttonLoading"
-            @click="onSubmit"
+  <div class="page queue-join-page">
+    <h1>{{ eventConfig?.name || event }}</h1>
+    <el-form :model="form" class="form-wrapper">
+      <el-form-item size="large" class="form-item">
+        <el-input
+          v-model="form.phone"
+          :prefix-icon="ElIconPhone"
+          placeholder="Telefone"
+          maxlength="14"
+        />
+      </el-form-item>
+      <el-form-item size="large" class="form-item">
+        <el-input
+          v-model="form.name"
+          :prefix-icon="ElIconUser"
+          placeholder="Insira seu nome"
+        />
+      </el-form-item>
+      <el-form-item size="large" class="form-item join-item">
+        <el-button
+          class="form-item"
+          :disabled="!allowClick"
+          type="success"
+          :loading="buttonLoading"
+          @click="onSubmit"
+        >
+          Entrar na fila de Doação!<el-icon
+            v-show="!buttonLoading"
+            class="el-icon--right"
           >
-            Entrar na fila de Doação!<el-icon
-              v-show="!buttonLoading"
-              class="el-icon--right"
-            >
-              <el-icon-d-arrow-right />
-            </el-icon>
-          </el-button>
-        </el-form-item>
-      </el-form>
-      <div class="ofered-by">
-        <img src="/images/logo-horizontal-branca.svg" class="logo hemocione" />
-        <el-icon size="large">
-          <el-icon-plus />
-        </el-icon>
-        <img src="/images/logo-layers.svg" class="logo" />
-      </div>
+            <el-icon-d-arrow-right />
+          </el-icon>
+        </el-button>
+      </el-form-item>
+    </el-form>
+    <div class="offered-by">
+      <img src="/images/logo-horizontal-branca.svg" class="logo hemocione" />
+      <el-icon-plus class="plus-icon" />
+      <img src="/images/logo-layers.svg" class="logo" />
     </div>
-  </transition>
+  </div>
 </template>
 
 <style scoped lang="scss">
-.page {
-  background-color: $color-primary;
+.queue-join-page {
   text-align: center;
-  padding: 2rem;
-  width: 100%;
-  height: 100%;
   display: flex;
   align-items: center;
   flex-direction: column;
@@ -121,7 +117,7 @@ async function onSubmit() {
   gap: 1rem;
 }
 
-.page h1 {
+h1 {
   margin: 0;
 }
 
@@ -142,7 +138,7 @@ async function onSubmit() {
 }
 
 .hemocione {
-  padding-bottom: 5px;
+  padding-bottom: 2%;
 }
 
 .join-item {
@@ -150,15 +146,18 @@ async function onSubmit() {
 }
 
 .logo {
-  width: 60%;
+  width: 50%;
 }
 
-.ofered-by {
+.plus-icon {
+  width: 8%;
+}
+
+.offered-by {
   display: flex;
   gap: 1rem;
   flex-direction: column;
   width: 100%;
   align-items: center;
-  justify-content: stretch;
 }
 </style>
