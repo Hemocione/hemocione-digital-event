@@ -1,7 +1,4 @@
-import {
-  callLonelyParticipantIfNeeded,
-  createQueueParticipant,
-} from "~/server/services/queueParticipants";
+import { createQueueParticipant } from "~/server/services/queueParticipants";
 
 interface Body {
   participant: {
@@ -30,16 +27,10 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   validateBody(body);
 
-  const queueParticipant = await createQueueParticipant({
+  await createQueueParticipant({
     participant: body.participant,
     queueId,
   });
-
-  try {
-    await callLonelyParticipantIfNeeded(queueId, queueParticipant._id);
-  } catch (error) {
-    console.error(error);
-  }
 
   setResponseStatus(event, 201);
 });

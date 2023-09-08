@@ -46,27 +46,6 @@ export const createQueueParticipant = async (data: CreateQueueParticipant) => {
   });
 };
 
-export const callLonelyParticipantIfNeeded = async (
-  queueId: string,
-  participantId: Types.ObjectId | String,
-) => {
-  const participantsInQueue = await QueueParticipant.find({
-    queueId,
-    calledAt: null,
-  })
-    .select({
-      _id: 1,
-    })
-    .lean();
-
-  if (
-    participantsInQueue.length === 1 &&
-    String(participantsInQueue[0]._id) === String(participantId)
-  ) {
-    await callQueueParticipants([String(participantId)], queueId);
-  }
-};
-
 export const setNotifiedCloseToCall = async (_id: Types.ObjectId | String) => {
   await QueueParticipant.updateOne(
     {
