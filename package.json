@@ -14,10 +14,12 @@
   },
   "devDependencies": {
     "@aws-sdk/client-sns": "^3.405.0",
+    "@element-plus/icons-vue": "^2.1.0",
     "@element-plus/nuxt": "^1.0.5",
     "@nuxt/devtools": "^0.8.2",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
     "@nuxtjs/eslint-module": "^4.1.0",
+    "@nuxtjs/google-fonts": "^3.0.2",
     "@nuxtjs/i18n": "8.0.0-rc.4",
     "@typescript-eslint/parser": "^6.5.0",
     "aws-sdk": "^2.1450.0",
@@ -30,6 +32,8 @@
     "mongoose": "^7.5.0",
     "nuxt": "^3.7.1",
     "prettier": "^3.0.3",
-    "typescript": "^5.2.2"
+    "sass": "^1.66.1",
+    "typescript": "^5.2.2",
+    "unplugin-element-plus": "^0.8.0"
   }
 }

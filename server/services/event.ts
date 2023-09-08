@@ -10,7 +10,6 @@ export const getOrCreateEvent = async (eventSlug: string) => {
     },
     {
       upsert: true,
-      lean: true,
       setDefaultsOnInsert: true,
     },
   );
