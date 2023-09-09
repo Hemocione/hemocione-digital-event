@@ -164,7 +164,7 @@ const buttonTextComputed = computed(() => {
 <style scoped>
 .bottom-button {
   position: fixed;
-  height: 20%;
+  height: 15%;
   width: 100%;
   font-size: 2rem;
   bottom: 0;
