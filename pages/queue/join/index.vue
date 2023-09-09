@@ -6,7 +6,7 @@ const shouldRedirect = !event || !leadId || !uuid;
 
 const initialPhone = String(eventRef).startsWith("+55")
   ? String(eventRef)
-  : `+55${eventRef}`;
+  : `+55 ${eventRef ? String(eventRef) : ""}`;
 
 if (shouldRedirect) await navigateTo("/queue/not-found");
 
