@@ -2,13 +2,13 @@
   <div class="page success-queue-join-page">
     <div class="wrapper">
       <el-icon-success-filled class="icon" />
-      <h2>
-        <b>Parabéns {{ name }}! Você entrou na fila de doação!</b>
-      </h2>
-      <p>
-        <b>Fique atento ao seu celular</b>, pois entraremos em contato assim que
-        sua vez chegar!
-      </p>
+      <h2 class="text-item">
+          Parabéns {{ name }}! Você entrou na fila de doação!
+        </h2>
+        <p class="text-item">
+          <b>Fique atento ao seu celular</b>. Entraremos em contato assim que
+          for a sua vez de doar!
+        </p>
     </div>
   </div>
 </template>
@@ -22,7 +22,7 @@ onMounted(() => {
       `https://estande-digital.layers.digital/leadIntent?leadId=${leadId}&uuid=${uuid}`,
       { external: true },
     );
-  }, 3000);
+  }, 5000);
 });
 </script>
 
@@ -34,6 +34,10 @@ onMounted(() => {
   flex-direction: column;
   justify-content: center;
   gap: 1rem;
+}
+
+.text-item {
+  margin: 0
 }
 
 .wrapper {
@@ -49,6 +53,7 @@ onMounted(() => {
 }
 
 .icon {
+  max-width: 100px;
   width: 50%;
   color: var(--hemo-color-success);
 }
