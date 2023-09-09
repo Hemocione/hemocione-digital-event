@@ -32,6 +32,9 @@ devDependencies:
   aws-sdk:
     specifier: ^2.1450.0
     version: 2.1450.0
+  dayjs:
+    specifier: ^1.11.9
+    version: 1.11.9
   element-plus:
     specifier: ^2.3.12
     version: 2.3.12(vue@3.3.4)

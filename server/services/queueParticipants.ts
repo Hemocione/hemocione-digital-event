@@ -2,6 +2,41 @@ import type { Types } from "mongoose";
 import { inngest } from "../inngest/client";
 import { QueueParticipant } from "../models/queueParticipant";
 
+export async function getWaitingQueueParticipants(queueId: string) {
+  return await QueueParticipant.find({
+    queueId,
+    calledAt: null,
+  })
+    .select({
+      _id: 1,
+      participant: 1,
+      createdAt: 1,
+    })
+    .sort({
+      createdAt: 1,
+    })
+    .lean();
+}
+
+export async function getCalledQueueParticipants(queueId: string) {
+  return await QueueParticipant.find({
+    queueId,
+    calledAt: {
+      $ne: null,
+    },
+  })
+    .select({
+      _id: 1,
+      participant: 1,
+      calledAt: 1,
+      createdAt: 1,
+    })
+    .sort({
+      calledAt: -1,
+    })
+    .lean();
+}
+
 export async function callQueueParticipants(
   participantIds: string[],
   queueId: string,

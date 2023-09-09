@@ -6,25 +6,17 @@
   --hemo-color-text-secondary: #25282B;
   --hemo-color-text-primary: #f3f2f1;
   --el-color-primary: var(--hemo-color-primary) !important;
-  --el-color-main: var(--hemo-color-primary) !important;
+  --el-color-main: var(--hemo-color-secondary) !important;
   --el-color-success: var(--hemo-color-success) !important;
   --el-color-warning: var(--hemo-color-warn) !important;
   --el-color-danger: var(--hemo-color-warn) !important;
   --el-color-info: var(--hemo-color-primary) !important;
   --el-color-text-primary: var(--hemo-color-text-primary) !important;
   --el-color-text-secondary: var(--hemo-color-text-secondary) !important;
-  --el-color-text-third: var(--hemo-color-text-secondary) !important;
-  --el-color-text-placeholder: var(--hemo-color-text-secondary) !important;
-  --el-color-border-base: var(--hemo-color-text-secondary) !important;
-  --el-color-border-light: var(--hemo-color-text-secondary) !important;
-  --el-color-border-lighter: var(--hemo-color-text-secondary) !important;
-  --el-color-border-extra-light: var(--hemo-color-text-secondary) !important;
-  --el-color-border-base-hover: var(--hemo-color-text-secondary) !important;
-  --el-color-border-base-active: var(--hemo-color-text-secondary) !important;
-  --el-color-border-base-disabled: var(--hemo-color-text-secondary) !important;
-  --el-color-border-light-hover: var(--hemo-color-text-secondary) !important;
-  --el-color-border-light-active: var(--hemo-color-text-secondary) !important;
-  --el-color-border-light-disabled: var(--hemo-color-text-secondary) !important;
+}
+
+.el-tabs__header {
+  margin: 0 !important;
 }
 
 
@@ -86,11 +78,11 @@ body {
 }
 
 .slide-fade-right-enter-active {
-  transition: all 0.3s ease-out;
+  transition: all 0.5s ease-out;
 }
 
 .slide-fade-right-leave-active {
-  transition: all 0.3s cubic-bezier(1, 0.5, 0.8, 1);
+  transition: all 0.5s cubic-bezier(1, 0.5, 0.8, 1);
 }
 
 .slide-fade-right-enter-from {
@@ -99,6 +91,20 @@ body {
 }
 .slide-fade-right-leave-to {
   transform: translateX(50px);
+  opacity: 0;
+}
+
+.slide-top-enter-active {
+  transition: all 1s ease-out;
+}
+
+.slide-top-leave-active {
+  transition: all 1s cubic-bezier(1, 0.5, 0.8, 1);
+}
+
+.slide-top-enter-from,
+.slide-top-leave-to {
+  transform: translateY(50px);
   opacity: 0;
 }
 
