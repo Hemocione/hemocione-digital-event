@@ -8,6 +8,11 @@ const initialPhone = String(eventRef).startsWith("+55")
   ? String(eventRef)
   : `+55${eventRef ? String(eventRef) : ""}`;
 
+let disablePhone = false;
+if (initialPhone.length === 14) {
+  disablePhone = true;
+}
+
 if (shouldRedirect) await navigateTo("/queue/not-found");
 
 const { data: eventConfig } = shouldRedirect
@@ -73,6 +78,7 @@ async function onSubmit() {
           :prefix-icon="ElIconPhone"
           placeholder="Telefone"
           maxlength="14"
+          :disabled="disablePhone"
         />
       </el-form-item>
       <el-form-item size="large" class="form-item">
