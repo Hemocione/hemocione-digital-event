@@ -9,8 +9,8 @@
     "postinstall": "nuxt prepare",
     "lint:js": "eslint --ext \".ts,.vue\" --ignore-path .gitignore .",
     "lint:prettier": "prettier --check .",
-    "lint": "pnpm lint:js && pnpm lint:prettier",
-    "lint:fix": "prettier --write --list-different . && pnpm lint:js --fix"
+    "lint": "yarn lint:js && yarn lint:prettier",
+    "lint:fix": "prettier --write --list-different . && yarn lint:js --fix"
   },
   "devDependencies": {
     "@aws-sdk/client-sns": "^3.405.0",
@@ -20,7 +20,6 @@
     "@nuxt/image": "1.0.0-rc.1",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
     "@nuxtjs/google-fonts": "^3.0.2",
-    "@popperjs/core": "npm:@sxzz/popperjs-es@^2.11.7",
     "@typescript-eslint/parser": "^6.6.0",
     "aws-sdk": "^2.1450.0",
     "dayjs": "^1.11.9",
