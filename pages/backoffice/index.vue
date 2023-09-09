@@ -7,7 +7,7 @@
           :queue-id="queueId"
           :event-slug="eventSlug"
           type="waiting"
-          @participants-called="refreshParticipants"
+          :refresh-function="refreshAllParticipants"
         />
       </el-tab-pane>
       <el-tab-pane label="Doadores Chamados" name="called">
@@ -38,7 +38,7 @@ const getWaitingParticipants = () =>
 const getCalledParticipants = () =>
   $fetch(`/api/v1/event/${eventSlug}/queue/${queueId}/participant/called`);
 
-const refreshParticipants = async () => {
+const refreshAllParticipants = async () => {
   waitingParticipants.value = await getWaitingParticipants();
   calledParticipants.value = await getCalledParticipants();
 };

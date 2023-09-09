@@ -5,7 +5,7 @@ interface Body {
 }
 
 function validateBody(body: any): asserts body is Body {
-  if (typeof body !== "object" || !Array.isArray(body.participantIds)) {
+  if (!Array.isArray(body.participantIds)) {
     throw createError({
       statusCode: 400,
       statusMessage: "Invalid body",

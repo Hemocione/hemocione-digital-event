@@ -29,7 +29,7 @@
   </el-table>
   <transition name="slide-top">
     <el-button
-      v-show="type === 'waiting' && selectedParticipants.length > 0"
+      v-show="shouldShowButton"
       class="bottom-button"
       :disabled="selectedParticipants.length > 3"
       type="success"
@@ -69,10 +69,10 @@ const props = defineProps<{
   type: "waiting" | "called";
   queueId: string;
   eventSlug: string;
+  refreshFunction?: () => Promise<void>;
 }>();
 
 const callingParticipants = ref(false);
-const emit = defineEmits(["participants-called"]);
 
 function timeSinceDate(date: string) {
   const timeSince = dayjs(date).tz("America/Sao_Paulo").fromNow();
@@ -92,33 +92,72 @@ const handleRowClick = (row: Participant) => {
     const selected = selectedParticipants.value.some(
       (participant) => participant._id === row._id,
     );
-    if (table) {
-      table.toggleRowSelection(row, !selected);
+    table?.toggleRowSelection(row, !selected);
+  }
+};
+
+const selectedParticipantsIds = computed(() =>
+  selectedParticipants.value.map((participant) => participant._id),
+);
+
+const tempSelectedIds = ref<string[] | null>(null);
+
+const smartRefresh = async (keepSelections = false) => {
+  tempSelectedIds.value = [...selectedParticipantsIds.value];
+  if (props.refreshFunction) await props.refreshFunction();
+  if (keepSelections) {
+    const table = tableRef.value;
+    for (const id of tempSelectedIds.value) {
+      const row = props.participants.find(
+        (participant) => participant._id === id,
+      );
+      if (row) table?.toggleRowSelection(row, true);
     }
   }
+  tempSelectedIds.value = null;
 };
 
 const callSelectedParticipants = async () => {
   callingParticipants.value = true;
-  const selectedParticipantsIds = selectedParticipants.value.map(
-    (participant) => participant._id,
-  );
-  await $fetch(
-    `/api/v1/event/${props.eventSlug}/queue/${props.queueId}/participant`,
-    {
-      method: "POST",
-      body: JSON.stringify(selectedParticipantsIds),
-    },
-  );
-  selectedParticipants.value = [];
+  try {
+    await $fetch(
+      `/api/v1/event/${props.eventSlug}/queue/${props.queueId}/participant/call`,
+      {
+        method: "POST",
+        body: JSON.stringify({ participantIds: selectedParticipantsIds.value }),
+      },
+    );
+    await smartRefresh();
+  } catch (error) {
+    ElNotification({
+      title: "Ops!",
+      message:
+        "Não foi possível chamar os doadores. Por favor, tente novamente.",
+      type: "error",
+    });
+  }
   callingParticipants.value = false;
-  emit("participants-called");
 };
 
+onMounted(() => {
+  if (props.refreshFunction) {
+    setInterval(() => {
+      smartRefresh(true);
+    }, 10000);
+  }
+});
+
+const selectedParticipantsLength = computed(
+  () => tempSelectedIds.value?.length ?? selectedParticipants.value.length,
+);
+
+const shouldShowButton = computed(() => {
+  return props.type === "waiting" && selectedParticipantsLength.value > 0;
+});
+
 const buttonTextComputed = computed(() => {
-  const selectedParticipantsLength = selectedParticipants.value.length;
-  if (selectedParticipantsLength <= 1) return "Chamar doador";
-  return `Chamar ${selectedParticipantsLength} doadores`;
+  if (selectedParticipantsLength.value <= 1) return "Chamar doador";
+  return `Chamar ${selectedParticipantsLength.value} doadores`;
 });
 </script>
 
