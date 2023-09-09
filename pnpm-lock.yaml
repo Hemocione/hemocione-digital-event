@@ -27,8 +27,8 @@ devDependencies:
     specifier: ^3.0.2
     version: 3.0.2
   '@popperjs/core':
-    specifier: ^2.11.8
-    version: 2.11.8
+    specifier: npm:@sxzz/popperjs-es@^2.11.6
+    version: /@sxzz/popperjs-es@2.11.7
   '@typescript-eslint/parser':
     specifier: ^6.6.0
     version: 6.6.0(eslint@8.48.0)(typescript@5.2.2)
@@ -2072,10 +2072,6 @@ packages:
 
   /@polka/url@1.0.0-next.21:
     resolution: {integrity: sha512-a5Sab1C4/icpTZVzZc5Ghpz88yQtGOyNqYXcZgOssB2uuAr+wF/MvN6bgtW32q7HHrvBki+BsZ0OuNv6EV3K9g==}
-    dev: true
-
-  /@popperjs/core@2.11.8:
-    resolution: {integrity: sha512-P1st0aksCrn9sGZhp8GMYwBnQsbvAWsZAX44oXNNvLHGqAOcoVxmjZiohstwQ7SqKnbR47akdNi+uleWD8+g6A==}
     dev: true
 
   /@rollup/plugin-alias@5.0.0(rollup@3.28.1):

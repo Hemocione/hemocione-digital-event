@@ -20,7 +20,7 @@
     "@nuxt/image": "1.0.0-rc.1",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",
     "@nuxtjs/google-fonts": "^3.0.2",
-    "@popperjs/core": "^2.11.8",
+    "@popperjs/core": "npm:@sxzz/popperjs-es@^2.11.6",
     "@typescript-eslint/parser": "^6.6.0",
     "aws-sdk": "^2.1450.0",
     "dayjs": "^1.11.9",
