@@ -2,7 +2,7 @@
   <div class="page success-queue-join-page">
     <div class="wrapper">
       <el-icon-success-filled class="icon" />
-      <h2 class="text-item">
+        <h2 class="text-item">
           Parabéns {{ name }}! Você entrou na fila de doação!
         </h2>
         <p class="text-item">

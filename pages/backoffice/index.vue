@@ -57,4 +57,11 @@ calledParticipants.value = await getCalledParticipants();
   min-height: 100%;
   background-color: var(--hemo-color-secondary);
 }
+
+.tabs :deep(.el-tabs__header) {
+  position: sticky;
+  top: 0px;
+  background-color: var(--hemo-color-secondary);
+  z-index: 2;
+}
 </style>
