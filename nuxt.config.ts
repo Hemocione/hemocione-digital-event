@@ -1,4 +1,7 @@
 export default defineNuxtConfig({
+  alias: {
+    "inngest/nuxt": "inngest/nuxt.js",
+  },
   runtimeConfig: {
     mongodbUri:
       process.env.MONGODB_URI ?? "mongodb://admin:password@localhost:27017",
