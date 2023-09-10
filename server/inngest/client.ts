@@ -3,6 +3,7 @@ import type { Events } from "./eventHandlers";
 
 const runtimeConfig = useRuntimeConfig();
 
+// @ts-expect-error
 const HemocioneEventSchemas = new EventSchemas().fromRecord<Events>();
 
 export const inngest = new Inngest({
