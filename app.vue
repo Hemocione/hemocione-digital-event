@@ -3,7 +3,10 @@
 </template>
 
 <script setup lang="ts">
-useSeoMeta({
+useHead({
+  title: 'Hemocione Eventos',
+})
+useServerSeoMeta({
   title: 'Hemocione Eventos',
   ogTitle: 'Hemocione Eventos',
   description: 'Hemocione Eventos é um aplicativo de gerenciamento de eventos de doação de sangue. Utilize-o para gerenciar as filas de doação de sangue de seus eventos e muito mais!',
