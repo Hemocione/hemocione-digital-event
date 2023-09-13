@@ -11,8 +11,7 @@ Este projeto utiliza [Nuxt 3](https://v3.nuxtjs.org).
 Instalar dependencias:
 
 ```bash
-# pnpm
-pnpm install --shamefully-hoist
+$ yarn install
 ```
 
 ## Development Server
@@ -21,8 +20,8 @@ DEV Server: http://localhost:3000
 DEV INNGEST SERVER: http://localhost:8288
 
 ```bash
-$ pnpm dev:inngest # executar inngest local
-$ pnpm dev # executar Nuxt local
+$ yarn dev:inngest # executar inngest local
+$ yarn dev # executar Nuxt local
 ```
 
 ## Solução Básica e Ideia Arquitetural da Aplicação
@@ -34,13 +33,13 @@ $ pnpm dev # executar Nuxt local
 Buildando para prod:
 
 ```bash
-pnpm build
+yarn build
 ```
 
 Locally preview production build:
 
 ```bash
-pnpm preview
+yarn preview
 ```
 
 [Documentacao de Deploy do NUXT](https://nuxt.com/docs/getting-started/deployment#presets)
