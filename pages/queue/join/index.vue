@@ -1,23 +1,20 @@
 <script setup lang="ts">
 const route = useRoute();
 const query = route.query;
-const { event, eventRef, leadId, uuid } = query;
-const shouldRedirect = !event || !leadId || !uuid;
+const { eventId, eventRef, leadId, uuid } = query;
+const shouldRedirect = !eventId || !leadId || !uuid;
 
 const initialPhone = String(eventRef).startsWith("+55")
   ? String(eventRef)
   : `+55${eventRef ? String(eventRef) : ""}`;
 
-let disablePhone = false;
-if (initialPhone.length === 14) {
-  disablePhone = true;
-}
+const disablePhone = initialPhone.length === 14;
 
 if (shouldRedirect) await navigateTo("/queue/not-found");
 
 const { data: eventConfig } = shouldRedirect
   ? { data: undefined }
-  : await useFetch(`/api/v1/event/${event}`);
+  : await useFetch(`/api/v1/event/${eventId}`);
 
 const form = ref({
   phone: initialPhone,
@@ -70,7 +67,7 @@ async function onSubmit() {
 
 <template>
   <div class="page queue-join-page">
-    <h1>{{ eventConfig?.name || event }}</h1>
+    <h1>{{ eventConfig?.name ?? eventConfig?.slug ?? eventId }}</h1>
     <el-form :model="form" class="form-wrapper">
       <el-form-item size="large" class="form-item">
         <el-input
