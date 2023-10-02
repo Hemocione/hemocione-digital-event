@@ -2,7 +2,7 @@
 const route = useRoute();
 const query = route.query;
 const { eventId, eventRef, leadId, uuid } = query;
-const shouldRedirect = !eventId || !leadId || !uuid;
+const shouldRedirect = !eventId;
 
 const initialPhone = String(eventRef).startsWith("+55")
   ? String(eventRef)
@@ -100,8 +100,6 @@ async function onSubmit() {
     </el-form>
     <div class="offered-by">
       <img src="/images/logo-horizontal-branca.svg" class="logo hemocione" />
-      <el-icon-plus class="plus-icon" />
-      <img src="/images/logo-layers.svg" class="logo" />
     </div>
   </div>
 </template>
