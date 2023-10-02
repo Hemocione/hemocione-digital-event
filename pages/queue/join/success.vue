@@ -2,13 +2,13 @@
   <div class="page success-queue-join-page">
     <div class="wrapper">
       <el-icon-success-filled class="icon" />
-        <h2 class="text-item">
-          Parabéns {{ name }}! Você entrou na fila de doação!
-        </h2>
-        <p class="text-item">
-          <b>Fique atento ao seu celular</b>. Entraremos em contato assim que
-          for a sua vez de doar!
-        </p>
+      <h2 class="text-item">
+        Parabéns {{ name }}! Você entrou na fila de doação!
+      </h2>
+      <p class="text-item">
+        <b>Fique atento ao seu celular</b>. Entraremos em contato assim que for
+        a sua vez de doar!
+      </p>
     </div>
   </div>
 </template>
@@ -17,6 +17,8 @@ const route = useRoute();
 const { name, leadId, uuid } = route.query;
 
 onMounted(() => {
+  if (!leadId || !uuid) return;
+
   setTimeout(async () => {
     await navigateTo(
       `https://estande-digital.layers.digital/leadIntent?leadId=${leadId}&uuid=${uuid}`,
@@ -37,7 +39,7 @@ onMounted(() => {
 }
 
 .text-item {
-  margin: 0
+  margin: 0;
 }
 
 .wrapper {
