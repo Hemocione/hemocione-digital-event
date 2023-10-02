@@ -49,8 +49,7 @@ async function onSubmit() {
       path: "/queue/join/success",
       query: {
         name,
-        leadId,
-        uuid,
+        ...(leadId && uuid ? { leadId, uuid } : {}),
       },
     });
   } catch (error) {
