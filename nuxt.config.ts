@@ -22,7 +22,7 @@ export default defineNuxtConfig({
       enabled: true,
     },
   },
-  css: ["~/assets/css/global.css"],
+  css: ["~/assets/css/global.css", "~/assets/css/transitions.css"],
   googleFonts: {
     families: {
       Roboto: true,

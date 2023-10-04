@@ -26,18 +26,30 @@ onMounted(() => {
 
 <template>
   <div class="bloodbag-page">
-    <BloodBag :donation-percentage="donationPercentage" />
+    <BloodBagLoader :percentage="donationPercentage" class="loader" />
+    <BloodBagLatestDonators
+      :latest-called-participants="calledParticipants?.slice(0, 11) || []"
+      class="latest-donators"
+    />
   </div>
 </template>
 
 <style scoped>
+.loader {
+  width: 70%;
+  height: 100%;
+}
+
+.latest-donators {
+  width: 30%;
+  height: 100%;
+}
 .bloodbag-page {
   height: 100%;
   background-color: var(--hemo-color-secondary);
-  padding: 5rem;
+  padding: 3rem;
   display: flex;
-  flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   align-items: center;
 }
 </style>

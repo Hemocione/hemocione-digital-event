@@ -4,6 +4,7 @@
   --hemo-color-success: #2ac769;
   --hemo-color-warn: #f6a609;
   --hemo-color-text-secondary: #25282B;
+  --hemo-color-text-secondary-opaque: rgba(37, 40, 43, 0.2) ;
   --hemo-color-text-primary: #f3f2f1;
   --el-color-primary: var(--hemo-color-primary) !important;
   --el-color-main: var(--hemo-color-secondary) !important;
@@ -51,61 +52,6 @@ body {
 
 * {
   box-sizing: border-box;
-}
-
-.blur-enter-active,
-.blur-leave-active {
-  transition: all 0.4s;
-}
-.blur-enter-from,
-.blur-leave-to {
-  opacity: 0;
-  filter: blur(1rem);
-}
-
-.slide-fade-down-enter-active {
-  transition: all 2s ease-out;
-}
-
-.slide-fade-down-leave-active {
-  transition: all 2s cubic-bezier(1, 0.5, 0.8, 1);
-}
-
-.slide-fade-down-enter-from,
-.slide-fade-down-leave-to {
-  transform: translateY(-20px);
-  opacity: 0;
-}
-
-.slide-fade-right-enter-active {
-  transition: all 0.5s ease-out;
-}
-
-.slide-fade-right-leave-active {
-  transition: all 0.5s cubic-bezier(1, 0.5, 0.8, 1);
-}
-
-.slide-fade-right-enter-from {
-  transform: translateX(-50px);
-  opacity: 0;
-}
-.slide-fade-right-leave-to {
-  transform: translateX(50px);
-  opacity: 0;
-}
-
-.slide-top-enter-active {
-  transition: all 1s ease-out;
-}
-
-.slide-top-leave-active {
-  transition: all 1s cubic-bezier(1, 0.5, 0.8, 1);
-}
-
-.slide-top-enter-from,
-.slide-top-leave-to {
-  transform: translateY(50px);
-  opacity: 0;
 }
 
 .page {

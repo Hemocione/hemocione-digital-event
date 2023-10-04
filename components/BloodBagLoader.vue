@@ -14,8 +14,7 @@
     <div
       v-if="bloodbag?.clientWidth"
       class="bloodbag-wave-wrapper"
-      :percentage="donationPercentage"
-      :style="`--bloodBagWidth: ${bloodbag?.clientWidth}px; --percentage: ${donationPercentage}%`"
+      :style="`--bloodBagWidth: ${bloodbag?.clientWidth}px; --percentage: ${percentage}%`"
     >
       <AnimatedWave />
       <div class="rectangle" />
@@ -25,7 +24,7 @@
 
 <script setup lang="ts">
 defineProps<{
-  donationPercentage: number;
+  percentage: number;
 }>();
 
 const bloodbag = ref<HTMLImageElement | null>(null);
