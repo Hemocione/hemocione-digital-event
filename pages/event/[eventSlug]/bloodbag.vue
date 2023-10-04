@@ -9,7 +9,7 @@ const getCalledParticipantsUrl =
 const { data: calledParticipants, refresh } = await useFetch(
   getCalledParticipantsUrl,
 );
-const maxParticipants = 120; // TODO: get from eventConfig
+const maxParticipants = eventConfig?.value?.queue?.participantsMax ?? 120;
 const numberOfCalledParticipants = computed(
   () => calledParticipants?.value?.length || 0,
 );
@@ -26,6 +26,24 @@ onMounted(() => {
 
 <template>
   <div class="bloodbag-page">
+    <div class="logos">
+      <img src="/images/logo-vertical-principal.png" alt="hemocione-logo" />
+      <img v-if="eventConfig?.logo" :src="eventConfig?.logo" alt="event-logo" />
+    </div>
+    <div class="social-media">
+      <div class="social-network">
+        <img src="/images/social/instagram.png" alt="instagram" />
+        <span>@hemocione</span>
+      </div>
+      <div class="social-network">
+        <img src="/images/social/globo.png" alt="web" />
+        <span>www.hemocione.com.br</span>
+      </div>
+      <div class="social-network">
+        <img src="/images/social/mail.png" alt="email" />
+        <span>contato@hemocione.com.br</span>
+      </div>
+    </div>
     <BloodBagLoader :percentage="donationPercentage" class="loader" />
     <BloodBagLatestDonators
       :latest-called-participants="calledParticipants?.slice(0, 11) || []"
@@ -35,6 +53,44 @@ onMounted(() => {
 </template>
 
 <style scoped>
+.logos {
+  position: absolute;
+  top: 3rem;
+  left: 3rem;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 2rem;
+}
+
+.logos img {
+  width: 10rem;
+}
+
+.social-media {
+  position: absolute;
+  bottom: 3rem;
+  left: 3rem;
+  z-index: 1000;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.social-network {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.social-network img {
+  height: 2rem;
+}
+
+.social-network span {
+  color: var(--hemo-color-text-secondary);
+  font-size: 1.2rem;
+}
 .loader {
   width: 70%;
   height: 100%;

@@ -13,11 +13,21 @@ const EventSchema = new Schema(
       required: true,
       unique: true,
     },
+    logo: {
+      type: String,
+      required: false,
+      default: null,
+    },
     queue: {
       _id: {
         type: Types.ObjectId,
         default: () => new Types.ObjectId(),
         unique: true,
+      },
+      participantsMax: {
+        type: Number,
+        required: false,
+        default: null,
       },
     },
   },

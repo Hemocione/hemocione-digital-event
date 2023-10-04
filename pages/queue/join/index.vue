@@ -68,7 +68,14 @@ async function onSubmit() {
 
 <template>
   <div class="page queue-join-page">
-    <h1>{{ eventConfig?.name ?? eventConfig?.slug ?? eventId }}</h1>
+    <div class="event-header">
+      <img
+        v-if="eventConfig?.logo"
+        :src="eventConfig?.logo"
+        class="event-logo"
+      />
+      <h1>{{ eventConfig?.name ?? eventConfig?.slug ?? eventId }}</h1>
+    </div>
     <el-form :model="form" class="form-wrapper">
       <el-form-item size="large" class="form-item">
         <el-input
@@ -100,7 +107,7 @@ async function onSubmit() {
       </el-form-item>
     </el-form>
     <div class="offered-by">
-      <img src="/images/logo-horizontal-branca.svg" class="logo hemocione" />
+      <img src="/images/logo-branca-normal.png" class="logo hemocione" />
       <el-icon-plus v-if="showLayers" class="plus-icon" />
       <img v-if="showLayers" src="/images/logo-layers.svg" class="logo" />
     </div>
@@ -115,6 +122,17 @@ async function onSubmit() {
   flex-direction: column;
   justify-content: space-between;
   gap: 1rem;
+}
+
+.event-header {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+.event-logo {
+  height: 4rem;
 }
 
 h1 {

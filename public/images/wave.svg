@@ -1,7 +1,7 @@
 <svg xmlns="http://www.w3.org/2000/svg" width="1600" height="198">
   <defs>
     <linearGradient id="a" x1="100%" x2="100%" y1="-10.959%" y2="100%">
-      <stop stop-color="#cc151a" offset="100%" />
+      <stop stop-color="#bb0a08" offset="100%" />
     </linearGradient>
   </defs>
   <path fill="url(#a)" fill-rule="evenodd"
