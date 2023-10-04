@@ -4,6 +4,8 @@ const query = route.query;
 const { eventId, eventRef, leadId, uuid } = query;
 const shouldRedirect = !eventId;
 
+const showLayers = leadId && uuid;
+
 const initialPhone = String(eventRef).startsWith("+55")
   ? String(eventRef)
   : `+55${eventRef ? String(eventRef) : ""}`;
@@ -99,6 +101,8 @@ async function onSubmit() {
     </el-form>
     <div class="offered-by">
       <img src="/images/logo-horizontal-branca.svg" class="logo hemocione" />
+      <el-icon-plus v-if="showLayers" class="plus-icon" />
+      <img v-if="showLayers" src="/images/logo-layers.svg" class="logo" />
     </div>
   </div>
 </template>
