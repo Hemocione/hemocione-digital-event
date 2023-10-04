@@ -25,7 +25,7 @@
 <script setup lang="ts">
 const route = useRoute();
 // todo: get event from layers community and layersPortal integration
-const eventSlug = String(route.query.eventSlug);
+const eventSlug = String(route.params.eventSlug);
 const { data: eventConfig } = await useFetch(`/api/v1/event/${eventSlug}`);
 const queueId = String(eventConfig?.value?.queue?._id);
 
