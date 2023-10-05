@@ -1,5 +1,10 @@
 <template>
   <div class="page success-queue-join-page">
+    <img
+      src="/images/logo-branca-normal.png"
+      alt="Hemocione"
+      class="hemo-logo"
+    />
     <div class="wrapper">
       <el-icon-success-filled class="icon" />
       <h2 class="text-item">
@@ -29,6 +34,12 @@ onMounted(() => {
 </script>
 
 <style scoped>
+.hemo-logo {
+  width: 100%;
+  position: absolute;
+  padding: 2rem;
+  top: 0;
+}
 .success-queue-join-page {
   text-align: center;
   display: flex;
