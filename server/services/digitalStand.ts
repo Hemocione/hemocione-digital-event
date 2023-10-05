@@ -1,20 +1,18 @@
 const config = useRuntimeConfig();
+const { digitalStandApiUrl, digitalStandApiSecret } = config;
 
-const digitalStandApiUrl = config.digitalStandApiUrl;
-
-export const sendStatus = async (
+export const updateStatus = async (
   leadId: string,
   uuid: string,
   status: string,
 ) => {
-  // TODO: implement correctly
   const response = await fetch(
-    `${digitalStandApiUrl}/api/v1/leads/${leadId}/status`,
+    `${digitalStandApiUrl}/integration/lead/status?leadId=${leadId}&uuid=${uuid}`,
     {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${uuid}`,
+        "x-secret": digitalStandApiSecret,
       },
       body: JSON.stringify({
         status,

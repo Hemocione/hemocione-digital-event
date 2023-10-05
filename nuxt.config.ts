@@ -10,6 +10,7 @@ export default defineNuxtConfig({
     digitalStandApiUrl:
       process.env.DIGITAL_STAND_API_URL ??
       "https://us-east1-estande-digital.cloudfunctions.net/api",
+    digitalStandApiSecret: process.env.DIGITAL_STAND_API_SECRET,
   },
   modules: ["@element-plus/nuxt", "@nuxtjs/google-fonts", "@nuxt/image"],
   nitro: {
