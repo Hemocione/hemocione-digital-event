@@ -76,10 +76,34 @@ interface CreateQueueParticipant {
 export async function createQueueParticipant(data: CreateQueueParticipant) {
   const { participant, queueId } = data;
 
-  return await QueueParticipant.create({
+  const newParticipant = await QueueParticipant.create({
     participant,
     queueId,
   });
+
+  try {
+    const currentWaitingParticipants =
+      await getWaitingQueueParticipants(queueId);
+    const newParticipantPosition =
+      currentWaitingParticipants.findIndex(
+        (p) => String(p._id) === String(newParticipant._id),
+      ) + 1;
+
+    await inngest.send({
+      name: "notify/participant.new",
+      data: {
+        _id: String(newParticipant._id),
+        phone: newParticipant.participant.phone,
+        name: newParticipant.participant.name,
+        position: newParticipantPosition,
+      },
+    });
+  } catch (error) {
+    console.log("Failed to notify new participant");
+    console.error(error);
+  }
+
+  return newParticipant;
 }
 
 export async function setNotifiedCloseToCall(_id: Types.ObjectId | string) {
@@ -95,12 +119,14 @@ export async function setNotifiedCloseToCall(_id: Types.ObjectId | string) {
   );
 }
 
+export const MAX_CLOSE_TO_CALL = 3;
+
 export async function getCalledAndCloseToCallParticipants(
   calledParticipantsIds: (Types.ObjectId | string)[],
   queueId: string,
-  closedToCallToNotify: number = 3,
+  closeToCallToNotify: number = MAX_CLOSE_TO_CALL,
 ) {
-  const toNotifySize = calledParticipantsIds.length + closedToCallToNotify;
+  const toNotifySize = calledParticipantsIds.length + closeToCallToNotify;
 
   const participants = await QueueParticipant.find({
     $or: [

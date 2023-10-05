@@ -16,16 +16,24 @@ import type {
 } from "./notifyCloseToCallParticipant";
 import notifyCloseToCallParticipant from "./notifyCloseToCallParticipant";
 
+import type {
+  NotifyNewParticipant,
+  eventName as notifyNewEventName,
+} from "./notifyNewParticipant";
+import notifyNewParticipant from "./notifyNewParticipant";
+
 export interface Events {
   [queueParticipantsCalledEventName]: QueueParticipantsCalledEvent;
   [notifyEventName]: NotifyCalledParticipant;
   [notifyCloseToCallEventName]: NotifyCloseToCallParticipant;
+  [notifyNewEventName]: NotifyNewParticipant;
 }
 
 const eventHandlers = [
   queueParticipantsCalled,
   notifyCalledParticipant,
   notifyCloseToCallParticipant,
+  notifyNewParticipant,
 ];
 
 export default eventHandlers;
