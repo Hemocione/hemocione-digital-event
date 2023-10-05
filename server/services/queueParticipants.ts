@@ -89,6 +89,9 @@ export async function createQueueParticipant(data: CreateQueueParticipant) {
         (p) => String(p._id) === String(newParticipant._id),
       ) + 1;
 
+    newParticipant.initialPosition = newParticipantPosition;
+    await newParticipant.save();
+
     await inngest.send({
       name: "notify/participant.new",
       data: {

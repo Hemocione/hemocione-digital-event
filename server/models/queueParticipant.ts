@@ -29,6 +29,11 @@ const QueueParticipantSchema = new Schema(
         },
       },
     },
+    initialPosition: {
+      type: Number,
+      required: false,
+      default: null,
+    },
     calledAt: {
       type: Date,
       required: false,
