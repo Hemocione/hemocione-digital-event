@@ -120,14 +120,11 @@ async function onSubmit() {
   display: flex;
   align-items: center;
   flex-direction: column;
-  justify-content: center;
+  justify-content: space-between;
   gap: 1rem;
 }
 
 .event-header {
-  position: absolute;
-  top: 0;
-  padding: 2rem;
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -176,9 +173,6 @@ h1 {
 
 .offered-by {
   display: flex;
-  padding: 2rem;
-  bottom: 0;
-  position: absolute;
   gap: 1rem;
   flex-direction: column;
   width: 100%;
