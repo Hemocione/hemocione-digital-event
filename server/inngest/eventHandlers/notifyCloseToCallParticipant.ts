@@ -23,7 +23,7 @@ export default inngest.createFunction(
     const { data } = event;
     const { phone, name } = data;
 
-    const text = `Olá ${name}, a sua vez de doar está próxima! Por favor, dirija-se ao local de doação. O Hemocione agradece!`;
+    const text = `Olá ${name}, a sua vez de doar está próxima! Por favor, fique próximo ao local de doação e aguarde a chamada.  O Hemocione agradece!`;
     await sendSMS(phone, text);
 
     await setNotifiedCloseToCall(data._id);
