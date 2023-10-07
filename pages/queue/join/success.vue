@@ -36,9 +36,6 @@ onMounted(() => {
 <style scoped>
 .hemo-logo {
   width: 100%;
-  position: absolute;
-  padding: 2rem;
-  top: 0;
 }
 .success-queue-join-page {
   text-align: center;
@@ -46,7 +43,7 @@ onMounted(() => {
   align-items: center;
   flex-direction: column;
   justify-content: center;
-  gap: 1rem;
+  gap: 2rem;
 }
 
 .text-item {
