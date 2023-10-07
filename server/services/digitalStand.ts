@@ -24,3 +24,6 @@ export const updateStatus = async (
     throw new Error("Error sending status");
   }
 };
+
+export const getTicketUrl = (leadId: string, uuid: string) =>
+  `https://estande-digital.layers.digital/leadIntent?leadId=${leadId}&${uuid}`;
