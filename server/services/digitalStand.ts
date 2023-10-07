@@ -21,8 +21,27 @@ export const updateStatus = async (
   );
 
   if (!response.ok) {
-    throw new Error("Error sending status");
+    throw new Error("Error sending status to digital stand");
   }
+};
+
+export const upsertFBDataOnLead = async (
+  leadId: string,
+  eventId: string,
+  fbData: { fbc?: string; fbp?: string },
+) => {
+  const response = await fetch(`${digitalStandApiUrl}/lead`, {
+    method: "PUT",
+    headers: {
+      "Content-Type": "application/json",
+      "x-secret": digitalStandApiSecret,
+      "x-event-id": eventId,
+      "x-lead-id": leadId,
+    },
+    body: JSON.stringify(fbData),
+  });
+
+  if (!response.ok) throw new Error("Error sending FB data to digital stand");
 };
 
 export const getTicketUrl = (leadId: string, uuid: string) =>

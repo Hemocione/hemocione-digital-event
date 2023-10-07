@@ -27,6 +27,14 @@ const QueueParticipantSchema = new Schema(
           type: String,
           required: false,
         },
+        fbc: {
+          type: String,
+          required: false,
+        },
+        fbp: {
+          type: String,
+          required: false,
+        },
       },
     },
     initialPosition: {

@@ -5,6 +5,8 @@ interface Body {
   name: string;
   leadId?: string;
   uuid?: string;
+  fbc?: string;
+  fbp?: string;
 }
 
 function validateBody(body: any): asserts body is Body {
@@ -18,12 +20,14 @@ function validateBody(body: any): asserts body is Body {
 
 export default defineEventHandler(async (event) => {
   const queueId = String(getRouterParam(event, "queueId"));
+  const eventSlug = String(getRouterParam(event, "eventSlug"));
   const body = await readBody(event);
   validateBody(body);
 
   await createQueueParticipant({
     participant: body,
     queueId,
+    eventSlug,
   });
 
   setResponseStatus(event, 201);

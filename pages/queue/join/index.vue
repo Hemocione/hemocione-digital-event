@@ -1,10 +1,15 @@
 <script setup lang="ts">
 const route = useRoute();
 const query = route.query;
-const { eventId, eventRef, leadId, uuid } = query;
+const fbpCookie = useCookie("_fbc");
+const { eventId, eventRef, leadId, uuid, fbclid } = query;
 const shouldRedirect = !eventId;
 
+console.log({ eventId, eventRef, leadId, uuid, fbclid, fbp: fbpCookie.value });
 const showLayers = leadId && uuid;
+
+// TODO: remove +55 and add mask to number!
+// TODO: whatsapp instead of SMS
 
 const initialPhone = String(eventRef).startsWith("+55")
   ? String(eventRef)
@@ -37,13 +42,15 @@ async function onSubmit() {
     name,
     leadId,
     uuid,
+    fbc: fbclid ?? "teste",
+    fbp: fbpCookie.value ?? "teste",
   };
   try {
     const queueId = eventConfig?.value?.queue?._id;
     if (!queueId) throw new Error("Queue not found");
 
     buttonLoading.value = true;
-    await $fetch(`/api/v1/event/${event}/queue/${queueId}/participant`, {
+    await $fetch(`/api/v1/event/${eventId}/queue/${queueId}/participant`, {
       method: "POST",
       body: JSON.stringify(payload),
     });

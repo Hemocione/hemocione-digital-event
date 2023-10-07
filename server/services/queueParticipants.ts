@@ -1,6 +1,7 @@
 import type { Types } from "mongoose";
 import { inngest } from "../inngest/client";
 import { QueueParticipant } from "../models/queueParticipant";
+import { upsertFBDataOnLead } from "./digitalStand";
 
 export async function getWaitingQueueParticipants(queueId: string) {
   return await QueueParticipant.find({
@@ -69,12 +70,15 @@ interface CreateQueueParticipant {
     name: string;
     leadId?: string;
     uuid?: string;
+    fbc?: string;
+    fbp?: string;
   };
   queueId: string;
+  eventSlug: string;
 }
 
 export async function createQueueParticipant(data: CreateQueueParticipant) {
-  const { participant, queueId } = data;
+  const { participant, queueId, eventSlug } = data;
 
   const newParticipant = await QueueParticipant.create({
     participant,
@@ -101,8 +105,15 @@ export async function createQueueParticipant(data: CreateQueueParticipant) {
         position: newParticipantPosition,
       },
     });
+    if (participant.leadId && (participant.fbc || participant.fbp)) {
+      const payload = {
+        ...(participant.fbc ? { fbc: participant.fbc } : {}),
+        ...(participant.fbp ? { fbp: participant.fbp } : {}),
+      };
+      await upsertFBDataOnLead(participant.leadId, eventSlug, payload);
+    }
   } catch (error) {
-    console.log("Failed to notify new participant");
+    console.log("Failed to run optional flows on new participant");
     console.error(error);
   }
 
