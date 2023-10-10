@@ -30,12 +30,27 @@ const EventSchema = new Schema(
         default: null,
       },
     },
+    active: {
+      type: Boolean,
+      required: true,
+      default: true,
+    },
+    startAt: {
+      type: Date,
+      required: false,
+      default: null,
+    },
+    endAt: {
+      type: Date,
+      required: false,
+      default: null,
+    },
   },
   {
     timestamps: true,
   },
 );
 
-type EventSchema = InferSchemaType<typeof EventSchema>;
+export type EventSchema = InferSchemaType<typeof EventSchema>;
 
 export const Event = model<EventSchema>("Event", EventSchema);

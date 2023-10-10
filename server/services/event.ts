@@ -1,17 +1,71 @@
 import { Event } from "../models/event";
 
-export async function getOrCreateEvent(eventSlug: string) {
+export interface CreateEventDTO {
+  name: string;
+  slug: string;
+  logo?: string;
+  queue?: {
+    participantsMax?: number;
+  };
+  startAt?: string | Date;
+  endAt?: string | Date;
+}
+
+export interface UpdateEventDTO {
+  name?: string;
+  startAt?: string | Date;
+  endAt?: string | Date;
+  logo?: string;
+  queue?: {
+    participantsMax?: number;
+  };
+  active?: boolean;
+}
+
+export async function getEventBySlug(
+  eventSlug: string,
+  activeOnly: boolean = true,
+  options: {
+    lean?: boolean;
+  } = {
+    lean: true,
+  },
+) {
+  return await Event.findOne(
+    {
+      slug: eventSlug,
+      ...(activeOnly ? { active: true } : {}),
+    },
+    null,
+    options,
+  );
+}
+
+export async function deleteEventBySlug(eventSlug: string) {
   return await Event.findOneAndUpdate(
     {
       slug: eventSlug,
     },
     {
-      slug: eventSlug,
+      active: false,
     },
     {
-      upsert: true,
       lean: true,
-      setDefaultsOnInsert: true,
     },
   );
+}
+
+export async function updateEventBySlug(
+  eventSlug: string,
+  data: UpdateEventDTO,
+) {
+  const event = await getEventBySlug(eventSlug, false, { lean: true });
+  if (!event) return null;
+
+  event.set(data);
+  return (await event.save()).toObject();
+}
+
+export async function createEvent(data: CreateEventDTO) {
+  return (await Event.create(data)).toObject();
 }

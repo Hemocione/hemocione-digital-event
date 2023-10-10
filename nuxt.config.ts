@@ -3,6 +3,7 @@ export default defineNuxtConfig({
     "inngest/nuxt": "inngest/nuxt.js",
   },
   runtimeConfig: {
+    secret: process.env.API_SECRET ?? "secret",
     mongodbUri:
       process.env.MONGODB_URI ?? "mongodb://admin:password@localhost:27017",
     dbName: process.env.DB_NAME ?? "hemo",
