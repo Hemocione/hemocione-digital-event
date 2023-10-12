@@ -44,6 +44,13 @@ function assertCreateEventDTO(body: any): asserts body is CreateEventDTO {
     });
   }
 
+  if ("banner" in body && typeof body.banner !== "string") {
+    throw createError({
+      statusCode: 422,
+      statusMessage: "Invalid banner",
+    });
+  }
+
   if ("queue" in body) {
     if (typeof body.queue !== "object" || body.queue === null) {
       throw createError({

@@ -4,11 +4,13 @@ export interface CreateEventDTO {
   name: string;
   slug: string;
   logo?: string;
+  banner?: string;
   queue?: {
     participantsMax?: number;
   };
   startAt?: string | Date;
   endAt?: string | Date;
+  description?: string;
 }
 
 export interface UpdateEventDTO {
@@ -16,10 +18,12 @@ export interface UpdateEventDTO {
   startAt?: string | Date;
   endAt?: string | Date;
   logo?: string;
+  banner?: string;
   queue?: {
     participantsMax?: number;
   };
   active?: boolean;
+  description?: string;
 }
 
 export async function getEventBySlug(

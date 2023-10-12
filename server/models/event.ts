@@ -18,6 +18,11 @@ const EventSchema = new Schema(
       required: false,
       default: null,
     },
+    banner: {
+      type: String,
+      required: false,
+      default: null,
+    },
     queue: {
       _id: {
         type: Types.ObjectId,
@@ -42,6 +47,11 @@ const EventSchema = new Schema(
     },
     endAt: {
       type: Date,
+      required: false,
+      default: null,
+    },
+    description: {
+      type: String,
       required: false,
       default: null,
     },
