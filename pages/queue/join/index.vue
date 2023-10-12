@@ -22,6 +22,8 @@ const { data: eventConfig } = shouldRedirect
   ? { data: undefined }
   : await useFetch(`/api/v1/event/${eventId}`);
 
+if (!eventConfig?.value) await navigateTo("/queue/not-found");
+
 const form = ref({
   phone: initialPhone,
   name: "",
