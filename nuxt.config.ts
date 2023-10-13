@@ -1,8 +1,14 @@
 export default defineNuxtConfig({
+  debug: true,
   alias: {
     "inngest/nuxt": "inngest/nuxt.js",
   },
   runtimeConfig: {
+    cdn: {
+      bucket: process.env.CDN_BUCKET ?? "hemocione-assets",
+      basePath: process.env.CDN_BASE_PATH ?? "events/uploads",
+      baseUrl: process.env.CDN_BASE_URL ?? "https://cdn.hemocione.com.br",
+    },
     secret: process.env.API_SECRET ?? "secret",
     mongodbUri:
       process.env.MONGODB_URI ?? "mongodb://admin:password@localhost:27017",
