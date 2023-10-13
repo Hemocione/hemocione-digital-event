@@ -1,5 +1,4 @@
 export default defineNuxtConfig({
-  debug: true,
   alias: {
     "inngest/nuxt": "inngest/nuxt.js",
   },
