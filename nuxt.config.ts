@@ -1,7 +1,4 @@
 export default defineNuxtConfig({
-  alias: {
-    "inngest/nuxt": "inngest/nuxt.js",
-  },
   runtimeConfig: {
     cdn: {
       bucket: process.env.CDN_BUCKET ?? "hemocione-assets",
