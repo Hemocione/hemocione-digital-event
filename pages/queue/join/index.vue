@@ -87,6 +87,7 @@ async function onSubmit() {
           placeholder="21981239876"
           :prefix-icon="ElIconPhone"
           :disabled="disablePhone"
+          maxlength="11"
         />
       </el-form-item>
       <el-form-item size="large" class="form-item">
