@@ -1,6 +1,10 @@
 <template>
   <div class="page index-page">
-    <img src="/images/logo-vertical-branca.svg" class="logo" alt="Hemocione Logo"/>
+    <NuxtImg
+      src="/images/logo-vertical-branca.svg"
+      class="logo"
+      alt="Hemocione Logo"
+    />
   </div>
 </template>
 

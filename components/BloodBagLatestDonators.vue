@@ -9,7 +9,7 @@
         :key="participant._id"
         class="participant"
       >
-        <img src="/images/logo.svg" alt="logo" class="participant-logo" />
+        <NuxtImg src="/images/logo.svg" alt="logo" class="participant-logo" />
         <span class="latest-participant-name">
           {{ participant.participant.name }}
         </span>
@@ -18,7 +18,7 @@
         </span>
       </li>
       <li v-for="index in toCompleteLines" :key="index" class="participant">
-        <img
+        <NuxtImg
           src="/images/logo-grey.svg"
           alt="grey logo"
           class="participant-logo"

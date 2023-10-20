@@ -3,18 +3,15 @@ const route = useRoute();
 const query = route.query;
 const { eventId, eventRef, leadId, uuid } = query;
 const shouldRedirect = !eventId;
-
 const showLayers = leadId && uuid;
 
 // TODO: read fbc and fbp -- need to install meta pixel (how?)
-// TODO: remove +55 and add mask to number!
+// TODO: add mask to number!
 // TODO: whatsapp instead of SMS
 
-const initialPhone = String(eventRef).startsWith("+55")
-  ? String(eventRef)
-  : `+55${eventRef ? String(eventRef) : ""}`;
+const initialPhone = eventRef ? String(eventRef) : "";
 
-const disablePhone = initialPhone.length === 14;
+const disablePhone = initialPhone.length === 11;
 
 if (shouldRedirect) await navigateTo("/queue/not-found");
 
@@ -33,7 +30,7 @@ const buttonLoading = ref(false);
 
 const allowClick = computed(() => {
   const { phone, name } = form.value;
-  return phone.length === 14 && name.length > 3;
+  return phone.length === 11 && name.length > 3;
 });
 
 async function onSubmit() {
@@ -75,7 +72,7 @@ async function onSubmit() {
 <template>
   <div class="page queue-join-page">
     <div class="event-header">
-      <img
+      <NuxtImg
         v-if="eventConfig?.logo"
         :src="eventConfig?.logo"
         class="event-logo"
@@ -86,9 +83,9 @@ async function onSubmit() {
       <el-form-item size="large" class="form-item">
         <el-input
           v-model="form.phone"
+          type="tel"
+          placeholder="21981239876"
           :prefix-icon="ElIconPhone"
-          placeholder="Telefone"
-          maxlength="14"
           :disabled="disablePhone"
         />
       </el-form-item>
@@ -113,9 +110,9 @@ async function onSubmit() {
       </el-form-item>
     </el-form>
     <div class="offered-by">
-      <img src="/images/logo-branca-normal.png" class="logo hemocione" />
+      <NuxtImg src="/images/logo-branca-normal.png" class="logo hemocione" />
       <el-icon-plus v-if="showLayers" class="plus-icon" />
-      <img v-if="showLayers" src="/images/logo-layers.svg" class="logo" />
+      <NuxtImg v-if="showLayers" src="/images/logo-layers.svg" class="logo" />
     </div>
   </div>
 </template>

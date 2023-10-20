@@ -1,11 +1,11 @@
 <template>
   <div class="bloodbag-wrapper">
-    <img
+    <NuxtImg
       src="/images/bloodbag-reverse.svg"
       alt="bloodbag-reversed-background"
       class="bloodbag-background"
     />
-    <img
+    <NuxtImg
       ref="bloodbag"
       src="/images/bloodbag-fillable.svg"
       alt="bloodbag"

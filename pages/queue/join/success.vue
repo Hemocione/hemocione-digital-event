@@ -1,6 +1,6 @@
 <template>
   <div class="page success-queue-join-page">
-    <img
+    <NuxtImg
       src="/images/logo-branca-normal.png"
       alt="Hemocione"
       class="hemo-logo"
