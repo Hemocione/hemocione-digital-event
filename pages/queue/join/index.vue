@@ -84,7 +84,7 @@ async function onSubmit() {
         <el-input
           v-model="form.phone"
           type="tel"
-          placeholder="21981239876"
+          placeholder="Insira seu telefone com DDD"
           :prefix-icon="ElIconPhone"
           :disabled="disablePhone"
           maxlength="11"
