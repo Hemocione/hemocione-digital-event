@@ -15,7 +15,12 @@ export default defineNuxtConfig({
       "https://us-east1-estande-digital.cloudfunctions.net/api",
     digitalStandApiSecret: process.env.DIGITAL_STAND_API_SECRET,
   },
-  modules: ["@element-plus/nuxt", "@nuxtjs/google-fonts", "@nuxt/image"],
+  modules: [
+    "@element-plus/nuxt",
+    "@nuxtjs/google-fonts",
+    "@nuxt/image",
+    "nuxt-vercel-analytics",
+  ],
   nitro: {
     preset: "vercel",
     plugins: ["~/server/plugins/mongoose.ts"],
