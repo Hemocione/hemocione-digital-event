@@ -61,6 +61,8 @@ const EventSchema = new Schema(
   },
 );
 
+EventSchema.index({ endAt: -1 });
+
 export type EventSchema = InferSchemaType<typeof EventSchema>;
 
 export const Event = model<EventSchema>("Event", EventSchema);
