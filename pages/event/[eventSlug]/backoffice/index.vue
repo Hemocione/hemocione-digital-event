@@ -23,6 +23,9 @@
 </template>
 
 <script setup lang="ts">
+definePageMeta({
+  layout: false,
+});
 const route = useRoute();
 // todo: get event from layers community and layersPortal integration
 const eventSlug = String(route.params.eventSlug);

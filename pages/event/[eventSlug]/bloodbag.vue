@@ -1,4 +1,7 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: false,
+});
 const route = useRoute();
 const eventSlug = route.params.eventSlug;
 const { data: eventConfig } = await useFetch(`/api/v1/event/${eventSlug}`);
@@ -101,7 +104,7 @@ onMounted(() => {
 }
 
 .latest-donators {
-  width: 30%;
+  width: 30% !important;
   height: 100%;
 }
 .bloodbag-page {

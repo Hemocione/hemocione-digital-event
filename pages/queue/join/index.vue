@@ -30,7 +30,7 @@ const buttonLoading = ref(false);
 
 const allowClick = computed(() => {
   const { phone, name } = form.value;
-  return phone.length === 11 && name.length > 3;
+  return phone.length === 11 && name.length > 2;
 });
 
 async function onSubmit() {
