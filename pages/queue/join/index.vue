@@ -3,7 +3,6 @@ const route = useRoute();
 const query = route.query;
 const { eventId, eventRef, leadId, uuid } = query;
 const shouldRedirect = !eventId;
-const showLayers = leadId && uuid;
 
 // TODO: read fbc and fbp -- need to install meta pixel (how?)
 // TODO: add mask to number!
@@ -110,11 +109,7 @@ async function onSubmit() {
         </el-button>
       </el-form-item>
     </el-form>
-    <div class="offered-by">
-      <NuxtImg src="/images/logo-branca-normal.png" class="logo hemocione" />
-      <el-icon-plus v-if="showLayers" class="plus-icon" />
-      <NuxtImg v-if="showLayers" src="/images/logo-layers.svg" class="logo" />
-    </div>
+    <NuxtImg src="/images/logo-white.svg" class="logo" />
   </div>
 </template>
 
@@ -159,16 +154,12 @@ h1 {
   align-items: center;
 }
 
-.hemocione {
-  padding-bottom: 2%;
-}
-
 .join-item {
   margin-bottom: 0;
 }
 
 .logo {
-  width: 50%;
+  height: 4rem;
 }
 
 .plus-icon {
@@ -178,8 +169,8 @@ h1 {
 .offered-by {
   display: flex;
   gap: 1rem;
-  flex-direction: column;
   width: 100%;
   align-items: center;
+  justify-content: space-around;
 }
 </style>
