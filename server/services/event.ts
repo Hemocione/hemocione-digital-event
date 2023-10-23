@@ -11,6 +11,11 @@ export interface CreateEventDTO {
   startAt?: string | Date;
   endAt?: string | Date;
   description?: string;
+  location?: {
+    address: string;
+    city: string;
+    state: string;
+  };
 }
 
 export interface UpdateEventDTO {
@@ -24,6 +29,11 @@ export interface UpdateEventDTO {
   };
   active?: boolean;
   description?: string;
+  location?: {
+    address: string;
+    city: string;
+    state: string;
+  };
 }
 
 export async function getEventBySlug(

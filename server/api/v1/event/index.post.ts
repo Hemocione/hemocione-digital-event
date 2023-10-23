@@ -23,14 +23,14 @@ function assertCreateEventDTO(body: any): asserts body is CreateEventDTO {
     });
   }
 
-  if ("startAt" in body && typeof body.startAt !== "string") {
+  if (typeof body.startAt !== "string") {
     throw createError({
       statusCode: 422,
       statusMessage: "Invalid startAt",
     });
   }
 
-  if ("endAt" in body && typeof body.endAt !== "string") {
+  if (typeof body.endAt !== "string") {
     throw createError({
       statusCode: 422,
       statusMessage: "Invalid endAt",
