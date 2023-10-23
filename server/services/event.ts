@@ -75,7 +75,10 @@ export async function createEvent(data: CreateEventDTO) {
 }
 
 const getEventsFromDBPromise = (filter: Record<string, unknown>) => {
-  return Event.find(filter)
+  return Event.find({
+    active: true,
+    ...filter,
+  })
     .select({
       _id: 1,
       name: 1,

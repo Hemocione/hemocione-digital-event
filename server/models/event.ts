@@ -5,7 +5,7 @@ const EventSchema = new Schema(
   {
     name: {
       type: String,
-      required: false,
+      required: true,
       default: null,
     },
     slug: {
@@ -32,7 +32,7 @@ const EventSchema = new Schema(
       participantsMax: {
         type: Number,
         required: false,
-        default: null,
+        default: 140,
       },
     },
     active: {
@@ -40,15 +40,30 @@ const EventSchema = new Schema(
       required: true,
       default: true,
     },
+    location: {
+      type: {
+        address: {
+          type: String,
+          required: true,
+        },
+        city: {
+          type: String,
+          required: true,
+        },
+        state: {
+          type: String,
+          required: true,
+        },
+      },
+      required: false,
+    },
     startAt: {
       type: Date,
-      required: false,
-      default: null,
+      required: true,
     },
     endAt: {
       type: Date,
-      required: false,
-      default: null,
+      required: true,
     },
     description: {
       type: String,
