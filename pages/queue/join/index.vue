@@ -1,4 +1,7 @@
 <script setup lang="ts">
+definePageMeta({
+  layout: "no-scroll",
+});
 const route = useRoute();
 const query = route.query;
 const { eventId, eventRef, leadId, uuid } = query;
@@ -121,6 +124,7 @@ async function onSubmit() {
   flex-direction: column;
   justify-content: space-between;
   gap: 1rem;
+  height: 100%;
 }
 
 .event-header {

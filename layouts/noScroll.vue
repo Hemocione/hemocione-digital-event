@@ -9,13 +9,13 @@
 
 <style scoped>
 .layout {
-  min-height: 100dvh;
+  height: 100dvh;
   width: 100%;
 }
 
 .page {
   padding: 1rem 2rem;
   width: 100%;
-  min-height: 90dvh;
+  height: 90vh;
 }
 </style>

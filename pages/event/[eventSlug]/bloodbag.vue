@@ -108,7 +108,8 @@ onMounted(() => {
   height: 100%;
 }
 .bloodbag-page {
-  height: 100%;
+  height: 100dvh;
+  width: 100%;
   background-color: var(--hemo-color-secondary);
   padding: 3rem;
   display: flex;

@@ -13,6 +13,9 @@
   </div>
 </template>
 <script setup lang="ts">
+definePageMeta({
+  layout: "no-scroll",
+});
 const route = useRoute();
 const { name, leadId, uuid } = route.query;
 
@@ -39,6 +42,7 @@ onMounted(() => {
   flex-direction: column;
   justify-content: center;
   gap: 2rem;
+  height: 100%;
 }
 
 .text-item {

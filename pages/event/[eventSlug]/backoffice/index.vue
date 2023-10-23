@@ -53,7 +53,7 @@ calledParticipants.value = await getCalledParticipants();
 
 <style scoped>
 .tabs-page {
-  min-height: 100%;
+  min-height: 100dvh;
   background-color: var(--hemo-color-secondary);
 }
 .tabs {
