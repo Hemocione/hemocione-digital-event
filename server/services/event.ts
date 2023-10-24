@@ -73,7 +73,7 @@ export async function updateEventBySlug(
   eventSlug: string,
   data: UpdateEventDTO,
 ) {
-  const event = await getEventBySlug(eventSlug, false, { lean: true });
+  const event = await getEventBySlug(eventSlug, false, { lean: false });
   if (!event) return null;
 
   event.set(data);
