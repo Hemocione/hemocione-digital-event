@@ -16,6 +16,6 @@
 .page {
   padding: 1rem 2rem;
   width: 100%;
-  height: 90vh;
+  height: 90dvh;
 }
 </style>
