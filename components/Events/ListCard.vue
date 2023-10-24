@@ -38,7 +38,7 @@ const props = defineProps<{
     city: string;
     state: string;
   };
-  eventDate: Date;
+  eventDate: string;
 }>();
 
 const monthMinimalText = [
@@ -62,12 +62,14 @@ const addressText = computed(() => {
   return `${address} - ${city}, ${state}`;
 });
 
+const eventDateAsDate = computed(() => new Date(props.eventDate));
+
 const humanReadableMonth = computed(() => {
-  const monthNumber = props.eventDate.getMonth();
+  const monthNumber = eventDateAsDate.value.getMonth();
   return monthMinimalText[monthNumber];
 });
 
-const day = computed(() => props.eventDate.getDay());
+const day = computed(() => eventDateAsDate.value.getDate());
 </script>
 
 <style scoped>

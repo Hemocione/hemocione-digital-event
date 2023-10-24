@@ -6,7 +6,7 @@
         v-for="event in currentEvents"
         :key="event._id"
         :name="event.name"
-        :event-date="new Date(event.startAt)"
+        :event-date="event.startAt"
         :location="event.location"
         :banner="event.banner"
       />
