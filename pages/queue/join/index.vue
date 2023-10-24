@@ -130,12 +130,14 @@ async function onSubmit() {
 .event-header {
   display: flex;
   flex-direction: column;
+  align-items: center;
   gap: 1rem;
   width: 100%;
 }
 
 .event-logo {
   height: 4rem;
+  aspect-ratio: auto;
 }
 
 h1 {
