@@ -138,6 +138,7 @@ async function onSubmit() {
 .event-logo {
   height: 4rem;
   aspect-ratio: auto;
+  .border-radius: 1rem;
 }
 
 h1 {
