@@ -76,7 +76,7 @@ export async function updateEventBySlug(
   const event = await getEventBySlug(eventSlug, false, { lean: false });
   if (!event) return null;
 
-  event.set(data);
+  event.set({ ...data, queue: { ...event.queue, ...data.queue } });
   return (await event.save()).toObject();
 }
 
