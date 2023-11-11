@@ -14,8 +14,8 @@
 }
 
 .page {
-  padding: 1rem 2rem;
+  padding: 1rem;
   width: 100%;
-  height: 90dvh;
+  height: 93dvh;
 }
 </style>

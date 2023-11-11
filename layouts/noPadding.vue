@@ -16,5 +16,6 @@
 .page {
   width: 100%;
   min-height: 93dvh;
+  padding: 0;
 }
 </style>

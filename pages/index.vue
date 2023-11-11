@@ -1,5 +1,5 @@
 <template>
-  <div class="event-page">
+  <div class="events-page">
     <h1 class="events-title">Eventos</h1>
     <div v-if="currentEvents?.length" class="events-wrapper">
       <EventsListCard
@@ -9,6 +9,7 @@
         :event-date="event.startAt"
         :location="event.location"
         :banner="event.banner"
+        @click="goToEventPage(event.slug)"
       />
     </div>
     <div v-else class="no-events-wrapper">
@@ -35,9 +36,31 @@
 
 <script setup lang="ts">
 const { data: currentEvents } = await useFetch("/api/v1/event");
+const router = useRouter();
+const goToEventPage = (eventSlug: string) => {
+  router.push(`/event/${eventSlug}`);
+};
+
+definePageMeta({
+  middleware(_to, from) {
+    if (
+      typeof from.meta.pageTransition === "object" &&
+      from.meta.pageTransition.name === "slide-fade-left"
+    ) {
+      from.meta.pageTransition = {
+        name: "slide-fade-right",
+        mode: "out-in",
+        appear: true,
+      };
+    }
+  },
+});
 </script>
 
 <style scoped>
+.events-page {
+  padding: 1rem;
+}
 .events-title {
   margin: 0;
   padding: 0;

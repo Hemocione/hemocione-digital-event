@@ -17,14 +17,10 @@
       </span>
     </div>
     <div class="bottom-wrapper">
-      <div class="date-wrap">
-        <span class="month">{{ humanReadableMonth }}</span>
-        <span class="day">{{ day }}</span>
-      </div>
-      <!-- UNCOMMENT WHEN CLICKABLE -->
-      <!-- <el-icon class="arrow-icon">
+      <MicroDateBox :date="eventDate" />
+      <el-icon class="arrow-icon">
         <ElIconArrowRightBold />
-      </el-icon> -->
+      </el-icon>
     </div>
   </div>
 </template>
@@ -41,35 +37,11 @@ const props = defineProps<{
   eventDate: string;
 }>();
 
-const monthMinimalText = [
-  "JAN",
-  "FEV",
-  "MAR",
-  "ABR",
-  "MAI",
-  "JUN",
-  "JUL",
-  "AGO",
-  "SET",
-  "OUT",
-  "NOV",
-  "DEZ",
-] as const;
-
 const addressText = computed(() => {
   if (!props.location) return null;
   const { address, city, state } = props.location;
   return `${address} - ${city}, ${state}`;
 });
-
-const eventDateAsDate = computed(() => new Date(props.eventDate));
-
-const humanReadableMonth = computed(() => {
-  const monthNumber = eventDateAsDate.value.getMonth();
-  return monthMinimalText[monthNumber];
-});
-
-const day = computed(() => eventDateAsDate.value.getDate());
 </script>
 
 <style scoped>

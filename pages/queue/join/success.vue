@@ -18,6 +18,9 @@ definePageMeta({
 });
 const route = useRoute();
 const { name, leadId, uuid } = route.query;
+useHead({
+  title: `Parabéns ${name}! Obrigado por doar :)`,
+});
 
 onMounted(() => {
   if (!leadId || !uuid) return;

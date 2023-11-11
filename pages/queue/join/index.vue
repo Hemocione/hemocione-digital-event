@@ -2,6 +2,7 @@
 definePageMeta({
   layout: "no-scroll",
 });
+
 const route = useRoute();
 const query = route.query;
 const { eventId, eventRef, leadId, uuid } = query;
@@ -21,6 +22,9 @@ const { data: eventConfig } = shouldRedirect
   ? { data: undefined }
   : await useFetch(`/api/v1/event/${eventId}`);
 
+useHead({
+  title: `Fila de Doação Hemocione | ${eventConfig?.value?.name ?? eventId}`,
+});
 if (!eventConfig?.value) await navigateTo("/queue/not-found");
 
 const form = ref({
