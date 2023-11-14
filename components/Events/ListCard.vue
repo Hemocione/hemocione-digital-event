@@ -1,5 +1,5 @@
 <template>
-  <div class="event-card">
+  <NuxtLink class="event-card" :to="`/event/${slug}`">
     <NuxtImg
       fit="inside"
       :src="banner || '/images/illustrations/rafiki-blood-donation.svg'"
@@ -22,7 +22,7 @@
         <ElIconArrowRightBold />
       </el-icon>
     </div>
-  </div>
+  </NuxtLink>
 </template>
 
 <script setup lang="ts">
@@ -35,6 +35,7 @@ const props = defineProps<{
     state: string;
   };
   eventDate: string;
+  slug: string;
 }>();
 
 const addressText = computed(() => {

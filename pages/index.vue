@@ -9,7 +9,7 @@
         :event-date="event.startAt"
         :location="event.location"
         :banner="event.banner"
-        @click="goToEventPage(event.slug)"
+        :slug="event.slug"
       />
     </div>
     <div v-else class="no-events-wrapper">
@@ -36,11 +36,6 @@
 
 <script setup lang="ts">
 const { data: currentEvents } = await useFetch("/api/v1/event");
-const router = useRouter();
-const goToEventPage = (eventSlug: string) => {
-  router.push(`/event/${eventSlug}`);
-};
-
 definePageMeta({
   name: "EventsListPage",
   middleware(_to, from) {

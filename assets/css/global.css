@@ -30,6 +30,7 @@ body {
   color: var(--hemo-color-secondary);
   margin: 0;
   padding: 0;
+  overflow-x: hidden;
   font-family:
     "Roboto",
     monospace,
@@ -55,5 +56,9 @@ body {
 
 * {
   box-sizing: border-box;
+}
+
+a {
+  all: unset;
 }
 
