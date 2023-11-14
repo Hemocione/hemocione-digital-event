@@ -1,5 +1,8 @@
 export default defineNuxtConfig({
   runtimeConfig: {
+    public: {
+      googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY ?? "mock-key",
+    },
     cdn: {
       bucket: process.env.CDN_BUCKET ?? "hemocione-assets",
       basePath: process.env.CDN_BASE_PATH ?? "events/uploads",

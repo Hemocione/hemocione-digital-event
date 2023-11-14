@@ -39,6 +39,12 @@
             {{ addressText }}
           </span>
         </div>
+        <h1 style="margin: 0; padding-top: 1rem">Localização</h1>
+        <GoogleMapsAddress
+          v-if="addressText"
+          class="map"
+          :address="addressText"
+        />
       </div>
     </section>
   </div>
@@ -53,14 +59,14 @@ definePageMeta({
   name: "EventPage",
   scrollToTop: true,
   middleware(to, from) {
-    if (to.name === "EventsListPage") {
+    if (from.name === "EventsListPage") {
       to.meta.pageTransition = {
-        name: "slide-right",
+        name: "slide-left",
         mode: "out-in",
         appear: true,
       };
       from.meta.pageTransition = {
-        name: "slide-right",
+        name: "slide-left",
         mode: "in-out",
         appear: true,
       };
@@ -133,6 +139,11 @@ useServerSeoMeta({
 </script>
 
 <style scoped>
+.map {
+  width: 100%;
+  aspect-ratio: 16/9;
+  border-radius: 1rem;
+}
 .arrow-left {
   position: absolute;
   top: 1rem;
@@ -177,7 +188,7 @@ useServerSeoMeta({
 }
 
 .extra-info-text {
-  font-size: 1.3rem;
+  font-size: 1rem;
 }
 
 .event-page {
@@ -190,7 +201,7 @@ useServerSeoMeta({
 
 .event-banner {
   width: 100%;
-  aspect-ratio: 28/15;
+  aspect-ratio: 2/1;
 }
 
 .event-header {
