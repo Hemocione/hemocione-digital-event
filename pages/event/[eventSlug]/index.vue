@@ -13,7 +13,7 @@
         class="event-banner"
       />
       <div class="event-header">
-        <h1>
+        <h1 class="text-heading">
           {{ eventConfig?.name }}
         </h1>
         <MicroDateBox
@@ -39,12 +39,18 @@
             {{ addressText }}
           </span>
         </div>
-        <h1 style="margin: 0; padding-top: 1rem">Localização</h1>
-        <GoogleMapsAddress
-          v-if="addressText"
-          class="map"
-          :address="addressText"
-        />
+      </div>
+      <h1 style="padding: 1rem" class="text-heading">Localização</h1>
+      <GoogleMapsAddress
+        v-if="addressText"
+        class="map"
+        :address="addressText"
+      />
+      <div class="map-subtitle">
+        <h2 class="text-subheading">
+          {{ eventConfig?.name }}
+        </h2>
+        <span>{{ addressText }}</span>
       </div>
     </section>
   </div>
@@ -128,9 +134,15 @@ useServerSeoMeta({
     eventConfig.value?.name ?? eventConfig.value?.slug
   } | Hemocione Eventos`,
   description:
-    eventConfig.value?.description ?? `Evento de doação de sangue do Hemocione`,
+    eventConfig.value?.description ??
+    `Evento de doação de sangue do Hemocione - ${
+      eventConfig.value?.name ?? eventConfig.value?.slug
+    }`,
   ogDescription:
-    eventConfig.value?.description ?? `Evento de doação de sangue do Hemocione`,
+    eventConfig.value?.description ??
+    `Evento de doação de sangue do Hemocione - ${
+      eventConfig.value?.name ?? eventConfig.value?.slug
+    }`,
   ogImage:
     eventConfig.value?.banner ??
     "https://cdn.discordapp.com/attachments/757012940804194367/1150223307472384122/Horizontal-Cor-FP.png",
@@ -140,9 +152,19 @@ useServerSeoMeta({
 
 <style scoped>
 .map {
+  max-width: 100%;
+  aspect-ratio: 3/1;
+}
+
+.map-subtitle {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  gap: 0.5rem;
+  padding: 1rem;
   width: 100%;
-  aspect-ratio: 16/9;
-  border-radius: 1rem;
 }
 .arrow-left {
   position: absolute;
@@ -171,6 +193,7 @@ useServerSeoMeta({
   color: var(--hemo-color-text-secondary);
   justify-self: center;
   position: relative;
+  padding-bottom: 1rem;
 }
 
 .event-content {
@@ -212,12 +235,17 @@ useServerSeoMeta({
   gap: 1rem;
 }
 
-.event-header h1 {
+.text-heading {
   margin: 0;
   max-width: 80%;
   font-size: 2rem;
 }
 
+.text-subheading {
+  margin: 0;
+  padding: 0;
+  font-size: 1.5rem;
+}
 .icon {
   width: 10%;
   max-width: 2rem;
@@ -228,8 +256,16 @@ useServerSeoMeta({
 @media (min-width: 1080px) {
   .event-details {
     border: 1px solid var(--hemo-color-border);
-    box-shadow: 0 0 1rem rgba(33, 33, 33, 0.2);
-    border-radius: 1rem;
+    box-shadow: 0.5rem 0.5rem 0.5rem rgba(33, 33, 33, 0.5);
+    border-radius: 1rem !important;
+  }
+
+  .event-banner {
+    border-radius: 1rem 1rem 0 0;
+  }
+
+  .event-page {
+    padding-bottom: 1rem;
   }
 }
 </style>
