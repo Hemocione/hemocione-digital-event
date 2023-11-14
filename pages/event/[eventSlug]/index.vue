@@ -153,7 +153,7 @@ useServerSeoMeta({
 <style scoped>
 .map {
   max-width: 100%;
-  aspect-ratio: 3/1;
+  aspect-ratio: 2/1;
 }
 
 .map-subtitle {
