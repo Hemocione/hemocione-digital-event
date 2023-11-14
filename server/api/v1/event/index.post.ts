@@ -16,13 +16,6 @@ function assertCreateEventDTO(body: any): asserts body is CreateEventDTO {
     });
   }
 
-  if (typeof body.slug !== "string") {
-    throw createError({
-      statusCode: 422,
-      statusMessage: "Invalid slug",
-    });
-  }
-
   if (typeof body.startAt !== "string") {
     throw createError({
       statusCode: 422,
