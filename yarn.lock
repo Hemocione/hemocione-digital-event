@@ -6863,7 +6863,7 @@ nuxt-vercel-analytics@^0.2.2:
     "@vercel/analytics" "^1.0.0"
     defu "^6.1.2"
 
-nuxt@^3.8.1:
+nuxt@^3.7.1:
   version "3.8.1"
   resolved "https://registry.yarnpkg.com/nuxt/-/nuxt-3.8.1.tgz#3afc2c2d6195df45b6028cc41b9164d89f840130"
   integrity sha512-RSGO56Gv0x2f6AXWw4o4GoBaVdsD0qkPCjrX7Ud/jzH3cRJoyYMPuq/9AOLvf2o1ecZWl39j5elqJ4QHmggyOA==
