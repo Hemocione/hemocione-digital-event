@@ -38,6 +38,7 @@
     "nuxt": "^3.7.1",
     "nuxt-vercel-analytics": "^0.2.2",
     "prettier": "^3.0.3",
+    "slugify": "^1.6.6",
     "typescript": "^5.2.2"
   }
 }

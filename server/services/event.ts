@@ -1,8 +1,8 @@
+import slugify from "slugify";
 import { Event } from "../models/event";
 
 export interface CreateEventDTO {
   name: string;
-  slug: string;
   logo?: string;
   banner?: string;
   queue?: {
@@ -81,7 +81,13 @@ export async function updateEventBySlug(
 }
 
 export async function createEvent(data: CreateEventDTO) {
-  return (await Event.create(data)).toObject();
+  const slug = slugify(data.name, {
+    lower: true,
+    strict: true,
+    locale: "pt",
+  });
+
+  return (await Event.create({ ...data, slug })).toObject();
 }
 
 const getEventsFromDBPromise = (filter: Record<string, unknown>) => {
