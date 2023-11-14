@@ -43,13 +43,8 @@ const goToEventPage = (eventSlug: string) => {
 
 definePageMeta({
   name: "EventsListPage",
-  middleware(to, from) {
+  middleware(_to, from) {
     if (from.name === "EventPage") {
-      to.meta.pageTransition = {
-        name: "slide-right",
-        mode: "out-in",
-        appear: true,
-      };
       from.meta.pageTransition = {
         name: "slide-right",
         mode: "out-in",
