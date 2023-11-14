@@ -145,7 +145,7 @@ useServerSeoMeta({
     }`,
   ogImage:
     eventConfig.value?.banner ??
-    "https://cdn.discordapp.com/attachments/757012940804194367/1150223307472384122/Horizontal-Cor-FP.png",
+    "https://cdn.hemocione.com.br/events/uploads/1699940076138-logo_hemocione_fb-2(1).png",
   twitterCard: "summary_large_image",
 });
 </script>

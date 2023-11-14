@@ -12,11 +12,11 @@ useServerSeoMeta({
   title: "Hemocione Eventos",
   ogTitle: "Hemocione Eventos",
   description:
-    "Hemocione Eventos é um aplicativo de gerenciamento de eventos de doação de sangue. Utilize-o para gerenciar as filas de doação de sangue de seus eventos e muito mais!",
+    "Encontre eventos de doação de sangue próximos a você e ajude a salvar vidas!",
   ogDescription:
-    "Hemocione Eventos é um aplicativo de gerenciamento de eventos de doação de sangue. Utilize-o para gerenciar as filas de doação de sangue de seus eventos e muito mais!",
+    "Encontre eventos de doação de sangue próximos a você e ajude a salvar vidas!",
   ogImage:
-    "https://cdn.discordapp.com/attachments/757012940804194367/1150223307472384122/Horizontal-Cor-FP.png",
+    "https://cdn.hemocione.com.br/events/uploads/1699940076138-logo_hemocione_fb-2(1).png",
   twitterCard: "summary_large_image",
   viewport:
     "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no",
