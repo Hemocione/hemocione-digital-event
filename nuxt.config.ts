@@ -39,12 +39,12 @@ export default defineNuxtConfig({
   },
   app: {
     pageTransition: {
-      name: "slide-fade-right",
+      name: "slide-left",
       mode: "out-in",
       appear: true,
     },
     layoutTransition: {
-      name: "slide-fade-right",
+      name: "slide-left",
       mode: "out-in",
     },
   },

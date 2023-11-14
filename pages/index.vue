@@ -42,13 +42,16 @@ const goToEventPage = (eventSlug: string) => {
 };
 
 definePageMeta({
-  middleware(_to, from) {
-    if (
-      typeof from.meta.pageTransition === "object" &&
-      from.meta.pageTransition.name === "slide-fade-left"
-    ) {
+  name: "EventsListPage",
+  middleware(to, from) {
+    if (from.name === "EventPage") {
+      to.meta.pageTransition = {
+        name: "slide-right",
+        mode: "out-in",
+        appear: true,
+      };
       from.meta.pageTransition = {
-        name: "slide-fade-right",
+        name: "slide-right",
         mode: "out-in",
         appear: true,
       };
