@@ -7,6 +7,7 @@
     loading="lazy"
     allowfullscreen
     referrerpolicy="no-referrer-when-downgrade"
+    :title="`Google Maps - ${props.address}`"
   >
   </iframe>
 </template>

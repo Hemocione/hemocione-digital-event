@@ -12,6 +12,7 @@
           '/images/illustrations/rafiki-blood-donation.svg'
         "
         class="event-banner"
+        :alt="`Banner - ${eventConfig?.name}`"
       />
       <div class="event-header">
         <h1 class="text-heading">

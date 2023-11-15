@@ -18,7 +18,6 @@ useServerSeoMeta({
   ogImage:
     "https://cdn.hemocione.com.br/events/uploads/1699940076138-logo_hemocione_fb-2(1).png",
   twitterCard: "summary_large_image",
-  viewport:
-    "width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no",
+  viewport: "width=device-width, initial-scale=1.0, maximum-scale=1.0",
 });
 </script>

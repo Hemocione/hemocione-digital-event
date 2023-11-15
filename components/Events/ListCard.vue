@@ -5,6 +5,7 @@
       fit="inside"
       :src="banner || '/images/illustrations/rafiki-blood-donation.svg'"
       :class="banner ? 'card-header-image' : 'card-header-image-default'"
+      :alt="`Banner - ${name}`"
     />
     <h2 class="event-name">
       {{ name }}
