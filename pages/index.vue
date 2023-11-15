@@ -60,6 +60,7 @@ definePageMeta({
   font-size: 3rem;
   font-weight: bold;
   padding-bottom: 1rem;
+  letter-spacing: 0.2rem;
 }
 /* this will be a grid */
 .events-wrapper {
