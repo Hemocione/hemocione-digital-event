@@ -6,6 +6,7 @@
       </ElIcon>
       <NuxtImg
         fit="inside"
+        :format="eventConfig?.banner ? 'webp' : undefined"
         :src="
           eventConfig?.banner ||
           '/images/illustrations/rafiki-blood-donation.svg'

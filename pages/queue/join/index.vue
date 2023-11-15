@@ -80,6 +80,7 @@ async function onSubmit() {
     <div class="event-header">
       <NuxtImg
         v-if="eventConfig?.logo"
+        format="webp"
         :src="eventConfig?.logo"
         class="event-logo"
       />

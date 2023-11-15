@@ -1,6 +1,7 @@
 <template>
   <NuxtLink class="event-card" :to="`/event/${slug}`">
     <NuxtImg
+      :format="banner ? 'webp' : undefined"
       fit="inside"
       :src="banner || '/images/illustrations/rafiki-blood-donation.svg'"
       :class="banner ? 'card-header-image' : 'card-header-image-default'"

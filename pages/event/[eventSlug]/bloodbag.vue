@@ -30,24 +30,33 @@ onMounted(() => {
 <template>
   <div class="bloodbag-page">
     <div class="logos">
-      <NuxtImg src="/images/logo-vertical-principal.png" alt="hemocione-logo" />
+      <NuxtImg
+        format="webp"
+        src="/images/logo-vertical-principal.png"
+        alt="hemocione-logo"
+      />
       <NuxtImg
         v-if="eventConfig?.logo"
+        format="webp"
         :src="eventConfig?.logo"
         alt="event-logo"
       />
     </div>
     <div class="social-media">
       <div class="social-network">
-        <NuxtImg src="/images/social/instagram.png" alt="instagram" />
+        <NuxtImg
+          format="webp"
+          src="/images/social/instagram.png"
+          alt="instagram"
+        />
         <span>@hemocione</span>
       </div>
       <div class="social-network">
-        <NuxtImg src="/images/social/globo.png" alt="web" />
+        <NuxtImg format="webp" src="/images/social/globo.png" alt="web" />
         <span>www.hemocione.com.br</span>
       </div>
       <div class="social-network">
-        <NuxtImg src="/images/social/mail.png" alt="email" />
+        <NuxtImg format="webp" src="/images/social/mail.png" alt="email" />
         <span>contato@hemocione.com.br</span>
       </div>
     </div>
