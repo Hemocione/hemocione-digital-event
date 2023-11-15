@@ -139,3 +139,33 @@ export async function getEvents(oldEvents: boolean = false) {
   });
   return events;
 }
+
+const allActiveEventsCache:
+  | {
+      generatedAt: Date;
+      data: EventsFromDb;
+    }
+  | {
+      generatedAt: null;
+      data: null;
+    } = {
+  generatedAt: null,
+  data: null,
+};
+
+const ALL_ACTIVE_EVENTS_CACHE_TTL = 1000 * 60 * 60 * 6; // 6 hours
+
+export async function getAllActiveEvents() {
+  const cached = allActiveEventsCache;
+  if (
+    cached.generatedAt &&
+    cached.generatedAt.getTime() + ALL_ACTIVE_EVENTS_CACHE_TTL >= Date.now()
+  ) {
+    return cached.data;
+  }
+
+  const events = await getEvents(false);
+  cached.generatedAt = new Date();
+  cached.data = events;
+  return events;
+}

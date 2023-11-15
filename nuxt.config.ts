@@ -23,6 +23,7 @@ export default defineNuxtConfig({
     "@nuxtjs/google-fonts",
     "@nuxt/image",
     "nuxt-vercel-analytics",
+    "@nuxtseo/module",
   ],
   nitro: {
     preset: "vercel",
@@ -50,5 +51,23 @@ export default defineNuxtConfig({
       name: "slide-left",
       mode: "out-in",
     },
+  },
+  sitemap: {
+    cacheMaxAgeSeconds: 2160, // 6 hours
+    sources: ["/api/__sitemap__/eventUrls"],
+    exclude: ["/queue/**"],
+  },
+  site: {
+    url: "https://eventos.hemocione.com.br",
+    name: "Hemocione Eventos",
+    description: "Eventos de Doação de Sangue do Hemocione",
+    defaultLocale: "pt-BR",
+    identity: {
+      type: "Organization",
+    },
+    email: "contato@hemocione.com.br",
+    twitter: "@hemocione",
+    facebook: "hemocione",
+    instagram: "@hemocione",
   },
 });
