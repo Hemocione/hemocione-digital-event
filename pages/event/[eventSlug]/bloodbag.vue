@@ -40,6 +40,7 @@ onMounted(() => {
         format="webp"
         :src="eventConfig?.logo"
         alt="event-logo"
+        class="event-logo"
       />
     </div>
     <div class="social-media">
@@ -81,6 +82,10 @@ onMounted(() => {
 
 .logos img {
   width: 10rem;
+}
+
+.event-logo {
+  border-radius: 25%;
 }
 
 .social-media {
