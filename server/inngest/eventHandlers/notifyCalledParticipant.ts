@@ -17,6 +17,7 @@ export const eventName = "notify/participant.called";
 export default inngest.createFunction(
   {
     name: "Notify Participant Called Handler",
+    id: "notify-participant-called-handler",
   },
   {
     event: eventName,

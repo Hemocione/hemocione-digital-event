@@ -36,6 +36,7 @@ const handleAndGenerateMessageBasedOnPosition = async (
 export default inngest.createFunction(
   {
     name: "Notify New Participant Handler",
+    id: "notify-new-participant-handler",
   },
   {
     event: eventName,

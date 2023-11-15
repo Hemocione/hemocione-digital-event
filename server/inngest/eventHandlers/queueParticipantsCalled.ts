@@ -13,6 +13,7 @@ export const eventName = "event/participants.called";
 export default inngest.createFunction(
   {
     name: "Participants Called Handler",
+    id: "participants-called-handler",
   },
   {
     event: eventName,

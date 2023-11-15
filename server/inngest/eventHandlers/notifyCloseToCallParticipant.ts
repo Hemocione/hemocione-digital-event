@@ -15,6 +15,7 @@ export const eventName = "notify/participant.closeToCall";
 export default inngest.createFunction(
   {
     name: "Notify Participant Close To Call Handler",
+    id: "notify-participant-close-to-call-handler",
   },
   {
     event: eventName,
