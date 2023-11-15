@@ -124,56 +124,53 @@ const addressText = computed(() => {
 // TODO: performer = banco de sangue
 // REF: https://developers.google.com/search/docs/appearance/structured-data/event
 useHead({
-  script: [
-    {
-      type: "application/ld+json",
-      textContent: JSON.stringify({
-        "@context": "https://schema.org",
-        "@type": "Event",
-        name: eventConfig.value?.name,
-        startDate: eventConfig.value?.startAt,
-        endDate: eventConfig.value?.endAt,
-        eventAttendanceMode: "https://schema.org/OfflineEventAttendanceMode",
-        eventStatus: "https://schema.org/EventScheduled",
-        location: [
-          {
-            "@type": "VirtualLocation",
-            url: `https://eventos.hemocione.com.br/event/${eventConfig.value?.slug}`,
-          },
-          {
-            "@type": "Place",
-            name: eventConfig.value?.name,
-            address: {
-              "@type": "PostalAddress",
-              streetAddress: eventConfig.value?.location?.address,
-              addressLocality: eventConfig.value?.location?.city,
-              addressRegion: eventConfig.value?.location?.state,
-              addressCountry: "BR",
-            },
-          },
-        ],
-        image: [
-          eventConfig.value?.banner ??
-            "https://cdn.hemocione.com.br/events/uploads/1699940076138-logo_hemocione_fb-2(1).png",
-        ],
-        description:
-          eventConfig.value?.description ??
-          `Evento de doação de sangue do Hemocione - ${
-            eventConfig.value?.name ?? eventConfig.value?.slug
-          }`,
-        organizer: {
-          "@type": "Organization",
-          name: "Hemocione",
-          url: "https://hemocione.com.br",
-          logo: "https://cdn.hemocione.com.br/events/uploads/1699940076138-logo_hemocione_fb-2(1).png",
-        },
-      }),
-    },
-  ],
   title: `${
     eventConfig.value?.name ?? eventConfig.value?.slug
   } | Hemocione Eventos`,
 });
+useSchemaOrg([
+  defineEvent({
+    name: eventConfig.value?.name,
+    startDate: eventConfig.value?.startAt,
+    endDate: eventConfig.value?.endAt,
+    eventAttendanceMode: "OfflineEventAttendanceMode",
+    eventStatus: "EventScheduled",
+    location: [
+      {
+        "@type": "Place",
+        name: eventConfig.value?.name,
+        address: {
+          streetAddress: eventConfig.value?.location?.address,
+          addressLocality: eventConfig.value?.location?.city,
+          addressRegion: eventConfig.value?.location?.state,
+          addressCountry: "BR",
+        },
+      },
+    ],
+    image: [
+      eventConfig.value?.banner ??
+        "https://cdn.hemocione.com.br/events/uploads/1699940076138-logo_hemocione_fb-2(1).png",
+    ],
+    description:
+      eventConfig.value?.description ??
+      `Evento de doação de sangue do Hemocione - ${
+        eventConfig.value?.name ?? eventConfig.value?.slug
+      }`,
+    organizer: {
+      "@type": "Organization",
+      name: "Hemocione",
+      url: "https://hemocione.com.br",
+      logo: "https://cdn.hemocione.com.br/events/uploads/1699940076138-logo_hemocione_fb-2(1).png",
+    },
+    offers: {
+      price: 0,
+      priceCurrency: "BRL",
+      url: `https://eventos.hemocione.com.br/event/${eventConfig.value?.slug}`,
+      validFrom: eventConfig.value?.startAt,
+      validUntil: eventConfig.value?.endAt,
+    },
+  }),
+]);
 useServerSeoMeta({
   title: `${
     eventConfig.value?.name ?? eventConfig.value?.slug
