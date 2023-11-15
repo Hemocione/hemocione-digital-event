@@ -70,4 +70,10 @@ export default defineNuxtConfig({
     facebook: "hemocione",
     instagram: "@hemocione",
   },
+  image: {
+    domains: ["cdn.hemocione.com.br"],
+    alias: {
+      cdn: "https://cdn.hemocione.com.br",
+    },
+  },
 });
