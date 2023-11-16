@@ -88,16 +88,6 @@ const day = validDate ? validDate.getDate() : undefined;
 /* TODO: fix font */
 #wrapper {
   position: relative;
-  font-family:
-    "Roboto",
-    monospace,
-    -apple-system,
-    BlinkMacSystemFont,
-    "Segoe UI",
-    "Helvetica Neue",
-    Arial,
-    "Noto Sans",
-    sans-serif;
   background-color: #f2f2f2;
   color: #8a0000;
   width: 100%;
@@ -146,19 +136,19 @@ const day = validDate ? validDate.getDate() : undefined;
   gap: 0.25rem;
   padding: 0.5rem;
   border-radius: 1rem;
-  width: 4rem;
-  height: 5rem;
+  width: 6rem;
+  height: 8rem;
   text-align: center;
   background-color: #8a0000;
   color: #f2f2f2;
 }
 
 #month {
-  font-size: 1.1rem;
+  font-size: 1.5rem;
 }
 
 #day {
-  font-size: 2.2rem;
+  font-size: 3rem;
   font-weight: bold;
 }
 
