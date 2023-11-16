@@ -98,8 +98,8 @@ const day = validDate ? validDate.getDate() : undefined;
     Arial,
     "Noto Sans",
     sans-serif;
-  background-color: #f2f2f2; /* hemo-color-primary-dark */
-  color: #8a0000; /* hemo-color-text-primary */
+  background-color: #f2f2f2;
+  color: #8a0000;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -146,8 +146,8 @@ const day = validDate ? validDate.getDate() : undefined;
   gap: 0.25rem;
   padding: 0.5rem;
   border-radius: 1rem;
-  width: 5rem;
-  aspect-ratio: 4/5;
+  width: 4rem;
+  height: 5rem;
   text-align: center;
   background-color: #8a0000;
   color: #f2f2f2;
@@ -179,18 +179,10 @@ const day = validDate ? validDate.getDate() : undefined;
 
 #logo {
   height: 4rem;
-  aspect-ratio: 1/1;
+  width: 4rem;
   border-radius: 25%;
   box-shadow: 0 0 1rem rgba(33, 33, 33, 0.2);
   object-fit: contain;
-}
-
-#fake-rainbow-border {
-  width: 100%;
-  height: 20px;
-  position: absolute;
-  top: 40vh;
-  left: 0;
 }
 
 #hemocione-logo-wrapper {
