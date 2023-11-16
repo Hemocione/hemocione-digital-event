@@ -164,7 +164,7 @@ useSchemaOrg([
       url: "https://hemocione.com.br",
       logo: "https://cdn.hemocione.com.br/events/uploads/1699940076138-logo_hemocione_fb-2(1).png",
     },
-    perfomer: {
+    performer: {
       "@type": "Organization",
       name: "Hemocione",
       url: "https://hemocione.com.br",
