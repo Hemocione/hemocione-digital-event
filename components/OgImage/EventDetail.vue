@@ -1,13 +1,9 @@
 <template>
   <div id="wrapper">
-    <img
-      v-if="props.banner"
-      id="banner"
-      :src="props.banner"
-      alt="event-banner"
-      fit="cover"
-    />
-    <div id="hemocione-logo-wrapper" v-else>
+    <div v-if="props.banner" id="banner-wrapper">
+      <img id="banner" :src="props.banner" alt="event-banner" fit="cover" />
+    </div>
+    <div v-else id="hemocione-logo-wrapper">
       <img
         id="hemocione-logo"
         src="/images/logo-padrao.svg"
@@ -20,21 +16,20 @@
           <img v-if="props.logo" id="logo" :src="props.logo" alt="event-logo" />
           {{ props.title }}
         </h1>
-        <micro-date-box
-          v-if="props.startAt"
-          id="date-box"
-          :date="props.startAt"
-        />
+        <div v-if="props.startAt" id="date-box">
+          <span id="month">{{ humanReadableMonth }}</span>
+          <span id="day">{{ day }}</span>
+        </div>
       </div>
       <div id="details">
         <div v-if="timeText" id="time">
-          <ElIconCalendar id="time-icon" />
+          <img id="time-icon" src="/images/icons/calendar.svg" />
           <span>
             {{ timeText }}
           </span>
         </div>
         <div v-if="addressText" id="address">
-          <ElIconLocation id="address-icon" />
+          <img id="address-icon" src="/images/icons/map-marker.svg" />
           <span>
             {{ addressText }}
           </span>
@@ -44,11 +39,9 @@
   </div>
 </template>
 <script setup lang="ts">
-// inherited attrs can mess up the satori parser
 defineOptions({
   inheritAttrs: false,
 });
-
 const props = defineProps<{
   title: string;
   banner?: string | null;
@@ -58,6 +51,29 @@ const props = defineProps<{
   startAt?: string;
   logo?: string | null;
 }>();
+
+const monthMinimalText = [
+  "JAN",
+  "FEV",
+  "MAR",
+  "ABR",
+  "MAI",
+  "JUN",
+  "JUL",
+  "AGO",
+  "SET",
+  "OUT",
+  "NOV",
+  "DEZ",
+] as const;
+
+const validDate = props.startAt ? new Date(props.startAt) : undefined;
+
+const humanReadableMonth = validDate
+  ? monthMinimalText[validDate.getMonth()]
+  : undefined;
+
+const day = validDate ? validDate.getDate() : undefined;
 </script>
 
 <style scoped>
@@ -71,6 +87,7 @@ const props = defineProps<{
 }
 /* TODO: fix font */
 #wrapper {
+  position: relative;
   font-family:
     "Roboto",
     monospace,
@@ -100,34 +117,25 @@ const props = defineProps<{
   display: flex;
   flex-direction: column;
   gap: 1rem;
+  height: 60%;
+  width: 100%;
+  margin: 0;
 }
+
 #banner {
   width: 100%;
-  height: 40%;
+  height: 100%;
   padding: 0;
   margin: 0;
   object-fit: cover;
   object-position: bottom;
-  border: 20px solid;
-  border-image-slice: 1;
-  border-width: 10px;
-  border-image-source: linear-gradient(
-    90deg,
-    rgba(255, 0, 0, 1) 0%,
-    rgba(255, 154, 0, 1) 10%,
-    rgba(208, 222, 33, 1) 20%,
-    rgba(79, 220, 74, 1) 30%,
-    rgba(63, 218, 216, 1) 40%,
-    rgba(47, 201, 226, 1) 50%,
-    rgba(28, 127, 238, 1) 60%,
-    rgba(95, 21, 242, 1) 70%,
-    rgba(186, 12, 248, 1) 80%,
-    rgba(251, 7, 217, 1) 90%,
-    rgba(255, 0, 0, 1) 100%
-  );
-  border-top: 0;
-  border-left: 0;
-  border-right: 0;
+}
+
+#banner-wrapper {
+  padding: 0;
+  margin: 0;
+  width: 100%;
+  height: 40%;
 }
 
 #date-box {
@@ -145,12 +153,12 @@ const props = defineProps<{
   color: #f2f2f2;
 }
 
-#date-box :deep(.month) {
-  font-size: 2rem;
+#month {
+  font-size: 1.5rem;
 }
 
-#date-box :deep(.day) {
-  font-size: 3rem;
+#day {
+  font-size: 2.5rem;
   font-weight: bold;
 }
 
@@ -159,15 +167,14 @@ const props = defineProps<{
   flex-direction: column;
   gap: 1rem;
   width: 100%;
-  position: relative;
 }
 
 #time-icon,
 #address-icon {
-  width: 10%;
+  width: 3rem;
+  height: 3rem;
   max-width: 3rem;
   color: var(--hemo-color-primary);
-  font-size: 3rem;
 }
 
 #logo {
@@ -178,25 +185,25 @@ const props = defineProps<{
   object-fit: contain;
 }
 
+#fake-rainbow-border {
+  width: 100%;
+  height: 20px;
+  position: absolute;
+  top: 40vh;
+  left: 0;
+}
+
 #hemocione-logo-wrapper {
-  height: 30%;
+  height: 40%;
   width: 100%;
   padding: 1rem;
   background: radial-gradient(
     circle,
-    hsl(0deg 0% 0%) 0%,
-    hsl(0deg 76% 4%) 40%,
-    hsl(0deg 44% 6%) 58%,
-    hsl(0deg 28% 7%) 69%,
-    hsl(0deg 20% 9%) 78%,
-    hsl(0deg 16% 10%) 84%,
-    hsl(358deg 42% 17%) 89%,
-    hsl(358deg 57% 23%) 93%,
-    hsl(358deg 70% 29%) 96%,
-    hsl(358deg 80% 34%) 98%,
-    hsl(1deg 92% 38%) 100%
+    rgba(0, 0, 0, 1) 0%,
+    rgba(71, 0, 0, 1) 100%,
+    rgba(138, 0, 0, 1) 100%
   );
-
+  background-color: #181313;
   display: flex;
   align-items: center;
   justify-content: center;
