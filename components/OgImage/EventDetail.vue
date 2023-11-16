@@ -6,7 +6,7 @@
     <div v-else id="hemocione-logo-wrapper">
       <img
         id="hemocione-logo"
-        src="/images/logo-padrao.svg"
+        src="/images/logo-padrao.png"
         alt="hemocione-logo"
       />
     </div>
@@ -23,13 +23,13 @@
       </div>
       <div id="details">
         <div v-if="timeText" id="time">
-          <img id="time-icon" src="/images/icons/calendar.svg" />
+          <img id="time-icon" src="/images/icons/calendar.png" />
           <span>
             {{ timeText }}
           </span>
         </div>
         <div v-if="addressText" id="address">
-          <img id="address-icon" src="/images/icons/map-marker.svg" />
+          <img id="address-icon" src="/images/icons/map-marker.png" />
           <span>
             {{ addressText }}
           </span>
