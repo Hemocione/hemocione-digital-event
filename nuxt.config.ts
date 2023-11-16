@@ -79,4 +79,7 @@ export default defineNuxtConfig({
   experimental: {
     componentIslands: true,
   },
+  ogImage: {
+    fonts: ["Roboto:400"],
+  },
 });
