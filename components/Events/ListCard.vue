@@ -2,7 +2,7 @@
   <NuxtLink class="event-card" :to="`/event/${slug}`">
     <NuxtImg
       :format="banner ? 'webp' : undefined"
-      fit="inside"
+      fit="cover"
       :src="banner || '/images/illustrations/rafiki-blood-donation.svg'"
       :class="banner ? 'card-header-image' : 'card-header-image-default'"
       :alt="`Banner - ${name}`"
@@ -51,7 +51,7 @@ const addressText = computed(() => {
 .card-header-image,
 .card-header-image-default {
   width: 100%;
-  aspect-ratio: 28/15;
+  aspect-ratio: 2/1;
   border-radius: 0.5rem;
 }
 

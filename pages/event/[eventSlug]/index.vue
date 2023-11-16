@@ -5,7 +5,7 @@
         <ElIconArrowLeftBold />
       </ElIcon>
       <NuxtImg
-        fit="inside"
+        fit="cover"
         :format="eventConfig?.banner ? 'webp' : undefined"
         :src="
           eventConfig?.banner ||
@@ -190,11 +190,25 @@ useServerSeoMeta({
     `Evento de doação de sangue do Hemocione - ${
       eventConfig.value?.name ?? eventConfig.value?.slug
     }`,
-  ogImage:
-    eventConfig.value?.banner ??
-    "https://cdn.hemocione.com.br/events/uploads/1699940076138-logo_hemocione_fb-2(1).png",
   twitterCard: "summary_large_image",
 });
+
+const ogImageOptions = {
+  component: "EventDetail",
+  title: `${eventConfig.value?.name ?? eventConfig.value?.slug}`,
+  banner: eventConfig.value?.banner,
+  description:
+    eventConfig.value?.description ??
+    `Evento de doação de sangue do Hemocione - ${
+      eventConfig.value?.name ?? eventConfig.value?.slug
+    }`,
+  addressText,
+  timeText,
+  startAt: eventConfig.value?.startAt,
+  logo: eventConfig.value?.logo,
+};
+
+defineOgImage(ogImageOptions);
 </script>
 
 <style scoped>

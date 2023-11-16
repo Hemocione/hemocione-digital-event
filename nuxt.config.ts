@@ -76,4 +76,10 @@ export default defineNuxtConfig({
       cdn: "https://cdn.hemocione.com.br",
     },
   },
+  experimental: {
+    componentIslands: true,
+  },
+  ogImage: {
+    fonts: ["Roboto:400"],
+  },
 });
