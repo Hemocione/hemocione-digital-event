@@ -79,7 +79,7 @@ function formatPhone(value: string) {
   const phoneFirstPart = value.slice(2, 7)
   const phoneSecondPart = value.slice(7)
 
-  if (ddd.length && !(phoneFirstPart.length || phoneSecondPart.length))
+  if (ddd.length && !phoneFirstPart.length)
     return `(${ddd}) `
   if (phoneFirstPart.length && !phoneSecondPart.length)
     return `(${ddd}) ${phoneFirstPart}`
