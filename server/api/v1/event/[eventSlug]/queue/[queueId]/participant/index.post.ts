@@ -24,11 +24,14 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   validateBody(body);
 
-  await createQueueParticipant({
+  const queueParticipant = await createQueueParticipant({
     participant: body,
     queueId,
     eventSlug,
   });
 
   setResponseStatus(event, 201);
+  return {
+    queueParticipant,
+  };
 });
