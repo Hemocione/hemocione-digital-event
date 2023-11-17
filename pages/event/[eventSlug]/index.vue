@@ -197,14 +197,13 @@ useServerSeoMeta({
       eventConfig.value?.name ?? eventConfig.value?.slug
     }`,
   twitterCard: "summary_large_image",
-  // ogImage: eventConfig.value?.banner,
+  fbAppId: "Hemocione",
 });
 
 // TODO: uncomment when og-image is ready
 const ogImageOptions = {
   component: "EventDetail",
   title: `${eventConfig.value?.name ?? eventConfig.value?.slug}`,
-  banner: eventConfig.value?.banner,
   description:
     eventConfig.value?.description ??
     `Evento de doação de sangue do Hemocione - ${

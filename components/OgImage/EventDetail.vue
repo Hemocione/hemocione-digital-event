@@ -10,7 +10,7 @@
       align-items: center;
     "
   >
-    <div
+    <!-- <div
       v-if="props.banner"
       style="padding: 0; margin: 0; width: 100%; height: 40%"
     >
@@ -27,9 +27,8 @@
         alt="event-banner"
         fit="cover"
       />
-    </div>
+    </div> -->
     <div
-      v-else
       style="
         height: 40%;
         width: 100%;
@@ -85,10 +84,10 @@
           <img
             v-if="props.logo"
             style="
-              height: 4rem;
-              width: 4rem;
+              height: 6rem;
+              width: 6rem;
               border-radius: 25%;
-              box-shadow: 0 0 1rem rgba(33, 33, 33, 0.2);
+              border: 3px solid #8a0000;
               object-fit: contain;
             "
             :src="props.logo"
@@ -105,16 +104,16 @@
             align-items: center;
             gap: 0.25rem;
             padding: 0.5rem;
-            border-radius: 1rem;
-            width: 4rem;
-            height: 5rem;
+            border-radius: 2rem;
+            width: 8rem;
+            height: 10rem;
             text-align: center;
             background-color: #8a0000;
             color: #f2f2f2;
           "
         >
-          <span style="font-size: 1.1rem">{{ humanReadableMonth }}</span>
-          <span style="font-size: 2.2rem; font-weight: bold">{{ day }}</span>
+          <span style="font-size: 2.1rem">{{ humanReadableMonth }}</span>
+          <span style="font-size: 4.2rem; font-weight: bold">{{ day }}</span>
         </div>
       </div>
       <div
@@ -122,7 +121,7 @@
       >
         <div
           v-if="timeText"
-          style="display: flex; width: 100%; align-items: center; gap: 0.7rem"
+          style="display: flex; width: 100%; align-items: center; gap: 1rem"
         >
           <img
             style="
@@ -131,15 +130,15 @@
               max-width: 3rem;
               color: var(--hemo-color-primary);
             "
-            src="/images/icons/calendar.png"
+            src="/images/icons/calendar.svg"
           />
-          <span style="font-size: 1.8rem">
+          <span style="font-size: 2.2rem">
             {{ timeText }}
           </span>
         </div>
         <div
           v-if="addressText"
-          style="display: flex; width: 100%; align-items: center; gap: 0.7rem"
+          style="display: flex; width: 100%; align-items: center; gap: 1rem"
         >
           <img
             style="
@@ -148,9 +147,9 @@
               max-width: 3rem;
               color: var(--hemo-color-primary);
             "
-            src="/images/icons/map-marker.png"
+            src="/images/icons/map-marker.svg"
           />
-          <span style="font-size: 1.8rem">
+          <span style="font-size: 2.2rem">
             {{ addressText }}
           </span>
         </div>
@@ -164,7 +163,6 @@ defineOptions({
 });
 const props = defineProps<{
   title: string;
-  banner?: string | null;
   description: string;
   addressText: string;
   timeText: string;
