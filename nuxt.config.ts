@@ -1,7 +1,21 @@
+const getSiteUrl = () => {
+  if (process.env.VERCEL_ENV === "preview") {
+    return `https://${process.env.VERCEL_URL}`;
+  }
+
+  if (process.env.VERCEL_ENV === undefined) {
+    return "http://localhost:3000";
+  }
+
+  return "https://eventos.hemocione.com.br";
+};
+
+const siteUrl = getSiteUrl();
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY ?? "mock-key",
+      siteUrl,
     },
     cdn: {
       bucket: process.env.CDN_BUCKET ?? "hemocione-assets",
@@ -58,7 +72,7 @@ export default defineNuxtConfig({
     exclude: ["/queue/**"],
   },
   site: {
-    url: "https://eventos.hemocione.com.br",
+    url: siteUrl,
     name: "Hemocione Eventos",
     description: "Eventos de Doação de Sangue do Hemocione",
     defaultLocale: "pt-BR",

@@ -123,6 +123,8 @@ const addressText = computed(() => {
   return `${address} - ${city}, ${state}`;
 });
 
+const config = useRuntimeConfig();
+
 // TODO: performer = banco de sangue
 // REF: https://developers.google.com/search/docs/appearance/structured-data/event
 useHead({
@@ -173,7 +175,7 @@ useSchemaOrg([
     offers: {
       price: 0,
       priceCurrency: "BRL",
-      url: `https://eventos.hemocione.com.br/event/${eventConfig.value?.slug}`,
+      url: `${config.public.siteUrl}/event/${eventConfig.value?.slug}`,
       validFrom: eventConfig.value?.startAt,
       validUntil: eventConfig.value?.endAt,
     },
@@ -198,7 +200,7 @@ useServerSeoMeta({
     }`,
   twitterCard: "summary_large_image",
   fbAppId: "Hemocione",
-  ogUrl: `https://eventos.hemocione.com.br/event/${eventConfig.value?.slug}`,
+  ogUrl: `${config.public.siteUrl}/event/${eventConfig.value?.slug}`,
 });
 
 // TODO: uncomment when og-image is ready
