@@ -198,10 +198,13 @@ useServerSeoMeta({
     }`,
   twitterCard: "summary_large_image",
   fbAppId: "Hemocione",
+  ogUrl: `https://eventos.hemocione.com.br/event/${eventConfig.value?.slug}`,
 });
 
 // TODO: uncomment when og-image is ready
 const ogImageOptions = {
+  width: 300,
+  height: 200,
   component: "EventDetail",
   title: `${eventConfig.value?.name ?? eventConfig.value?.slug}`,
   description:
