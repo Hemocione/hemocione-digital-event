@@ -16,7 +16,6 @@ export default defineNuxtConfig({
     public: {
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY ?? "mock-key",
       siteUrl,
-      zapSiteUrl: "https://eventos.zap.hemocione.com.br",
     },
     cdn: {
       bucket: process.env.CDN_BUCKET ?? "hemocione-assets",
