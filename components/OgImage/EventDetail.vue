@@ -28,7 +28,7 @@
       "
     >
       <img
-        style="width: 80%; object-fit: contain"
+        style="width: 90%; object-fit: contain"
         src="/images/logo-padrao.png"
         alt="hemocione-logo"
       />
@@ -125,7 +125,7 @@
             "
             src="/images/icons/calendar.svg"
           />
-          <span style="font-size: 0.8rem">
+          <span style="font-size: 1rem">
             {{ timeText }}
           </span>
         </div>
@@ -147,7 +147,7 @@
             "
             src="/images/icons/map-marker.svg"
           />
-          <span style="font-size: 0.8rem">
+          <span style="font-size: 1rem">
             {{ addressText }}
           </span>
         </div>
