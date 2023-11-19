@@ -123,6 +123,8 @@ const addressText = computed(() => {
   return `${address} - ${city}, ${state}`;
 });
 
+const config = useRuntimeConfig();
+
 // TODO: performer = banco de sangue
 // REF: https://developers.google.com/search/docs/appearance/structured-data/event
 useHead({
@@ -173,7 +175,7 @@ useSchemaOrg([
     offers: {
       price: 0,
       priceCurrency: "BRL",
-      url: `https://eventos.hemocione.com.br/event/${eventConfig.value?.slug}`,
+      url: `${config.public.siteUrl}/event/${eventConfig.value?.slug}`,
       validFrom: eventConfig.value?.startAt,
       validUntil: eventConfig.value?.endAt,
     },
@@ -198,10 +200,15 @@ useServerSeoMeta({
     }`,
   twitterCard: "summary_large_image",
   fbAppId: "Hemocione",
+  ogUrl: `${config.public.siteUrl}/event/${eventConfig.value?.slug}`,
 });
+
+// get request domain to use in og-image
 
 // TODO: uncomment when og-image is ready
 const ogImageOptions = {
+  width: 1200,
+  height: 630,
   component: "EventDetail",
   title: `${eventConfig.value?.name ?? eventConfig.value?.slug}`,
   description:
@@ -214,7 +221,44 @@ const ogImageOptions = {
   startAt: eventConfig.value?.startAt,
   logo: eventConfig.value?.logo,
 };
+
+// THIS IS A CRIME TO MAKE IT WORK ON ZAP! WHEN LIB IS READY, REMOVE THIS
+const hostname = useRequestURL().hostname;
+if (hostname.includes("eventos.zap.hemocione.com.br")) {
+  ogImageOptions.component = "EventDetailZap";
+  ogImageOptions.width = 300;
+  ogImageOptions.height = 200;
+}
+
 defineOgImage(ogImageOptions);
+useHead({
+  meta: [
+    {
+      property: "og:image",
+      content: `${config.public.siteUrl}/event/${eventConfig.value?.slug}/__og_image__/og.png`,
+    },
+    {
+      property: "og:image:width",
+      content: "1200",
+    },
+    {
+      property: "og:image:height",
+      content: "630",
+    },
+    {
+      property: "og:image",
+      content: `${config.public.zapSiteUrl}/event/${eventConfig.value?.slug}/__og_image__/og.png`,
+    },
+    {
+      property: "og:image:width",
+      content: "300",
+    },
+    {
+      property: "og:image:height",
+      content: "200",
+    },
+  ],
+});
 </script>
 
 <style scoped>
