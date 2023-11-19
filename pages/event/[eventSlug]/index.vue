@@ -205,8 +205,8 @@ useServerSeoMeta({
 
 // TODO: uncomment when og-image is ready
 const ogImageOptions = {
-  width: 300,
-  height: 200,
+  width: 400,
+  height: 300,
   component: "EventDetail",
   title: `${eventConfig.value?.name ?? eventConfig.value?.slug}`,
   description:
