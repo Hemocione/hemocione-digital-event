@@ -123,6 +123,8 @@ const addressText = computed(() => {
   return `${address} - ${city}, ${state}`;
 });
 
+const config = useRuntimeConfig();
+
 // TODO: performer = banco de sangue
 // REF: https://developers.google.com/search/docs/appearance/structured-data/event
 useHead({
@@ -173,7 +175,7 @@ useSchemaOrg([
     offers: {
       price: 0,
       priceCurrency: "BRL",
-      url: `https://eventos.hemocione.com.br/event/${eventConfig.value?.slug}`,
+      url: `${config.public.siteUrl}/event/${eventConfig.value?.slug}`,
       validFrom: eventConfig.value?.startAt,
       validUntil: eventConfig.value?.endAt,
     },
@@ -197,25 +199,29 @@ useServerSeoMeta({
       eventConfig.value?.name ?? eventConfig.value?.slug
     }`,
   twitterCard: "summary_large_image",
-  ogImage: eventConfig.value?.banner,
+  fbAppId: "Hemocione",
+  ogUrl: `${config.public.siteUrl}/event/${eventConfig.value?.slug}`,
 });
 
-// TODO: uncomment when og-image is ready
-// const ogImageOptions = {
-//   component: "EventDetail",
-//   title: `${eventConfig.value?.name ?? eventConfig.value?.slug}`,
-//   banner: eventConfig.value?.banner,
-//   description:
-//     eventConfig.value?.description ??
-//     `Evento de doação de sangue do Hemocione - ${
-//       eventConfig.value?.name ?? eventConfig.value?.slug
-//     }`,
-//   addressText,
-//   timeText,
-//   startAt: eventConfig.value?.startAt,
-//   logo: eventConfig.value?.logo,
-// };
-// defineOgImage(ogImageOptions);
+const ogImageOptions = {
+  width: 1200,
+  height: 630,
+  component: "EventDetail",
+  title: `${eventConfig.value?.name ?? eventConfig.value?.slug}`,
+  description:
+    eventConfig.value?.description ??
+    `Evento de doação de sangue do Hemocione - ${
+      eventConfig.value?.name ?? eventConfig.value?.slug
+    }`,
+  addressText,
+  timeText,
+  startAt: eventConfig.value?.startAt,
+  logo: eventConfig.value?.logo,
+};
+
+defineOgImage(ogImageOptions);
+
+// TODO: FIX ZAP OG IMAGE!
 </script>
 
 <style scoped>
