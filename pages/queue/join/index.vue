@@ -73,6 +73,25 @@ async function onSubmit() {
   }
   buttonLoading.value = false;
 }
+
+function formatPhone(value: string) {
+  const ddd = value.slice(0, 2);
+  const phoneFirstPart = value.slice(2, 7)
+  const phoneSecondPart = value.slice(7)
+
+  if (ddd.length && !phoneFirstPart.length)
+    return `(${ddd}) `
+  if (phoneFirstPart.length && !phoneSecondPart.length)
+    return `(${ddd}) ${phoneFirstPart}`
+  if (phoneSecondPart.length)
+    return `(${ddd}) ${phoneFirstPart}-${phoneSecondPart}`
+
+  return value
+}
+
+function parsePhone(value: string) {
+  return value.replace(/\D/g, '')
+}
 </script>
 
 <template>
@@ -94,7 +113,9 @@ async function onSubmit() {
           placeholder="Insira seu telefone com DDD"
           :prefix-icon="ElIconPhone"
           :disabled="disablePhone"
-          maxlength="11"
+          maxlength="15"
+          :formatter="(value: string) => formatPhone(value)"
+          :parser="(value: string) => parsePhone(value)"
         />
       </el-form-item>
       <el-form-item size="large" class="form-item">
