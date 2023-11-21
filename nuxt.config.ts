@@ -1,7 +1,3 @@
-function getEnv(key: string, fallback: string) {
-  return key ? process.env[key] : fallback
-}
-
 const getSiteUrl = () => {
   if (process.env.VERCEL_ENV === "preview") {
     return `https://${process.env.VERCEL_URL}`;
@@ -18,26 +14,21 @@ const siteUrl = getSiteUrl();
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
-      googleMapsApiKey: getEnv("GOOGLE_MAPS_API_KEY", "mock-key"),
+      googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY ?? "mock-key",
       siteUrl,
     },
     cdn: {
-      bucket: getEnv("CDN_BUCKET", "hemocione-assets"),
-      basePath: getEnv("CDN_BASE_PATH", "events/uploads"),
-      baseUrl: getEnv("CDN_BASE_URL", "https://cdn.hemocione.com.br"),
+      bucket: process.env.CDN_BUCKET ?? "hemocione-assets",
+      basePath: process.env.CDN_BASE_PATH ?? "events/uploads",
+      baseUrl: process.env.CDN_BASE_URL ?? "https://cdn.hemocione.com.br",
     },
-    secret: getEnv("API_SECRET", "secret"),
-    mongodbUri: getEnv(
-      "MONGODB_URI",
-      "mongodb://admin:password@localhost:27017"
-    ),
-    dbName: getEnv("DB_NAME", "local"),
-    inngestKey: getEnv("INNGEST_EVENT_KEY", "mock-key"),
-    digitalStandApiUrl: getEnv(
-      "DIGITAL_STAND_API_URL",
-      "https://us-east1-estande-digital.cloudfunctions.net/api"
-    ),
-    digitalStandApiSecret: getEnv("DIGITAL_STAND_API_SECRET", ""),
+    secret: process.env.API_SECRET ?? "secret",
+    mongodbUri: process.env.MONGODB_URI ??
+      "mongodb://admin:password@localhost:27017",
+    dbName: process.env.DB_NAME ?? "local",
+    inngestKey: process.env.INNGEST_EVENT_KEY ?? "mock-key",
+    digitalStandApiUrl: process.env.DIGITAL_STAND_API_URL ?? "https://us-east1-estande-digital.cloudfunctions.net/api",
+    digitalStandApiSecret: process.env.DIGITAL_STAND_API_SECRET ?? "",
   },
   modules: [
     "@element-plus/nuxt",
