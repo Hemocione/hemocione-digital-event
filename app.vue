@@ -5,12 +5,7 @@
 </template>
 
 <script setup lang="ts">
-useHead({
-  title: "Hemocione Eventos",
-});
 useServerSeoMeta({
-  title: "Hemocione Eventos",
-  ogTitle: "Hemocione Eventos",
   description:
     "Encontre eventos de doação de sangue próximos a você e ajude a salvar vidas!",
   ogDescription:

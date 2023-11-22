@@ -128,9 +128,7 @@ const config = useRuntimeConfig();
 // TODO: performer = banco de sangue
 // REF: https://developers.google.com/search/docs/appearance/structured-data/event
 useHead({
-  title: `${
-    eventConfig.value?.name ?? eventConfig.value?.slug
-  } | Hemocione Eventos`,
+  title: `${eventConfig.value?.name ?? eventConfig.value?.slug}`,
 });
 useSchemaOrg([
   defineEvent({
@@ -182,12 +180,8 @@ useSchemaOrg([
   }),
 ]);
 useServerSeoMeta({
-  title: `${
-    eventConfig.value?.name ?? eventConfig.value?.slug
-  } | Hemocione Eventos`,
-  ogTitle: `${
-    eventConfig.value?.name ?? eventConfig.value?.slug
-  } | Hemocione Eventos`,
+  title: `${eventConfig.value?.name ?? eventConfig.value?.slug}`,
+  ogTitle: `${eventConfig.value?.name ?? eventConfig.value?.slug}`,
   description:
     eventConfig.value?.description ??
     `Evento de doação de sangue do Hemocione - ${
