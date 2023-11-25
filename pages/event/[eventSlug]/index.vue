@@ -99,12 +99,14 @@ const timeText = computed(() => {
     year: "numeric",
     hour: "numeric",
     minute: "numeric",
+    timeZone: "America/Sao_Paulo",
   });
 
   const endAtText = sameDay
     ? endAt.toLocaleString("pt-BR", {
         hour: "numeric",
         minute: "numeric",
+        timeZone: "America/Sao_Paulo",
       })
     : endAt.toLocaleString("pt-BR", {
         day: "numeric",
@@ -112,6 +114,7 @@ const timeText = computed(() => {
         year: "numeric",
         hour: "numeric",
         minute: "numeric",
+        timeZone: "America/Sao_Paulo",
       });
   return `${startAtText} - ${endAtText}`;
 });
