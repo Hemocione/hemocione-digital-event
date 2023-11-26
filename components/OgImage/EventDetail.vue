@@ -94,13 +94,13 @@
           width: 100%;
           display: flex;
           align-items: center;
-          justify-content: space-around;
+          justify-content: space-between;
           gap: 1rem;
         "
       >
         <div
           style="
-            font-size: 3rem;
+            font-size: 2rem;
             font-weight: bold;
             margin: 0;
             display: flex;
@@ -121,7 +121,7 @@
             :src="props.logo"
             alt="event-logo"
           />
-          <h1 style="font-size: 3rem; font-weight: bold; margin: 0">
+          <h1 style="font-size: 2rem; font-weight: bold; margin: 0">
             {{ props.title }}
           </h1>
         </div>
@@ -134,16 +134,16 @@
             align-items: center;
             gap: 0.25rem;
             padding: 0.5rem;
-            border-radius: 2rem;
-            width: 8rem;
-            height: 10rem;
+            border-radius: 1rem;
+            width: 5rem;
+            height: 7rem;
             text-align: center;
             background-color: #8a0000;
             color: #f2f2f2;
           "
         >
-          <span style="font-size: 2.1rem">{{ humanReadableMonth }}</span>
-          <span style="font-size: 4.2rem; font-weight: bold">{{ day }}</span>
+          <span style="font-size: 1.5rem">{{ humanReadableMonth }}</span>
+          <span style="font-size: 3rem; font-weight: bold">{{ day }}</span>
         </div>
       </div>
       <div
@@ -155,14 +155,14 @@
         >
           <img
             style="
-              width: 3rem;
-              height: 3rem;
-              max-width: 3rem;
+              width: 2rem;
+              height: 2rem;
+              max-width: 2rem;
               color: var(--hemo-color-primary);
             "
             src="/images/icons/calendar.svg"
           />
-          <span style="font-size: 2.2rem">
+          <span style="font-size: 1.7rem">
             {{ timeText }}
           </span>
         </div>
@@ -172,14 +172,14 @@
         >
           <img
             style="
-              width: 3rem;
-              height: 3rem;
-              max-width: 3rem;
+              width: 2rem;
+              height: 2rem;
+              max-width: 2rem;
               color: var(--hemo-color-primary);
             "
             src="/images/icons/map-marker.svg"
           />
-          <span style="font-size: 2.2rem">
+          <span style="font-size: 1.7rem">
             {{ addressText }}
           </span>
         </div>
