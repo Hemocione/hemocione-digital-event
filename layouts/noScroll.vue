@@ -2,6 +2,7 @@
   <div class="layout">
     <NavBar />
     <div class="page">
+      <NuxtLoadingIndicator color="#f2f2f2" :height="3" />
       <slot />
     </div>
   </div>
