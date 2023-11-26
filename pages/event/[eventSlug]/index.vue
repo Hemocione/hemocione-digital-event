@@ -201,8 +201,8 @@ useServerSeoMeta({
 });
 
 const ogImageOptions = {
-  width: 1200,
-  height: 630,
+  width: 800,
+  height: 400,
   component: "EventDetail",
   title: `${eventConfig.value?.name ?? eventConfig.value?.slug}`,
   description:
