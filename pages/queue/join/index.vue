@@ -5,7 +5,7 @@ definePageMeta({
 
 const route = useRoute();
 const query = route.query;
-const { eventId, eventRef, leadId, uuid } = query;
+const { eventId, eventRef, leadId, uuid, autoJoin } = query;
 const shouldRedirect = !eventId;
 const config = useRuntimeConfig();
 
@@ -121,14 +121,14 @@ function parsePhone(value: string) {
 }
 
 const joinQueueText = computed(() => {
-  if (hemocioneIdIntegrated && initialName === form.value.name)
+  if (hemocioneIdIntegrated)
     return `Entrar na fila de doação como ${currentUser?.value?.givenName}`;
   return `Entrar na fila de doação!`;
 });
 
 const hemocioneIdUrl = computed(() => {
   const encodedRedirectUrl = encodeURIComponent(
-    `${config.public.siteUrl}${route.fullPath}`,
+    `${config.public.siteUrl}${route.fullPath}&autoJoin=1`,
   );
   return `${config.public.hemocioneIdUrl}?redirect=${encodedRedirectUrl}`;
 });
@@ -146,6 +146,10 @@ const goToHemocioneId = () => {
 const dividerText = computed(() => {
   if (!hemocioneIdIntegrated) return "Ou entre na fila manualmente";
   return "Ou confirme sua entrada na fila";
+});
+
+onMounted(() => {
+  if (autoJoin && allowClick) onSubmit();
 });
 </script>
 
