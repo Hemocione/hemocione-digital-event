@@ -24,7 +24,7 @@ const initialName = currentUser?.value?.givenName
   ? `${currentUser?.value?.givenName} ${currentUser?.value?.surName}`.trim()
   : "";
 
-const disablePhone = Boolean(initialPhone.length);
+const disablePhone = Boolean(initialPhone.length === 11);
 const disableName = Boolean(initialName.length);
 
 const hemocioneIdIntegrated = Boolean(currentUser.value);
