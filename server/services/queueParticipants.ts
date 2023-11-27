@@ -3,6 +3,27 @@ import { inngest } from "../inngest/client";
 import { QueueParticipant } from "../models/queueParticipant";
 import { upsertFBDataOnLead } from "./digitalStand";
 
+export async function getParticipantPosition(queueId: string, participantId: string) {
+  const queueParticipants = await QueueParticipant.find({
+    queueId,
+    calledAt: null,
+  })
+    .select({
+      _id: 1,
+      participant: 1,
+      createdAt: 1,
+    })
+    .sort({
+      createdAt: 1,
+    })
+    .lean();
+
+  const position = queueParticipants
+    .findIndex((queueParticipant) => queueParticipant.participant._id === participantId)
+
+  return { position: position + 1 }
+}
+
 export async function getWaitingQueueParticipants(queueId: string) {
   return await QueueParticipant.find({
     queueId,
