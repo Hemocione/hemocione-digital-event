@@ -24,7 +24,8 @@ const initialName = currentUser?.value?.givenName
   ? `${currentUser?.value?.givenName} ${currentUser?.value?.surName}`.trim()
   : "";
 
-const disablePhone = Boolean(initialPhone.length && eventRef);
+const disablePhone = Boolean(initialPhone.length);
+const disableName = Boolean(initialName.length);
 
 const hemocioneIdIntegrated = Boolean(currentUser.value);
 
@@ -120,7 +121,7 @@ function parsePhone(value: string) {
 }
 
 const joinQueueText = computed(() => {
-  if (hemocioneIdIntegrated)
+  if (hemocioneIdIntegrated && initialName === form.value.name)
     return `Entrar na fila de doação como ${currentUser?.value?.givenName}`;
   return `Entrar na fila de doação!`;
 });
@@ -161,6 +162,7 @@ const notYouLink = computed(() => {
         <el-input
           v-model="form.name"
           :prefix-icon="ElIconUser"
+          :disabled="disableName"
           placeholder="Insira seu nome"
         />
       </el-form-item>
