@@ -16,6 +16,9 @@ export default defineNuxtConfig({
     public: {
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY ?? "mock-key",
       siteUrl,
+      authCookieKey: process.env.AUTH_COOKIE_KEY ?? "hemocioneId",
+      hemocioneIdUrl:
+        process.env.HEMOCIONE_ID_URL ?? "https://id.hemocione.com.br",
     },
     cdn: {
       bucket: process.env.CDN_BUCKET ?? "hemocione-assets",

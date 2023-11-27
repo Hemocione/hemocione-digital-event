@@ -7,14 +7,26 @@ const route = useRoute();
 const query = route.query;
 const { eventId, eventRef, leadId, uuid } = query;
 const shouldRedirect = !eventId;
+const config = useRuntimeConfig();
 
 // TODO: read fbc and fbp -- need to install meta pixel (how?)
-// TODO: add mask to number!
-// TODO: whatsapp instead of SMS
+// TODO: whatsapp or push notification instead of SMS
 
-const initialPhone = eventRef ? String(eventRef) : "";
+const currentUser = useCookie(config.public.authCookieKey, {
+  decode: currentUserTokenDecoder,
+});
 
-const disablePhone = initialPhone.length === 11;
+const initialPhone = eventRef
+  ? String(eventRef)
+  : currentUser?.value?.phone ?? "";
+
+const initialName = currentUser?.value?.givenName
+  ? `${currentUser?.value?.givenName} ${currentUser?.value?.surName}`.trim()
+  : "";
+
+const disablePhone = Boolean(initialPhone.length && eventRef);
+
+const hemocioneIdIntegrated = Boolean(currentUser.value);
 
 if (shouldRedirect) await navigateTo("/queue/not-found");
 
@@ -29,7 +41,7 @@ if (!eventConfig?.value) await navigateTo("/queue/not-found");
 
 const form = ref({
   phone: initialPhone,
-  name: "",
+  name: initialName,
 });
 
 const buttonLoading = ref(false);
@@ -41,12 +53,27 @@ const allowClick = computed(() => {
 
 async function onSubmit() {
   const { phone, name } = form.value;
-  const payload = {
+  const payload: {
+    phone: string;
+    name: string;
+    leadId?: string;
+    uuid?: string;
+    hemocioneId?: string;
+  } = {
     phone,
     name,
-    leadId,
-    uuid,
+    leadId: String(leadId),
+    uuid: String(uuid),
   };
+
+  if (
+    hemocioneIdIntegrated &&
+    initialName === name &&
+    initialPhone === phone &&
+    currentUser?.value?.id
+  ) {
+    payload.hemocioneId = currentUser.value.id;
+  }
   try {
     const queueId = eventConfig?.value?.queue?._id;
     if (!queueId) throw new Error("Queue not found");
@@ -76,22 +103,34 @@ async function onSubmit() {
 
 function formatPhone(value: string) {
   const ddd = value.slice(0, 2);
-  const phoneFirstPart = value.slice(2, 7)
-  const phoneSecondPart = value.slice(7)
+  const phoneFirstPart = value.slice(2, 7);
+  const phoneSecondPart = value.slice(7);
 
-  if (ddd.length && !phoneFirstPart.length)
-    return `(${ddd}) `
+  if (ddd.length && !phoneFirstPart.length) return `(${ddd}) `;
   if (phoneFirstPart.length && !phoneSecondPart.length)
-    return `(${ddd}) ${phoneFirstPart}`
+    return `(${ddd}) ${phoneFirstPart}`;
   if (phoneSecondPart.length)
-    return `(${ddd}) ${phoneFirstPart}-${phoneSecondPart}`
+    return `(${ddd}) ${phoneFirstPart}-${phoneSecondPart}`;
 
-  return value
+  return value;
 }
 
 function parsePhone(value: string) {
-  return value.replace(/\D/g, '')
+  return value.replace(/\D/g, "");
 }
+
+const joinQueueText = computed(() => {
+  if (hemocioneIdIntegrated)
+    return `Entrar na fila de doação como ${currentUser?.value?.givenName}`;
+  return `Entrar na fila de doação!`;
+});
+
+const notYouLink = computed(() => {
+  const encodedRedirectUrl = encodeURIComponent(
+    `${config.public.siteUrl}${route.fullPath}`,
+  );
+  return `${config.public.hemocioneIdUrl}?redirect=${encodedRedirectUrl}`;
+});
 </script>
 
 <template>
@@ -114,8 +153,8 @@ function parsePhone(value: string) {
           :prefix-icon="ElIconPhone"
           :disabled="disablePhone"
           maxlength="15"
-          :formatter="(value: string) => formatPhone(value)"
-          :parser="(value: string) => parsePhone(value)"
+          :formatter="formatPhone"
+          :parser="parsePhone"
         />
       </el-form-item>
       <el-form-item size="large" class="form-item">
@@ -134,9 +173,13 @@ function parsePhone(value: string) {
           :icon="ElIconArrowRight"
           @click="onSubmit"
         >
-          Entrar na fila de Doação!
+          {{ joinQueueText }}
         </el-button>
       </el-form-item>
+      <NuxtLink v-if="hemocioneIdIntegrated" :to="notYouLink" class="not-you">
+        Não é {{ currentUser?.givenName || "você" }}? Clique aqui e realize seu
+        login!
+      </NuxtLink>
     </el-form>
     <NuxtImg src="/images/logo-white.svg" class="logo" />
   </div>
@@ -205,5 +248,11 @@ h1 {
   width: 100%;
   align-items: center;
   justify-content: space-around;
+}
+
+.not-you {
+  color: var(--hemo-color-primary-light);
+  font-weight: bold;
+  font-size: 1rem;
 }
 </style>

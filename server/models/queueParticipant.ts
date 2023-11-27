@@ -35,6 +35,10 @@ const QueueParticipantSchema = new Schema(
           type: String,
           required: false,
         },
+        hemocioneId: {
+          type: String,
+          required: false,
+        },
       },
     },
     initialPosition: {
