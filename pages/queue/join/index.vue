@@ -62,8 +62,8 @@ async function onSubmit() {
   } = {
     phone,
     name,
-    leadId: String(leadId),
-    uuid: String(uuid),
+    ...(leadId ? { leadId: String(leadId) } : {}),
+    ...(uuid ? { uuid: String(uuid) } : {}),
   };
 
   if (
