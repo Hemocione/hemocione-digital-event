@@ -253,8 +253,11 @@ h1 {
 }
 
 .not-you {
-  color: var(--hemo-color-primary-light);
+  color: var(--hemo-color-text-primary);
   font-weight: bold;
-  font-size: 1rem;
+  font-size: 0.8rem;
+  padding: 0.5rem 1rem;
+  background-color: var(--hemo-color-text-secondary);
+  border-radius: 1rem;
 }
 </style>
