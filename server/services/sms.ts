@@ -4,7 +4,7 @@ const snsClient = new SNSClient();
 
 export async function sendSMS(phone: string, message: string) {
   const params = new PublishCommand({
-    Message: message,
+    Message: `HEMOCIONE: ${message.trim()}`,
     PhoneNumber: phone,
   });
 
