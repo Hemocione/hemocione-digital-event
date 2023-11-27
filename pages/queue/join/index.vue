@@ -126,11 +126,26 @@ const joinQueueText = computed(() => {
   return `Entrar na fila de doação!`;
 });
 
-const notYouLink = computed(() => {
+const hemocioneIdUrl = computed(() => {
   const encodedRedirectUrl = encodeURIComponent(
     `${config.public.siteUrl}${route.fullPath}`,
   );
   return `${config.public.hemocioneIdUrl}?redirect=${encodedRedirectUrl}`;
+});
+
+const hemocioneIdButtonText = computed(() => {
+  if (hemocioneIdIntegrated)
+    return `Não é ${currentUser?.value?.givenName}? Entre com outra conta.`;
+  return `Entrar com Hemocione`;
+});
+
+const goToHemocioneId = () => {
+  window.location.href = hemocioneIdUrl.value;
+};
+
+const dividerText = computed(() => {
+  if (!hemocioneIdIntegrated) return "Ou entre na fila manualmente";
+  return "Ou confirme sua entrada na fila";
 });
 </script>
 
@@ -146,6 +161,20 @@ const notYouLink = computed(() => {
       <h1>{{ eventConfig?.name ?? eventConfig?.slug ?? eventId }}</h1>
     </div>
     <el-form :model="form" class="form-wrapper">
+      <el-form-item size="large" class="form-item">
+        <el-button
+          class="form-item"
+          type="success"
+          color="#25282B"
+          @click="goToHemocioneId"
+        >
+          <template #icon>
+            <NuxtImg src="/images/logo-white.svg" class="login-logo" />
+          </template>
+          {{ hemocioneIdButtonText }}
+        </el-button>
+      </el-form-item>
+      <el-divider>{{ dividerText }}</el-divider>
       <el-form-item size="large" class="form-item">
         <el-input
           v-model="form.phone"
@@ -178,10 +207,6 @@ const notYouLink = computed(() => {
           {{ joinQueueText }}
         </el-button>
       </el-form-item>
-      <NuxtLink v-if="hemocioneIdIntegrated" :to="notYouLink" class="not-you">
-        Não é {{ currentUser?.givenName || "você" }}? Clique aqui e realize seu
-        login!
-      </NuxtLink>
     </el-form>
     <NuxtImg src="/images/logo-white.svg" class="logo" />
   </div>
@@ -252,12 +277,7 @@ h1 {
   justify-content: space-around;
 }
 
-.not-you {
-  color: var(--hemo-color-text-primary);
-  font-weight: bold;
-  font-size: 0.8rem;
-  padding: 0.5rem 1rem;
-  background-color: var(--hemo-color-text-secondary);
-  border-radius: 1rem;
+.login-logo {
+  height: 100%;
 }
 </style>

@@ -18,6 +18,7 @@
   --el-color-text-secondary: var(--hemo-color-text-secondary) !important;
   --el-border-color-light: var(--hemo-color-primary-dark) !important;
   --el-disabled-border-color: #d4d7de !important;
+  --el-bg-color: var(--hemo-color-secondary) !important;
 }
 
 @font-face {
