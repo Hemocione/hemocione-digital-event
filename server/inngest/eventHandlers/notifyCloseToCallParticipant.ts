@@ -8,6 +8,7 @@ export interface NotifyCloseToCallParticipant {
     name: string;
     _id: string;
     queueId: string;
+    eventSlug: string;
   };
 }
 
