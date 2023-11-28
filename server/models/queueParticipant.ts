@@ -7,7 +7,7 @@ const QueueParticipantSchema = new Schema(
     participant: {
       required: true,
       type: {
-        _id: true,
+        _id: String,
         phone: {
           type: String,
           required: true,
