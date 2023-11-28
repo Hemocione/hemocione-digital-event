@@ -24,9 +24,9 @@ export default inngest.createFunction(
   },
   async ({ event }) => {
     const { data } = event;
-    const { _id, phone, name, queueId } = data;
+    const { _id, phone, name, queueId, eventSlug } = data;
 
-    const url = `${config.public.siteUrl}/queue/${queueId}/participant/${_id}`;
+    const url = `${config.public.siteUrl}/queue/${queueId}/participant/${_id}?eventId=${eventSlug}`;
     const text = `Olá ${name}, a sua vez de doar está próxima! Por favor, fique próximo ao local de doação e aguarde a chamada. Acompanhe sua posição na fila no link: ${url}`;
     await sendSMS(phone, text);
 

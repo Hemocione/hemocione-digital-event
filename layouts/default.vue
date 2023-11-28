@@ -17,5 +17,6 @@
 .page {
   width: 100%;
   min-height: 93dvh;
+  height: 100%;
 }
 </style>

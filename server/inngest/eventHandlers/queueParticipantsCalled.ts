@@ -5,6 +5,7 @@ export interface QueueParticipantsCalledEvent {
   data: {
     participantIds: string[];
     queueId: string;
+    eventSlug: string;
   };
 }
 
@@ -20,7 +21,7 @@ export default inngest.createFunction(
   },
   async ({ event }) => {
     const { data } = event;
-    const { participantIds, queueId } = data;
+    const { participantIds, queueId, eventSlug } = data;
     const { calledParticipants, closeToCallParticipants } =
       await getCalledAndCloseToCallParticipants(participantIds, queueId);
 
@@ -45,6 +46,7 @@ export default inngest.createFunction(
           phone: p.participant.phone,
           name: p.participant.name,
           queueId,
+          eventSlug
         },
       }),
     );

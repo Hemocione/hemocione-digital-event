@@ -1,14 +1,14 @@
 <template>
   <div class="main-container">
     <div class="image-container">
-      <NuxtImg v-if="eventInfo?.banner" class="main-image" :src="eventInfo?.banner" />
+      <NuxtImg v-if="eventInfo?.banner" class="main-image" style="aspect-ratio: 3/1; object-fit: cover" :src="eventInfo?.banner" />
       <NuxtImg v-else class="main-image" src="/images/illustrations/rafiki-blood-donation.svg" />
     </div>
 
     <div class="content">
       <div class="event-title-container">
         <div class="event-title">{{ eventInfo?.name }}</div>
-        <MicroDateBox v-if="eventInfo?.startAt" :date="eventInfo?.startAt" :light="true" />
+        <MicroDateBox v-if="eventInfo?.startAt" :date="eventInfo?.startAt" light />
       </div>
 
       <Transition name="slide-fade-left" appear mode="out-in">
@@ -46,6 +46,7 @@
 <script setup lang="ts">
 import { computed, onMounted } from 'vue';
 
+
 definePageMeta({
   layout: 'no-scroll-no-padding'
 });
@@ -57,17 +58,23 @@ const router = useRouter()
 const { queueId, participantId } = route.params
 const { eventId } = route.query
 
-const shouldRedirect = !eventId
+if (!eventId) await navigateTo("/queue/not-found")
 
-if (shouldRedirect) await navigateTo("/queue/not-found")
+const { data: eventInfo } = await useFetch(`/api/v1/event/${eventId}`, {
+  method: "GET",
+});
+
+if (!eventInfo.value) await navigateTo("/queue/not-found")
+
+useHead({
+  title: `Acompanhe sua posição na fila | ${eventInfo.value.name}`,
+});
 
 const { data: participantInfo, refresh } = await useFetch(`/api/v1/queue/${queueId}/participant/${participantId}/position`, {
   method: "GET",
 });
 
-const { data: eventInfo } = await useFetch(`/api/v1/event/${eventId}`, {
-  method: "GET",
-});
+
 
 const addressText = computed(() => {
   if (!eventInfo.value?.location) return null;
@@ -98,14 +105,15 @@ onMounted(async () => {
 .main-container {
   width: 100%;
   height: 100%;
+  min-height: 93dvh;
   background: white;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   align-items: center;
-  padding: 0px 16px;
   position: relative;
-  overflow: hidden;
+  overflow-x: hidden;
+  overflow-y: auto;
 }
 
 .header {
@@ -138,12 +146,13 @@ onMounted(async () => {
   justify-content: center;
   align-items: center;
   object-fit: cover;
+  margin-bottom: 16px;
+  width: calc(100% + 32px);
 }
 
 .main-image {
   align-self: stretch;
-  width: 75%;
-  max-width: 400px;
+  width: calc(100% + 32px);
 }
 
 .content {
@@ -159,8 +168,14 @@ onMounted(async () => {
   padding: 0 16px;
   display: flex;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
   gap: 8px;
+}
+
+.event-logo {
+  width: 56px;
+  height: 56px;
+  object-fit: cover;
 }
 
 .event-title {
@@ -211,7 +226,7 @@ onMounted(async () => {
   justify-content: center;
   align-items: center;
   gap: 16px;
-  margin-bottom: 8px;
+  margin: 0px 16px 8px;
 }
 
 .queue-info.called {
@@ -372,7 +387,7 @@ onMounted(async () => {
   display: flex;
   align-items: center;
   justify-content: center;
-  /* position: sticky; */
+  position: sticky;
   left: 0;
   bottom: 0;
   background-color: var(--hemo-color-link);
@@ -382,6 +397,7 @@ onMounted(async () => {
   flex-direction: row;
   border-top-right-radius: 16px;
   border-top-left-radius: 16px;
+  z-index: 2000;
 }
 
 @keyframes pulse {
