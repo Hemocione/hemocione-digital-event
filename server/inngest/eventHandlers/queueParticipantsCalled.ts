@@ -44,6 +44,7 @@ export default inngest.createFunction(
           _id: String(p._id),
           phone: p.participant.phone,
           name: p.participant.name,
+          queueId,
         },
       }),
     );

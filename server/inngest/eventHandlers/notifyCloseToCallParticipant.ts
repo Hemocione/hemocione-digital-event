@@ -7,10 +7,12 @@ export interface NotifyCloseToCallParticipant {
     phone: string;
     name: string;
     _id: string;
+    queueId: string;
   };
 }
 
 export const eventName = "notify/participant.closeToCall";
+const config = useRuntimeConfig();
 
 export default inngest.createFunction(
   {
@@ -22,9 +24,10 @@ export default inngest.createFunction(
   },
   async ({ event }) => {
     const { data } = event;
-    const { phone, name } = data;
+    const { _id, phone, name, queueId } = data;
 
-    const text = `Olá ${name}, a sua vez de doar está próxima! Por favor, fique próximo ao local de doação e aguarde a chamada.  O Hemocione agradece!`;
+    const url = `${config.public.siteUrl}/queue/${queueId}/participant/${_id}`;
+    const text = `Olá ${name}, a sua vez de doar está próxima! Por favor, fique próximo ao local de doação e aguarde a chamada. Acompanhe sua posição na fila no link: ${url}`;
     await sendSMS(phone, text);
 
     await setNotifiedCloseToCall(data._id);
