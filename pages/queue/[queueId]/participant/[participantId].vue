@@ -54,14 +54,14 @@ const ONE_SECOND = 1000;
 
 const route = useRoute();
 const router = useRouter()
-const { participantId } = route.params
+const { queueId, participantId } = route.params
 const { eventId } = route.query
 
 const shouldRedirect = !eventId
 
 if (shouldRedirect) await navigateTo("/queue/not-found")
 
-const { data: participantInfo, refresh } = await useFetch(`/api/v1/participant/${participantId}/position`, {
+const { data: participantInfo, refresh } = await useFetch(`/api/v1/queue/${queueId}/participant/${participantId}/position`, {
   method: "GET",
 });
 

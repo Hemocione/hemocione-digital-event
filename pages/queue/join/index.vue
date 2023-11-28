@@ -94,7 +94,7 @@ async function onSubmit() {
       });
     } else {
       await navigateTo({
-        path: `/queue/participant/${queueParticipant._id}`,
+        path: `/queue/${queueId}/participant/${queueParticipant._id}`,
         query: {
           eventId
         },
