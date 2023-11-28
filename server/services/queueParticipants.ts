@@ -3,9 +3,9 @@ import { inngest } from "../inngest/client";
 import { QueueParticipant } from "../models/queueParticipant";
 import { upsertFBDataOnLead } from "./digitalStand";
 
-export async function getParticipantPosition(queueId: string, participantId: string) {
-  const queueParticipants = await QueueParticipant.find({
-    queueId
+const getFullQueueParticipantsPromise = (queueId: string) =>
+  QueueParticipant.find({
+    queueId,
   })
     .select({
       _id: 1,
@@ -18,15 +18,49 @@ export async function getParticipantPosition(queueId: string, participantId: str
     })
     .lean();
 
-  const queueParticipant = queueParticipants
-    .find((queueParticipant) => String(queueParticipant._id) === participantId)
-  const queue = queueParticipants.filter((qp) => !qp.calledAt)
-  const position = queue.findIndex((qp) => String(qp._id) === participantId)
+type FullQueue = Awaited<ReturnType<typeof getFullQueueParticipantsPromise>>;
+
+const fullQueueCache: {
+  [queueId: string]: {
+    generatedAt: Date;
+    data: FullQueue;
+  };
+} = {};
+
+// 30 seconds cache TTL
+const FULL_QUEUE_CACHE_TTL = 1000 * 30;
+
+export async function getParticipantPosition(
+  queueId: string,
+  participantId: string,
+) {
+  const previouslyCachedFullQueue = fullQueueCache[queueId];
+  if (
+    !previouslyCachedFullQueue ||
+    previouslyCachedFullQueue.generatedAt <
+      new Date(Date.now() - FULL_QUEUE_CACHE_TTL)
+  ) {
+    console.log("Cache miss for full queue");
+    const data = await getFullQueueParticipantsPromise(queueId);
+    fullQueueCache[queueId] = {
+      generatedAt: new Date(),
+      data,
+    };
+  } else {
+    console.log("Cache hit for full queue");
+  }
+
+  const queueParticipants = fullQueueCache[queueId].data;
+  const queueParticipant = queueParticipants.find(
+    (queueParticipant) => String(queueParticipant._id) === participantId,
+  );
+  const queue = queueParticipants.filter((qp) => !qp.calledAt);
+  const position = queue.findIndex((qp) => String(qp._id) === participantId);
 
   return {
     position: position + 1,
-    participant: queueParticipant?.participant
-  }
+    participant: queueParticipant?.participant,
+  };
 }
 
 export async function getWaitingQueueParticipants(queueId: string) {
@@ -67,7 +101,7 @@ export async function getCalledQueueParticipants(queueId: string) {
 export async function callQueueParticipants(
   participantIds: string[],
   queueId: string,
-  eventSlug: string
+  eventSlug: string,
 ) {
   await QueueParticipant.updateMany(
     {
@@ -87,7 +121,7 @@ export async function callQueueParticipants(
     data: {
       participantIds,
       queueId,
-      eventSlug
+      eventSlug,
     },
   });
 }
