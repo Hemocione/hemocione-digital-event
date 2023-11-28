@@ -39,6 +39,10 @@ const QueueParticipantSchema = new Schema(
           type: String,
           required: false,
         },
+        fcmToken: {
+          type: String,
+          required: false,
+        },
       },
     },
     initialPosition: {

@@ -19,11 +19,20 @@ export default defineNuxtConfig({
       authCookieKey: process.env.HEMOCIONE_AUTH_COOKIE_KEY ?? "hemocioneId",
       hemocioneIdUrl:
         process.env.HEMOCIONE_ID_URL ?? "https://id.hemocione.com.br",
+      firebaseVapidKey: process.env.FIREBASE_VAPID_KEY ?? "mock-key",
     },
     cdn: {
       bucket: process.env.CDN_BUCKET ?? "hemocione-assets",
       basePath: process.env.CDN_BASE_PATH ?? "events/uploads",
       baseUrl: process.env.CDN_BASE_URL ?? "https://cdn.hemocione.com.br",
+    },
+    firebase: {
+      apiKey: process.env.FIREBASE_API_KEY ?? "mock-key",
+      authDomain: process.env.FIREBASE_AUTH_DOMAIN ?? "mock-key",
+      projectId: process.env.FIREBASE_PROJECT_ID ?? "mock-key",
+      storageBucket: process.env.FIREBASE_STORAGE_BUCKET ?? "mock-key",
+      messagingSenderId: process.env.FIREBASE_MESSAGING_SENDER_ID ?? "mock-key",
+      appId: process.env.FIREBASE_APP_ID ?? "mock-key",
     },
     secret: process.env.API_SECRET ?? "secret",
     mongodbUri:
