@@ -2,8 +2,8 @@
   <div class="main-container">
     <div class="image-container">
 
-      <img v-if="eventInfo?.banner" class="main-image" :src="eventInfo?.banner" />
-      <img v-else class="main-image" src="/images/illustrations/rafiki-blood-donation.svg" />
+      <NuxtImg v-if="eventInfo?.banner" class="main-image" :src="eventInfo?.banner" />
+      <NuxtImg v-else class="main-image" src="/images/illustrations/rafiki-blood-donation.svg" />
 
     </div>
     <div class="content">
@@ -14,12 +14,20 @@
       </div>
       <div class="queue-info">
         <div class="queue-message">
-          Olá {{ participantInfo?.participant?.name }},<br />
-          você está na {{ participantInfo?.position }}ª posição da fila!
+          Olá {{ participantInfo?.participant?.name }}!<br />
+          <span style="font-size: 16px">Acompanhe aqui a sua posição em tempo real! Você está na posição:</span>
         </div>
         <div class="queue-position">{{ participantInfo?.position }}</div>
       </div>
     </div>
+
+    <footer class="footer">
+      <NuxtImg width="56" height="56" class="footer-img" src="/images/illustrations/blood-brothers.svg" />
+
+      <NuxtLink to="https://apoie.hemocione.com.br" target="_blank">
+        <p>Quer apoiar o Hemocione? Saiba mais clicando aqui!</p>
+      </NuxtLink>
+    </footer>
   </div>
 </template>
 
@@ -56,11 +64,16 @@ const addressText = computed(() => {
   return `${address} - ${city}, ${state}`;
 });
 
+const interval = ref<NodeJS.Timeout>()
+
 onMounted(async () => {
   await router.isReady()
 
-  setInterval(async () => {
+  interval.value = setInterval(async () => {
     await refresh()
+    if (!participantInfo.value?.position) {
+      clearInterval(interval.value)
+    }
   }, 5 * ONE_SECOND)
 });
 </script>
@@ -73,8 +86,10 @@ onMounted(async () => {
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
-  align-items: flex-start;
+  align-items: center;
   padding: 0px 16px;
+  position: relative;
+  overflow: hidden;
 }
 
 .header {
@@ -118,7 +133,6 @@ onMounted(async () => {
 .content {
   align-self: stretch;
   flex-grow: 1;
-  padding: 16px 0;
   display: flex;
   flex-direction: column;
   gap: 32px;
@@ -172,8 +186,7 @@ onMounted(async () => {
 
 .queue-info {
   align-self: stretch;
-  height: 266px;
-  padding: 24px;
+  padding: 16px 24px;
   background: #BB0A08;
   border-radius: 8px;
   border: 2px solid #CACCCF;
@@ -182,6 +195,7 @@ onMounted(async () => {
   justify-content: center;
   align-items: center;
   gap: 16px;
+  margin-bottom: 8px;
 }
 
 .queue-message,
@@ -198,7 +212,7 @@ onMounted(async () => {
   height: 120px;
   padding: 16px;
   background: #D87C7F;
-  border-radius: 1000px;
+  border-radius: 50%;
   display: flex;
   justify-content: center;
   align-items: center;
@@ -206,6 +220,20 @@ onMounted(async () => {
   font-size: 80px;
   font-family: Lato;
   font-weight: 700;
+  position: relative;
+  z-index: 100;
+}
+
+.queue-position:before {
+  content: '';
+  background-color: var(--hemo-color-primary-light);
+  width: 100%;
+  height: 100%;
+  display: block;
+  position: absolute;
+  z-index: -1;
+  animation: pulse 1.8s infinite;
+  border-radius: 50%;
 }
 
 .event-details {
@@ -318,12 +346,29 @@ onMounted(async () => {
 
 .footer {
   display: flex;
-  position: absolute;
-  bottom: 0;
+  align-items: center;
+  justify-content: center;
+  /* position: sticky; */
   left: 0;
-  background-color: blue;
-  width: 100%;
+  bottom: 0;
+  background-color: var(--hemo-color-link);
+  width: 100vw;
   padding: 8px 16px;
   gap: 16px;
+  flex-direction: row;
+  border-top-right-radius: 16px;
+  border-top-left-radius: 16px;
+}
+
+@keyframes pulse {
+  0% {
+    transform: scale(.7);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(1.3);
+    opacity: 0;
+  }
 }
 </style>

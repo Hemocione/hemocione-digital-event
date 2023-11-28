@@ -8,6 +8,7 @@
   --hemo-color-text-secondary: #25282B;
   --hemo-color-text-secondary-opaque: rgba(37, 40, 43, 0.2) ;
   --hemo-color-text-primary: #f2f2f2;
+  --hemo-color-link: #005FED;
   --el-color-primary: var(--hemo-color-primary) !important;
   --el-color-main: var(--hemo-color-secondary) !important;
   --el-color-success: var(--hemo-color-success) !important;
