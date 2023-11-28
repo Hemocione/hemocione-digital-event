@@ -52,17 +52,26 @@ async function onSubmit() {
     if (!queueId) throw new Error("Queue not found");
 
     buttonLoading.value = true;
-    await $fetch(`/api/v1/event/${eventId}/queue/${queueId}/participant`, {
+    const queueParticipant = await $fetch(`/api/v1/event/${eventId}/queue/${queueId}/participant`, {
       method: "POST",
       body: JSON.stringify(payload),
     });
-    await navigateTo({
-      path: "/queue/join/success",
-      query: {
-        name,
-        ...(leadId && uuid ? { leadId, uuid } : {}),
-      },
-    });
+    if (leadId && uuid) {
+      await navigateTo({
+        path: "/queue/join/success",
+        query: {
+          name,
+          ...(leadId && uuid ? { leadId, uuid } : {}),
+        },
+      });
+    } else {
+      await navigateTo({
+        path: `/queue/participant/${queueParticipant._id}`,
+        query: {
+          eventId
+        },
+      });
+    }
   } catch (error) {
     ElNotification({
       title: "Ops!",
@@ -97,43 +106,21 @@ function parsePhone(value: string) {
 <template>
   <div class="page queue-join-page">
     <div class="event-header">
-      <NuxtImg
-        v-if="eventConfig?.logo"
-        format="webp"
-        :src="eventConfig?.logo"
-        class="event-logo"
-      />
+      <NuxtImg v-if="eventConfig?.logo" format="webp" :src="eventConfig?.logo" class="event-logo" />
       <h1>{{ eventConfig?.name ?? eventConfig?.slug ?? eventId }}</h1>
     </div>
     <el-form :model="form" class="form-wrapper">
       <el-form-item size="large" class="form-item">
-        <el-input
-          v-model="form.phone"
-          type="tel"
-          placeholder="Insira seu telefone com DDD"
-          :prefix-icon="ElIconPhone"
-          :disabled="disablePhone"
-          maxlength="15"
-          :formatter="(value: string) => formatPhone(value)"
-          :parser="(value: string) => parsePhone(value)"
-        />
+        <el-input v-model="form.phone" type="tel" placeholder="Insira seu telefone com DDD" :prefix-icon="ElIconPhone"
+          :disabled="disablePhone" maxlength="15" :formatter="(value: string) => formatPhone(value)"
+          :parser="(value: string) => parsePhone(value)" />
       </el-form-item>
       <el-form-item size="large" class="form-item">
-        <el-input
-          v-model="form.name"
-          :prefix-icon="ElIconUser"
-          placeholder="Insira seu nome"
-        />
+        <el-input v-model="form.name" :prefix-icon="ElIconUser" placeholder="Insira seu nome" />
       </el-form-item>
       <el-form-item size="large" class="form-item join-item">
-        <el-button
-          class="form-item"
-          :disabled="!allowClick"
-          type="success"
-          :loading="buttonLoading"
-          :icon="ElIconArrowRight"
-          @click="onSubmit"
-        >
+        <el-button class="form-item" :disabled="!allowClick" type="success" :loading="buttonLoading"
+          :icon="ElIconArrowRight" @click="onSubmit">
           Entrar na fila de Doação!
         </el-button>
       </el-form-item>
