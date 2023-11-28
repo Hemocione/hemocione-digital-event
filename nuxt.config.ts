@@ -26,9 +26,9 @@ export default defineNuxtConfig({
       baseUrl: process.env.CDN_BASE_URL ?? "https://cdn.hemocione.com.br",
     },
     secret: process.env.API_SECRET ?? "secret",
-    mongodbUri:
-      process.env.MONGODB_URI ?? "mongodb://admin:password@localhost:27017",
-    dbName: process.env.DB_NAME ?? "local",
+    mongodbUri: process.env.MONGODB_URI ??
+      "mongodb://admin:password@localhost:27017",
+    dbName: process.env.DB_NAME ?? "hemo",
     inngestKey: process.env.INNGEST_EVENT_KEY ?? "mock-key",
     digitalStandApiUrl:
       process.env.DIGITAL_STAND_API_URL ??
