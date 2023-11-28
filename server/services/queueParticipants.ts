@@ -6,7 +6,6 @@ import { upsertFBDataOnLead } from "./digitalStand";
 export async function getParticipantPosition(participantId: string) {
   const queueParticipant = await QueueParticipant.findOne({
     _id: participantId,
-    calledAt: null,
   })
     .select({
       _id: 1,
@@ -16,8 +15,15 @@ export async function getParticipantPosition(participantId: string) {
     .lean();
 
   // TODO: handle if the queueParticipant was not found
+  if (queueParticipant?.calledAt) {
+    return { position: 0, participant: queueParticipant.participant }
+  }
+
   if (!queueParticipant) {
-    return { position: null, participant: null }
+    return {
+      position: null,
+      participant: null
+    };
   }
 
   const { queueId, participant } = queueParticipant

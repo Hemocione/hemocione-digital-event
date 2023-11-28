@@ -1,29 +1,41 @@
 <template>
   <div class="main-container">
     <div class="image-container">
-
       <NuxtImg v-if="eventInfo?.banner" class="main-image" :src="eventInfo?.banner" />
       <NuxtImg v-else class="main-image" src="/images/illustrations/rafiki-blood-donation.svg" />
-
     </div>
+
     <div class="content">
       <div class="event-title-container">
         <div class="event-title">{{ eventInfo?.name }}</div>
-
         <MicroDateBox v-if="eventInfo?.startAt" :date="eventInfo?.startAt" :light="true" />
       </div>
-      <div class="queue-info">
-        <div class="queue-message">
-          Olá {{ participantInfo?.participant?.name }}!<br />
-          <span style="font-size: 16px">Acompanhe aqui a sua posição em tempo real! Você está na posição:</span>
-        </div>
-        <div class="queue-position">{{ participantInfo?.position }}</div>
-      </div>
+
+      <Transition name="slide-fade-left" appear mode="out-in">
+        <template v-if="!alreadyCalled">
+          <div class="queue-info">
+            <div class="queue-message">
+              Olá {{ participantInfo?.participant?.name }}!<br />
+              <span style="font-size: 16px">Acompanhe aqui a sua posição em tempo real! Você está na posição:</span>
+            </div>
+            <div class="queue-position">{{ participantInfo?.position }}</div>
+          </div>
+        </template>
+        <template v-else>
+          <div class="queue-info called">
+            <div class="queue-message">
+              Chegou a sua vez!<br />
+              <span style="font-size: 16px">
+                {{ participantInfo?.participant?.name }}, dirija-se para o local indicado para realizar sua
+                doação!</span>
+            </div>
+          </div>
+        </template>
+      </Transition>
     </div>
 
     <footer class="footer">
       <NuxtImg width="56" height="56" class="footer-img" src="/images/illustrations/blood-brothers.svg" />
-
       <NuxtLink to="https://apoie.hemocione.com.br" target="_blank">
         <p>Quer apoiar o Hemocione? Saiba mais clicando aqui!</p>
       </NuxtLink>
@@ -66,6 +78,10 @@ const addressText = computed(() => {
 
 const interval = ref<NodeJS.Timeout>()
 
+const alreadyCalled = computed(() => {
+  return participantInfo.value?.position === 0
+})
+
 onMounted(async () => {
   await router.isReady()
 
@@ -74,7 +90,7 @@ onMounted(async () => {
     if (!participantInfo.value?.position) {
       clearInterval(interval.value)
     }
-  }, 5 * ONE_SECOND)
+  }, 30 * ONE_SECOND)
 });
 </script>
 
@@ -198,6 +214,10 @@ onMounted(async () => {
   margin-bottom: 8px;
 }
 
+.queue-info.called {
+  background: var(--hemo-color-success);
+}
+
 .queue-message,
 .custom-message {
   align-self: stretch;
@@ -205,6 +225,9 @@ onMounted(async () => {
   font-size: 21px;
   font-family: Lato;
   font-weight: 400;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
 }
 
 .queue-position {
@@ -222,6 +245,7 @@ onMounted(async () => {
   font-weight: 700;
   position: relative;
   z-index: 100;
+  align-self: center;
 }
 
 .queue-position:before {
