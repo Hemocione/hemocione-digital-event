@@ -129,6 +129,7 @@ const callSelectedParticipants = async () => {
     );
     await smartRefresh();
   } catch (error) {
+    console.error(error);
     ElNotification({
       title: "Ops!",
       message:

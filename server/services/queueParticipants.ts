@@ -18,39 +18,40 @@ const getFullQueueParticipantsPromise = (queueId: string) =>
     })
     .lean();
 
-type FullQueue = Awaited<ReturnType<typeof getFullQueueParticipantsPromise>>;
+// type FullQueue = Awaited<ReturnType<typeof getFullQueueParticipantsPromise>>;
 
-const fullQueueCache: {
-  [queueId: string]: {
-    generatedAt: Date;
-    data: FullQueue;
-  };
-} = {};
+// const fullQueueCache: {
+//   [queueId: string]: {
+//     generatedAt: Date;
+//     data: FullQueue;
+//   };
+// } = {};
 
-// 30 seconds cache TTL
-const FULL_QUEUE_CACHE_TTL = 1000 * 30;
+// // 30 seconds cache TTL
+// const FULL_QUEUE_CACHE_TTL = 1000 * 30;
 
 export async function getParticipantPosition(
   queueId: string,
   participantId: string,
 ) {
-  const previouslyCachedFullQueue = fullQueueCache[queueId];
-  if (
-    !previouslyCachedFullQueue ||
-    previouslyCachedFullQueue.generatedAt <
-      new Date(Date.now() - FULL_QUEUE_CACHE_TTL)
-  ) {
-    console.log("Cache miss for full queue");
-    const data = await getFullQueueParticipantsPromise(queueId);
-    fullQueueCache[queueId] = {
-      generatedAt: new Date(),
-      data,
-    };
-  } else {
-    console.log("Cache hit for full queue");
-  }
+  // TODO: cache with redis or something
+  // const previouslyCachedFullQueue = fullQueueCache[queueId];
+  // if (
+  //   !previouslyCachedFullQueue ||
+  //   previouslyCachedFullQueue.generatedAt <
+  //     new Date(Date.now() - FULL_QUEUE_CACHE_TTL)
+  // ) {
+  //   console.log("Cache miss for full queue");
+  //   const data = await getFullQueueParticipantsPromise(queueId);
+  //   fullQueueCache[queueId] = {
+  //     generatedAt: new Date(),
+  //     data,
+  //   };
+  // } else {
+  //   console.log("Cache hit for full queue");
+  // }
 
-  const queueParticipants = fullQueueCache[queueId].data;
+  const queueParticipants = await getFullQueueParticipantsPromise(queueId);
   const queueParticipant = queueParticipants.find(
     (queueParticipant) => String(queueParticipant._id) === participantId,
   );
