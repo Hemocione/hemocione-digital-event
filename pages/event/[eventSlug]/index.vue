@@ -99,12 +99,14 @@ const timeText = computed(() => {
     year: "numeric",
     hour: "numeric",
     minute: "numeric",
+    timeZone: "America/Sao_Paulo",
   });
 
   const endAtText = sameDay
     ? endAt.toLocaleString("pt-BR", {
         hour: "numeric",
         minute: "numeric",
+        timeZone: "America/Sao_Paulo",
       })
     : endAt.toLocaleString("pt-BR", {
         day: "numeric",
@@ -112,6 +114,7 @@ const timeText = computed(() => {
         year: "numeric",
         hour: "numeric",
         minute: "numeric",
+        timeZone: "America/Sao_Paulo",
       });
   return `${startAtText} - ${endAtText}`;
 });
@@ -128,9 +131,7 @@ const config = useRuntimeConfig();
 // TODO: performer = banco de sangue
 // REF: https://developers.google.com/search/docs/appearance/structured-data/event
 useHead({
-  title: `${
-    eventConfig.value?.name ?? eventConfig.value?.slug
-  } | Hemocione Eventos`,
+  title: `${eventConfig.value?.name ?? eventConfig.value?.slug}`,
 });
 useSchemaOrg([
   defineEvent({
@@ -182,12 +183,8 @@ useSchemaOrg([
   }),
 ]);
 useServerSeoMeta({
-  title: `${
-    eventConfig.value?.name ?? eventConfig.value?.slug
-  } | Hemocione Eventos`,
-  ogTitle: `${
-    eventConfig.value?.name ?? eventConfig.value?.slug
-  } | Hemocione Eventos`,
+  title: `${eventConfig.value?.name ?? eventConfig.value?.slug}`,
+  ogTitle: `${eventConfig.value?.name ?? eventConfig.value?.slug}`,
   description:
     eventConfig.value?.description ??
     `Evento de doação de sangue do Hemocione - ${
@@ -204,8 +201,8 @@ useServerSeoMeta({
 });
 
 const ogImageOptions = {
-  width: 1200,
-  height: 630,
+  width: 800,
+  height: 400,
   component: "EventDetail",
   title: `${eventConfig.value?.name ?? eventConfig.value?.slug}`,
   description:

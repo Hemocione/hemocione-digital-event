@@ -23,14 +23,14 @@ const handleAndGenerateMessageBasedOnPosition = async (
 ) => {
   if (position === 1) {
     await setNotifiedCloseToCall(_id);
-    return `Olá ${name}! Sua posição na fila de doação está confirmada. Você é o próximo a doar! Por favor, mantenha-se próximo ao local de doação e aguarde a chamada.`;
+    return `Olá ${name}! Você é o próximo a doar! Por favor, mantenha-se próximo ao local de doação e aguarde a chamada.`;
   }
   if (position <= MAX_CLOSE_TO_CALL) {
     await setNotifiedCloseToCall(_id);
-    return `Olá ${name}! Sua posição na fila de doação está confirmada. Você está na posição ${position} da fila. A sua vez de doar está próxima! Por favor, mantenha-se próximo ao local de doação e aguarde a chamada.`;
+    return `Olá ${name}! Você está na posição ${position} da fila. A sua vez de doar está próxima! Por favor, mantenha-se próximo ao local de doação e aguarde a chamada.`;
   }
 
-  return `Olá ${name}! Sua posição na fila de doação está confirmada. Você está na posição ${position} da fila. Por favor, fique atento ao seu celular. Você receberá uma mensagem quando sua vez de doar estiver próxima.`;
+  return null;
 };
 
 export default inngest.createFunction(
@@ -49,6 +49,8 @@ export default inngest.createFunction(
       name,
       position,
     );
+    if (!text) return;
+
     await sendSMS(phone, text);
   },
 );

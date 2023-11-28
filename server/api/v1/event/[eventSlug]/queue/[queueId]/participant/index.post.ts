@@ -7,6 +7,7 @@ interface Body {
   uuid?: string;
   fbc?: string;
   fbp?: string;
+  hemocioneId?: string;
 }
 
 function validateBody(body: any): asserts body is Body {

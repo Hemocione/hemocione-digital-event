@@ -120,6 +120,7 @@ interface CreateQueueParticipant {
     uuid?: string;
     fbc?: string;
     fbp?: string;
+    hemocioneId?: string;
   };
   queueId: string;
   eventSlug: string;

@@ -16,6 +16,9 @@ export default defineNuxtConfig({
     public: {
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY ?? "mock-key",
       siteUrl,
+      authCookieKey: process.env.HEMOCIONE_AUTH_COOKIE_KEY ?? "hemocioneId",
+      hemocioneIdUrl:
+        process.env.HEMOCIONE_ID_URL ?? "https://id.hemocione.com.br",
     },
     cdn: {
       bucket: process.env.CDN_BUCKET ?? "hemocione-assets",
@@ -27,7 +30,9 @@ export default defineNuxtConfig({
       "mongodb://admin:password@localhost:27017",
     dbName: process.env.DB_NAME ?? "hemo",
     inngestKey: process.env.INNGEST_EVENT_KEY ?? "mock-key",
-    digitalStandApiUrl: process.env.DIGITAL_STAND_API_URL ?? "https://us-east1-estande-digital.cloudfunctions.net/api",
+    digitalStandApiUrl:
+      process.env.DIGITAL_STAND_API_URL ??
+      "https://us-east1-estande-digital.cloudfunctions.net/api",
     digitalStandApiSecret: process.env.DIGITAL_STAND_API_SECRET ?? "",
   },
   modules: [
