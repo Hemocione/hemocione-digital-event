@@ -1,5 +1,5 @@
 <template>
-  <nav class="nav-bar">
+  <nav v-if="!isIframed" class="nav-bar">
     <NuxtImg
       src="/images/logo-horizontal-branca.svg"
       alt="logo hemocione branca"
@@ -7,6 +7,14 @@
     />
   </nav>
 </template>
+
+<script setup lang="ts">
+const isIframed = ref(false);
+
+onMounted(() => {
+  isIframed.value = window !== window.top;
+});
+</script>
 
 <style scoped>
 .nav-bar {
