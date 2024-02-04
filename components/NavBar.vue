@@ -1,5 +1,5 @@
 <template>
-  <nav v-if="!isIframed" class="nav-bar">
+  <nav v-if="!isIframed" :class="{ 'nav-bar': true, hide: !validatedIframe }">
     <NuxtImg
       src="/images/logo-horizontal-branca.svg"
       alt="logo hemocione branca"
@@ -10,9 +10,11 @@
 
 <script setup lang="ts">
 const isIframed = ref(false);
+const validatedIframe = ref(false);
 
 onMounted(() => {
   isIframed.value = window !== window.top;
+  validatedIframe.value = true;
 });
 </script>
 
@@ -30,6 +32,9 @@ onMounted(() => {
   height: 7dvh;
 }
 
+.hide {
+  visibility: hidden;
+}
 .logo {
   height: 100%;
   max-width: 50%;
