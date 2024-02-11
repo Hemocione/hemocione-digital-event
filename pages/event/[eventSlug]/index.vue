@@ -55,6 +55,7 @@
         <span>{{ addressText }}</span>
       </div>
     </section>
+    <EventsFooter />
   </div>
 </template>
 

@@ -10,6 +10,8 @@
   --hemo-color-text-primary: #f2f2f2;
   --hemo-color-link: #005FED;
   --el-color-primary: var(--hemo-color-primary) !important;
+  --el-color-primary-light-3: var(--hemo-color-primary) !important;
+  --el-color-primary-dark-2: var(--hemo-color-primary-dark) !important;
   --el-color-main: var(--hemo-color-secondary) !important;
   --el-color-success: var(--hemo-color-success) !important;
   --el-color-warning: var(--hemo-color-warn) !important;
