@@ -1,5 +1,5 @@
 <template>
-  <CommonCoolFooter height="fit-content">
+  <CommonCoolFooter height="fit-content" desktop-border-radius="0">
     <ElButton type="primary" size="large" @click="goToSchedule">
       Confirmar
     </ElButton>

@@ -20,6 +20,10 @@ defineProps({
     type: String,
     default: "12%",
   },
+  desktopBorderRadius: {
+    type: String,
+    default: "8px 8px 0 0",
+  },
   hideToggle: {
     type: Boolean,
     default: false,
@@ -35,6 +39,7 @@ footer {
   background-color: white;
   height: v-bind("height");
   width: 100%;
+  max-width: var(--hemo-page-max-width);
   margin-top: auto;
 }
 .wrapper {
@@ -54,7 +59,6 @@ footer {
   bottom: 0;
   background-color: white;
   width: 100%;
-  max-width: var(--app-max-width);
 }
 .toggler {
   position: absolute;
@@ -65,5 +69,11 @@ footer {
   background-color: white;
   border: 1px solid var(--black-40);
   padding: 2px;
+}
+
+@media screen and (min-width: 1080px) {
+  footer {
+    border-radius: v-bind("desktopBorderRadius");
+  }
 }
 </style>

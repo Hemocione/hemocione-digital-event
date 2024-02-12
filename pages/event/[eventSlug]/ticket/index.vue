@@ -30,6 +30,8 @@ function goBack() {
 <style scoped>
 .ticket-page {
   width: 100%;
+  max-width: var(--hemo-page-max-width);
+  margin: 0 auto;
   min-height: 93dvh;
   display: flex;
   flex-direction: column;
@@ -65,5 +67,11 @@ article {
   display: flex;
   flex-direction: column;
   gap: 0.5rem;
+}
+
+@media screen and (min-width: 1080px) {
+  .ticket-page {
+    border-radius: 8px;
+  }
 }
 </style>

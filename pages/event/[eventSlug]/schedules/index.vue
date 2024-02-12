@@ -112,6 +112,8 @@ function goBack() {
 <style scoped>
 .schedules-page {
   width: 100%;
+  max-width: var(--hemo-page-max-width);
+  margin: 0 auto;
   min-height: 93dvh;
   display: flex;
   flex-direction: column;
@@ -158,6 +160,12 @@ h3 {
 @media screen and (max-width: 480px) {
   .schedules {
     grid-template-columns: 1fr;
+  }
+}
+
+@media screen and (min-width: 1080px) {
+  .schedules-page {
+    border-radius: 8px;
   }
 }
 </style>

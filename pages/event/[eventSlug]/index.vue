@@ -257,7 +257,7 @@ defineOgImage(ogImageOptions);
 }
 .event-details {
   width: 100%;
-  max-width: 1080px;
+  max-width: var(--hemo-page-max-width);
   min-height: 93dvh;
   display: flex;
   flex-direction: column;

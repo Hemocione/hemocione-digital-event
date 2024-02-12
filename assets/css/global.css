@@ -12,6 +12,8 @@
   --hemo-color-white: #ffffff;
   --el-color-primary: var(--hemo-color-primary) !important;
   --el-color-primary-light-3: var(--hemo-color-primary) !important;
+  --el-color-primary-light-7: var(--hemo-color-primary) !important;
+  --el-color-primary-light-9: var(--hemo-color-white) !important;
   --el-color-primary-dark-2: var(--hemo-color-primary-dark) !important;
   --el-color-main: var(--hemo-color-secondary) !important;
   --el-color-success: var(--hemo-color-success) !important;
@@ -24,6 +26,8 @@
   --el-disabled-border-color: #d4d7de !important;
   --el-bg-color: var(--hemo-color-secondary) !important;
   --el-border-radius-base: 8px !important;
+
+  --hemo-page-max-width: 1080px;
 }
 
 @font-face {
