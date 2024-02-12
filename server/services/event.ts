@@ -61,6 +61,24 @@ export async function incrementEventScheduleOccupiedSlots(eventSlug: string, sch
   return event;
 }
 
+export async function updateEventScheduleSlots(eventSlug: string, scheduleId: string, slots: number) {
+  const event = await Event.findOneAndUpdate(
+    {
+      slug: eventSlug,
+      "subscription.schedules._id": scheduleId,
+    },
+    {
+      $set: { "subscription.schedules.$.slots": slots },
+    },
+    {
+      lean: true,
+      new: true,
+    },
+  );
+  removeEventFromCache(eventSlug);
+  return event;
+}
+
 const MAX_CURRENT_EVENTS_CACHE_TTL = 1000 * 60 * 5; // 30 minutes
 const MAX_SIZE_CURRENT_EVENTS_CACHE = 10; // at most 10 events cached at a time
 
