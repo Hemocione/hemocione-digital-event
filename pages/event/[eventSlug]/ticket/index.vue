@@ -1,6 +1,6 @@
 <template>
-  <main class="ticket-page">
-    <CommonEventHeader @back="goBack" />
+  <main v-if="eventConfig" class="ticket-page">
+    <CommonEventHeader :event-name="eventConfig.name" @back="goBack" />
     <article>
       <CommonCard class="ticket-card">
         <span>#1234</span>
