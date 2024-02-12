@@ -61,4 +61,4 @@ SubscriptionSchema.index({ code: 1, eventSlug: 1 }, { unique: true });
 
 export type SubscriptionSchema = InferSchemaType<typeof SubscriptionSchema>;
 
-export const Event = model<SubscriptionSchema>("Event", SubscriptionSchema);
+export const Subscription = model<SubscriptionSchema>("Subscription", SubscriptionSchema);
