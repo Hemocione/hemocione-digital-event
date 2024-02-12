@@ -24,24 +24,11 @@
           light
         />
       </div>
-      <div class="event-content">
-        <div v-if="timeText" class="event-extra-info">
-          <ElIcon class="icon">
-            <ElIconCalendar />
-          </ElIcon>
-          <span class="extra-info-text">
-            {{ timeText }}
-          </span>
-        </div>
-        <div v-if="addressText" class="event-extra-info">
-          <ElIcon class="icon">
-            <ElIconLocation />
-          </ElIcon>
-          <span class="extra-info-text">
-            {{ addressText }}
-          </span>
-        </div>
-      </div>
+      <EventsInfo
+        class="event-info"
+        :address-text="addressText"
+        :time-text="timeText"
+      />
       <h1 style="padding: 1rem" class="text-heading">Localização</h1>
       <GoogleMapsAddress
         v-if="addressText"
@@ -60,6 +47,8 @@
 </template>
 
 <script setup lang="ts">
+import { formatAddress, formatTimeDuration } from "~/helpers/formatter";
+
 const route = useRoute();
 const router = useRouter();
 const eventSlug = route.params.eventSlug as string;
@@ -90,41 +79,14 @@ if (!eventConfig.value) goToEventListPage();
 
 const timeText = computed(() => {
   if (!eventConfig.value?.startAt) return "";
-  const startAt = new Date(eventConfig.value.startAt);
-  const endAt = new Date(eventConfig.value.endAt);
-  const sameDay = startAt.getDate() === endAt.getDate();
 
-  const startAtText = startAt.toLocaleString("pt-BR", {
-    day: "numeric",
-    month: "long",
-    year: "numeric",
-    hour: "numeric",
-    minute: "numeric",
-    timeZone: "America/Sao_Paulo",
-  });
-
-  const endAtText = sameDay
-    ? endAt.toLocaleString("pt-BR", {
-        hour: "numeric",
-        minute: "numeric",
-        timeZone: "America/Sao_Paulo",
-      })
-    : endAt.toLocaleString("pt-BR", {
-        day: "numeric",
-        month: "long",
-        year: "numeric",
-        hour: "numeric",
-        minute: "numeric",
-        timeZone: "America/Sao_Paulo",
-      });
-  return `${startAtText} - ${endAtText}`;
+  return formatTimeDuration(eventConfig.value.startAt, eventConfig.value.endAt);
 });
 
 const addressText = computed(() => {
   if (!eventConfig.value?.location) return null;
 
-  const { address, city, state } = eventConfig.value.location;
-  return `${address} - ${city}, ${state}`;
+  return formatAddress(eventConfig.value.location);
 });
 
 const config = useRuntimeConfig();
@@ -268,24 +230,6 @@ defineOgImage(ogImageOptions);
   padding-bottom: 1rem;
 }
 
-.event-content {
-  display: flex;
-  flex-direction: column;
-  gap: 1rem;
-  padding: 1rem;
-  width: 100%;
-}
-.event-extra-info {
-  display: flex;
-  width: 100%;
-  align-items: center;
-  gap: 0.5rem;
-}
-
-.extra-info-text {
-  font-size: 1rem;
-}
-
 .event-page {
   width: 100%;
   min-height: 93dvh;
@@ -308,6 +252,10 @@ defineOgImage(ogImageOptions);
   gap: 1rem;
 }
 
+.event-info {
+  padding: 1rem;
+}
+
 .text-heading {
   margin: 0;
   max-width: 80%;
@@ -318,12 +266,6 @@ defineOgImage(ogImageOptions);
   margin: 0;
   padding: 0;
   font-size: 1.5rem;
-}
-.icon {
-  width: 10%;
-  max-width: 2rem;
-  color: var(--hemo-color-primary);
-  font-size: 2rem;
 }
 
 @media (min-width: 1080px) {
