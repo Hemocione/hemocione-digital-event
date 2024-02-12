@@ -42,6 +42,24 @@ export interface UpdateEventDTO {
   registerDonationUrl?: string;
 }
 
+export async function incrementEventScheduleOccupiedSlots(eventSlug: string, scheduleId: string, increment: number) {
+  const event = await Event.findOneAndUpdate(
+    {
+      slug: eventSlug,
+      "subscription.schedules._id": scheduleId,
+    },
+    {
+      $inc: { "subscription.schedules.$.occupiedSlots": increment },
+    },
+    {
+      lean: true,
+      new: true,
+    },
+  );
+
+  return event;
+}
+
 export async function getEventBySlug(
   eventSlug: string,
   activeOnly: boolean = true,
@@ -99,6 +117,13 @@ export async function createEvent(data: CreateEventDTO) {
 export async function setEventDefaultSchedule(eventSlug: string, timeInterval: number = 60, slotsPerInterval: number = 30) {
   const event = await getEventBySlug(eventSlug, false, { lean: false });
   if (!event) return null;
+
+  if (event.subscription?.enabled) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Subscription is already enabled - do it manually!",
+    });
+  }
 
   const timeBlocks = getTimeBlocks(event.startAt, event.endAt, timeInterval);
   const schedules = timeBlocks.map((schedule) => ({
