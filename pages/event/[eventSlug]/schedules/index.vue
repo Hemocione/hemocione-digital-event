@@ -30,6 +30,10 @@
 import dayjs from "dayjs";
 import { computed, reactive } from "vue";
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const route = useRoute();
 const eventSlug = route.params.eventSlug as string;
 const { data: eventConfig } = await useFetch(`/api/v1/event/${eventSlug}`);
