@@ -22,6 +22,10 @@
 <script setup lang="ts">
 import { formatTimeDuration, formatAddress } from "~/helpers/formatter";
 
+definePageMeta({
+  middleware: ["auth"],
+});
+
 const route = useRoute();
 const eventSlug = route.params.eventSlug as string;
 

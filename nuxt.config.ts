@@ -42,6 +42,7 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "nuxt-vercel-analytics",
     "@nuxtseo/module",
+    "@pinia/nuxt",
   ],
   nitro: {
     preset: "vercel",
