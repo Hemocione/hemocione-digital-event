@@ -3,12 +3,19 @@
     <button class="go-back-button" @click="goBack">
       <ElIconArrowLeftBold />
     </button>
-    <span>Colégio Santo Agostinho 2023</span>
+    <span>{{ eventName }}</span>
   </header>
 </template>
 
 <script setup>
 const emit = defineEmits(["back"]);
+
+defineProps({
+  eventName: {
+    type: String,
+    required: true,
+  },
+});
 
 const goBack = () => {
   emit("back");
