@@ -12,9 +12,15 @@ const props = defineProps({
     type: String,
     required: true,
   },
+  selectedScheduleId: {
+    type: String as PropType<string | null>,
+    default: null,
+  },
 });
 
 function goToSchedule() {
+  if (!props.selectedScheduleId) return;
+
   navigateTo(`/event/${props.eventSlug}/ticket`);
 }
 </script>
