@@ -1,5 +1,6 @@
 import { assertSecretAuth } from "~/server/services/auth";
-import { UpdateEventDTO, updateEventBySlug } from "~/server/services/event";
+import { updateEventBySlug } from "~/server/services/event";
+import type { UpdateEventDTO } from "~/server/services/event";
 
 function assertUpdateEventDTO(body: unknown): asserts body is UpdateEventDTO {
   if (typeof body !== "object" || body === null) {

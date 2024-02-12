@@ -70,6 +70,46 @@ const EventSchema = new Schema(
       required: false,
       default: null,
     },
+    registerDonationUrl: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    subscription: {
+      enabled: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
+      schedules: {
+        type: [{
+          _id: {
+            type: Types.ObjectId,
+            default: () => new Types.ObjectId(),
+            unique: true,
+          },
+          startAt: {
+            type: Date,
+            required: true,
+          },
+          endAt: {
+            type: Date,
+            required: true,
+          },
+          slots: {
+            type: Number,
+            required: true,
+            default: 30,
+          },
+          occupiedSlots: {
+            type: Number,
+            required: true,
+            default: 0,
+          },
+        }],
+        default: [],
+      },
+    }
   },
   {
     timestamps: true,
