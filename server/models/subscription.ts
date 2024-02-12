@@ -1,5 +1,6 @@
 import type { InferSchemaType } from "mongoose";
 import { Schema, Types, model } from "mongoose";
+import { getRandomString } from "~/utils/getRandomString";
 
 const SubscriptionSchema = new Schema(
   {
@@ -37,18 +38,21 @@ const SubscriptionSchema = new Schema(
       default: null,
     },
     schedule: {
-      _id: {
-        type: Types.ObjectId,
-        required: true,
+      type: {
+        _id: {
+          type: Types.ObjectId,
+          required: true,
+        },
+        startAt: {
+          type: Date,
+          required: true,
+        },
+        endAt: {
+          type: Date,
+          required: true,
+        },
       },
-      startAt: {
-        type: Date,
-        required: true,
-      },
-      endAt: {
-        type: Date,
-        required: true,
-      },
+      required: true,
     },
   },
   {
