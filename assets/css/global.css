@@ -52,7 +52,8 @@ body {
   color: var(--hemo-color-secondary);
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
+  overflow-x: -moz-hidden-unscrollable;
+  overflow-x: clip;
   font-family:
     "Roboto",
     monospace,

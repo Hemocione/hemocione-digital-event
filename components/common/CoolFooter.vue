@@ -3,14 +3,6 @@
     <footer v-if="isOpen">
       <div class="wrapper">
         <slot />
-        <el-icon
-          v-if="!hideToggle"
-          size="30"
-          class="toggler"
-          @click="isOpen = false"
-        >
-          <ElIconClose />
-        </el-icon>
       </div>
     </footer>
     <div v-else-if="!hideToggle" class="fake-div">
@@ -38,12 +30,13 @@ defineProps({
 <style scoped>
 footer {
   border-top: 1px solid var(--black-40);
-  position: fixed;
+  position: sticky;
   bottom: 0;
   background-color: white;
   height: v-bind("height");
   width: 100%;
   max-width: var(--app-max-width);
+  margin-top: auto;
 }
 .wrapper {
   position: relative;

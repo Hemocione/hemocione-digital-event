@@ -292,6 +292,7 @@ defineOgImage(ogImageOptions);
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 }
 
 .event-banner {
@@ -330,14 +331,12 @@ defineOgImage(ogImageOptions);
     border: 1px solid var(--hemo-color-border);
     box-shadow: 0.5rem 0.5rem 0.5rem rgba(33, 33, 33, 0.5);
     border-radius: 1rem !important;
+
+    margin-bottom: 1rem;
   }
 
   .event-banner {
     border-radius: 1rem 1rem 0 0;
-  }
-
-  .event-page {
-    padding-bottom: 1rem;
   }
 }
 </style>

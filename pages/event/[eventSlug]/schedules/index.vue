@@ -18,6 +18,7 @@
         </CommonCard>
       </div>
     </article>
+    <SchedulesFooter event-slug="colegio-santo-agostinho-2023" />
   </main>
 </template>
 
