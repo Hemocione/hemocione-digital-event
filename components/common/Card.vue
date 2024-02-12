@@ -21,7 +21,9 @@ defineProps({
   height: fit-content;
   padding: 1rem;
 
-  transition: box-shadow 0.2s;
+  transition:
+    box-shadow 0.2s,
+    background-color 0.2s;
 }
 
 .default-card.focus {

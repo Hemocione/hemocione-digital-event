@@ -1,9 +1,6 @@
 <template>
   <main class="schedules-page">
-    <header>
-      <button @click="goBack">A</button>
-      <span>Colégio Santo Agostinho 2023</span>
-    </header>
+    <CommonEventHeader @back="goBack" />
     <article>
       <h3>Selecione um horário para a doação:</h3>
       <div class="schedules">
@@ -18,14 +15,15 @@
         </CommonCard>
       </div>
     </article>
-    <SchedulesFooter event-slug="colegio-santo-agostinho-2023" />
+    <SchedulesFooter :event-slug="eventSlug" />
   </main>
 </template>
 
 <script setup lang="ts">
 import { reactive } from "vue";
 
-const router = useRouter();
+const route = useRoute();
+const eventSlug = route.params.eventSlug as string;
 
 const MOCKED = [
   {
@@ -107,7 +105,7 @@ function isSelected(scheduleId: string) {
 }
 
 function goBack() {
-  router.back();
+  navigateTo(`/event/${eventSlug}`);
 }
 </script>
 
@@ -119,18 +117,8 @@ function goBack() {
   flex-direction: column;
   align-items: flex-start;
   justify-content: flex-start;
-  background-color: var(--hemo-color-secondary);
+  background-color: var(--hemo-color-white);
   color: var(--hemo-color-text-secondary);
-}
-
-header {
-  display: flex;
-  align-items: center;
-  gap: 1rem;
-  padding: 1rem;
-  width: 100%;
-  height: fit-content;
-  border-bottom: 2px solid var(--hemo-color-text-secondary-opaque);
 }
 
 article {

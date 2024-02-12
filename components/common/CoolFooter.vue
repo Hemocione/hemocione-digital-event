@@ -29,18 +29,17 @@ defineProps({
 
 <style scoped>
 footer {
-  border-top: 1px solid var(--black-40);
+  border-top: 1px solid var(--hemo-color-text-secondary-opaque);
   position: sticky;
   bottom: 0;
   background-color: white;
   height: v-bind("height");
   width: 100%;
-  max-width: var(--app-max-width);
   margin-top: auto;
 }
 .wrapper {
   position: relative;
-  padding: 1em 2em;
+  padding: 1em;
   display: flex;
   gap: 1em;
   width: 100%;

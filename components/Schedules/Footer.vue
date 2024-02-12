@@ -15,7 +15,7 @@ const props = defineProps({
 });
 
 function goToSchedule() {
-  navigateTo(`/event/${props.eventSlug}/schedules`);
+  navigateTo(`/event/${props.eventSlug}/ticket`);
 }
 </script>
 
