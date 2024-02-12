@@ -1,5 +1,6 @@
 import slugify from "slugify";
 import { Event } from "../models/event";
+import { getTimeBlocks } from "~/utils/getTimeBlocks";
 
 export interface CreateEventDTO {
   name: string;
@@ -8,14 +9,15 @@ export interface CreateEventDTO {
   queue?: {
     participantsMax?: number;
   };
-  startAt?: string | Date;
-  endAt?: string | Date;
+  startAt: string | Date;
+  endAt: string | Date;
   description?: string;
   location?: {
     address: string;
     city: string;
     state: string;
   };
+  registerDonationUrl?: string;
 }
 
 export interface UpdateEventDTO {
@@ -34,6 +36,10 @@ export interface UpdateEventDTO {
     city: string;
     state: string;
   };
+  subscription?: {
+    enabled?: boolean;
+  };
+  registerDonationUrl?: string;
 }
 
 export async function getEventBySlug(
@@ -89,6 +95,22 @@ export async function createEvent(data: CreateEventDTO) {
 
   return (await Event.create({ ...data, slug })).toObject();
 }
+
+export async function setEventDefaultSchedule(eventSlug: string, timeInterval: number = 60, slotsPerInterval: number = 30) {
+  const event = await getEventBySlug(eventSlug, false, { lean: false });
+  if (!event) return null;
+
+  const timeBlocks = getTimeBlocks(event.startAt, event.endAt, timeInterval);
+  const schedules = timeBlocks.map((schedule) => ({
+    ...schedule,
+    slots: slotsPerInterval,
+  }));
+  const subscription = { schedules }
+  event.set({ subscription });
+  const hemoEvent = await event.save()
+  return hemoEvent.toObject();
+}
+
 
 const getEventsFromDBPromise = (filter: Record<string, unknown>) => {
   return Event.find({
