@@ -1,0 +1,23 @@
+meta {
+  name: See my Subscription
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{api_url}}/v1/event/colegio-santo-inacio-28112023/subscription/mine
+  body: json
+  auth: none
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjBjNDg5NTU3LTAwMDAtNDI4Ni05MWI4LWJmNzgwNjI3Zjg0NyIsImdpdmVuTmFtZSI6IlRoaWFnbyIsInN1ck5hbWUiOiJHdWltYXLDo2VzIiwiYmxvb2RUeXBlIjoiQSsiLCJlbWFpbCI6Imd1aW1hQGhlbW9jaW9uZS5jb20uYnIiLCJwaG9uZSI6IjIxOTg0NDI2NzE3IiwiZ2VuZGVyIjoiTSIsImlhdCI6MTcwNzc2NDY4NCwiZXhwIjoxNzA4MzY5NDg0fQ.AwMou2YxLaPM9y52k5cn2MidLiUm32GbRcpd8jnkLiM
+}
+
+body:json {
+  {
+    "scheduleId": "65c96fac25a83248413ee96c",
+    "startAt": "2024-02-23T15:00:00.000+00:00",
+    "endAt": "2024-02-23T15:00:00.000+00:00"
+  }
+}
