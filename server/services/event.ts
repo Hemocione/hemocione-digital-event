@@ -120,11 +120,9 @@ export async function getEventBySlug(
   const cacheKey = `${eventSlug}:${getCacheKeyFromParams({ eventSlug, activeOnly, options })}`;
   const cached = currentEventsBySlugCache[cacheKey];
   if (cached && cached.generatedAt.getTime() + MAX_CURRENT_EVENTS_CACHE_TTL >= Date.now()) {
-    console.log("cache hit");
     return cached.data;
   }
 
-  console.log("cache miss");
   const event = await getEventBySlugPromise(eventSlug, activeOnly, options);
   if (event) {
     addEventToCache(event, cacheKey);
