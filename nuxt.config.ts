@@ -25,6 +25,7 @@ export default defineNuxtConfig({
       basePath: process.env.CDN_BASE_PATH ?? "events/uploads",
       baseUrl: process.env.CDN_BASE_URL ?? "https://cdn.hemocione.com.br",
     },
+    hemocioneIdJwtSecretKey: process.env.HEMOCIONE_ID_JWT_SECRET_KEY ?? "secret",
     secret: process.env.API_SECRET ?? "secret",
     mongodbUri: process.env.MONGODB_URI ??
       "mongodb://admin:password@localhost:27017",
