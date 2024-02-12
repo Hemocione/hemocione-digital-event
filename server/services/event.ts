@@ -1,6 +1,7 @@
 import slugify from "slugify";
 import { Event } from "../models/event";
 import { getTimeBlocks } from "~/utils/getTimeBlocks";
+import { getCacheKeyFromParams } from "~/utils/getCacheKeyFromParams";
 
 export interface CreateEventDTO {
   name: string;
@@ -56,8 +57,55 @@ export async function incrementEventScheduleOccupiedSlots(eventSlug: string, sch
       new: true,
     },
   );
-
+  removeEventFromCache(eventSlug);
   return event;
+}
+
+const MAX_CURRENT_EVENTS_CACHE_TTL = 1000 * 60 * 5; // 30 minutes
+const MAX_SIZE_CURRENT_EVENTS_CACHE = 10; // at most 10 events cached at a time
+
+const currentEventsBySlugCache: {
+  [cacheKey: string]: {
+    generatedAt: Date;
+    data: EventFromDb;
+  };
+} = {};
+
+const addEventToCache = (event: EventFromDb, key: string) => {
+  currentEventsBySlugCache[key] = {
+    generatedAt: new Date(),
+    data: event,
+  };
+
+  const keys = Object.keys(currentEventsBySlugCache);
+  if (keys.length > MAX_SIZE_CURRENT_EVENTS_CACHE) {
+    const oldestKey = keys.reduce((oldest, key) => {
+      return currentEventsBySlugCache[key].generatedAt < currentEventsBySlugCache[oldest].generatedAt
+        ? key
+        : oldest;
+    }, keys[0]);
+    delete currentEventsBySlugCache[oldestKey];
+  }
+}
+
+const removeEventFromCache = (eventSlug: string) => {
+  const eventCacheKey = Object.keys(currentEventsBySlugCache).find((key) => key.startsWith(`${eventSlug}:`));
+  if (eventCacheKey) {
+    delete currentEventsBySlugCache[eventCacheKey];
+  }
+}
+
+type EventFromDb = Awaited<ReturnType<typeof getEventBySlugPromise>>;
+
+const getEventBySlugPromise = (eventSlug: string, activeOnly: boolean, options: { lean?: boolean }) => {
+  return Event.findOne(
+    {
+      slug: eventSlug,
+      ...(activeOnly ? { active: true } : {}),
+    },
+    null,
+    options,
+  );
 }
 
 export async function getEventBySlug(
@@ -69,14 +117,18 @@ export async function getEventBySlug(
     lean: true,
   },
 ) {
-  return await Event.findOne(
-    {
-      slug: eventSlug,
-      ...(activeOnly ? { active: true } : {}),
-    },
-    null,
-    options,
-  );
+  const cacheKey = `${eventSlug}:${getCacheKeyFromParams({ eventSlug, activeOnly, options })}`;
+  const cached = currentEventsBySlugCache[cacheKey];
+  if (cached && cached.generatedAt.getTime() + MAX_CURRENT_EVENTS_CACHE_TTL >= Date.now()) {
+    return cached.data;
+  }
+
+  const event = await getEventBySlugPromise(eventSlug, activeOnly, options);
+  if (event) {
+    addEventToCache(event, cacheKey);
+  }
+
+  return event;
 }
 
 export async function deleteEventBySlug(eventSlug: string) {
