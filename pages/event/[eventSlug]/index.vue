@@ -55,14 +55,14 @@
         <span>{{ addressText }}</span>
       </div>
     </section>
-    <EventsFooter />
+    <EventsFooter :event-slug="eventSlug" />
   </div>
 </template>
 
 <script setup lang="ts">
 const route = useRoute();
 const router = useRouter();
-const eventSlug = route.params.eventSlug;
+const eventSlug = route.params.eventSlug as string;
 const { data: eventConfig } = await useFetch(`/api/v1/event/${eventSlug}`);
 definePageMeta({
   name: "EventPage",
