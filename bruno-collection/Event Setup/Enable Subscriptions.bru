@@ -1,11 +1,11 @@
 meta {
-  name: Setup Default Subscription Schedules
+  name: Enable Subscriptions
   type: http
-  seq: 1
+  seq: 5
 }
 
 post {
-  url: {{api_url}}/v1/event/colegio-guima/default_schedules
+  url: {{api_url}}/v1/event/colegio-guima/subscription/enable
   body: json
   auth: none
 }
