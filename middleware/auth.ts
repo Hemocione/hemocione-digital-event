@@ -1,15 +1,10 @@
 import type { LocationQuery } from "#vue-router";
-import type { CurrentUserData } from "~/utils/currentUserTokenDecoder";
 
 export default defineNuxtRouteMiddleware((to, from) => {
   if (process.server) return;
 
-  const config = useRuntimeConfig();
-
   if (!evaluateCurrentLogin(from.query)) {
-    const redirectUrl = `${config.public.siteUrl}${to.fullPath}`;
-
-    window.location.href = getHemocioneIdUrl(redirectUrl);
+    redirectToID(to.fullPath);
     return;
   }
 
@@ -19,29 +14,46 @@ export default defineNuxtRouteMiddleware((to, from) => {
 });
 
 function evaluateCurrentLogin(query?: LocationQuery) {
-  const config = useRuntimeConfig();
   const { user, setUser, setToken } = useUserStore();
-  let currentUser: CurrentUserData | null = null;
-  let currentToken: string | null = null;
 
   if (user) return true;
 
-  currentUser = useCookie(config.public.authCookieKey, {
-    decode: currentUserTokenDecoder,
-  }).value;
+  const token = getCurrentToken(query);
 
-  currentToken = useCookie(config.public.authCookieKey).value as string;
+  if (!token) return false;
 
-  if (query?.token) {
-    currentUser = currentUserTokenDecoder(query.token as string);
-    currentToken = query.token as string;
-  }
+  const currentUser = currentUserTokenDecoder(token);
 
   if (!currentUser) {
     return false;
   }
 
   setUser(currentUser);
-  setToken(currentToken);
+  setToken(token);
   return true;
+}
+
+export function getCurrentToken(query?: LocationQuery): string | null {
+  const { token } = useUserStore();
+  if (token) {
+    return token;
+  }
+
+  const config = useRuntimeConfig();
+  let currentToken: string | null = null;
+
+  currentToken = useCookie(config.public.authCookieKey).value as string;
+
+  if (query?.token) {
+    currentToken = query.token as string;
+  }
+
+  return currentToken;
+}
+
+export function redirectToID(fullPath: string) {
+  const config = useRuntimeConfig();
+  const redirectUrl = `${config.public.siteUrl}${fullPath}`;
+
+  window.location.href = getHemocioneIdUrl(redirectUrl);
 }

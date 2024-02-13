@@ -1,18 +1,22 @@
 <template>
-  <main v-if="eventConfig" class="ticket-page">
+  <main v-if="eventConfig && subscription" class="ticket-page">
     <CommonEventHeader :event-name="eventConfig.name" @back="goBack" />
     <article>
       <CommonCard class="ticket-card">
-        <span>#1234</span>
-        <span>Doador da silva</span>
+        <span>#{{ subscription.code }}</span>
+        <span>{{ subscription.name }}</span>
         <section class="schedule-time">
-          <span>Seu horário para doação é: 12:00</span>
+          <span>Seu horário para doação é: {{ ticketStartAt }}</span>
         </section>
-        <ElButton>Cancelar agendamento</ElButton>
+        <ElButton :loading="state.loading" @click="cancelSubscription">
+          Cancelar agendamento
+        </ElButton>
       </CommonCard>
       <section class="event-info-container">
         <span>Informações do evento</span>
-        <span><strong>Colégio Santo Agostinho 2023</strong></span>
+        <span>
+          <strong>{{ eventConfig.name }}</strong>
+        </span>
         <EventsInfo :address-text="addressText" :time-text="timeText" />
       </section>
     </article>
@@ -20,6 +24,8 @@
 </template>
 
 <script setup lang="ts">
+import { reactive } from "vue";
+import dayjs from "dayjs";
 import { formatTimeDuration, formatAddress } from "~/helpers/formatter";
 
 definePageMeta({
@@ -30,10 +36,25 @@ const route = useRoute();
 const eventStore = useEventStore();
 const eventSlug = route.params.eventSlug as string;
 const eventConfig = await eventStore.getEvent(eventSlug);
+const subscription = await eventStore.getSubscription(eventSlug);
 
 if (!eventConfig) {
   navigateTo("/404");
 }
+
+if (!subscription) {
+  navigateTo(`/event/${eventSlug}`);
+}
+
+const state = reactive({
+  loading: false,
+});
+
+const ticketStartAt = computed(() => {
+  if (!subscription) return "";
+
+  return dayjs(subscription.schedule.startAt).format("HH:mm");
+});
 
 const timeText = computed(() => {
   if (!eventConfig.startAt) return "";
@@ -46,6 +67,23 @@ const addressText = computed(() => {
 
   return formatAddress(eventConfig.location);
 });
+
+async function cancelSubscription() {
+  state.loading = true;
+
+  try {
+    await eventStore.cancelSubscription(eventSlug);
+    goBack();
+  } catch (error) {
+    ElNotification({
+      title: "Erro ao cancelar agendamento",
+      message: "Por favor, tente novamente mais tarde.",
+      type: "error",
+    });
+  }
+
+  state.loading = false;
+}
 
 function goBack() {
   navigateTo(`/event/${eventSlug}`);

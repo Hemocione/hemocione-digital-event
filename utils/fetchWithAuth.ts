@@ -1,10 +1,17 @@
+import { getCurrentToken, redirectToID } from "~/middleware/auth";
+
 type FetchParams = Parameters<typeof $fetch>;
 
-export function fetchWithAuth(url: FetchParams[0], options: FetchParams[1]) {
-  const { token } = useUserStore();
+export function fetchWithAuth(url: FetchParams[0], options?: FetchParams[1]) {
+  const token = getCurrentToken();
+  const route = useRoute();
 
   if (!token) {
-    throw new Error("Token not found");
+    if (process.browser) {
+      redirectToID(route.fullPath);
+    }
+
+    return null;
   }
 
   return $fetch(url, {

@@ -22,9 +22,22 @@ interface Event {
   } | null;
 }
 
+interface Subscription {
+  eventSlug: string;
+  hemocioneId: string;
+  name: string;
+  code: string;
+  schedule: {
+    _id: unknown;
+    startAt: string;
+    endAt: string;
+  };
+}
+
 export const useEventStore = defineStore("event", {
   state: () => ({
     loadedEvents: new Map<string, Event>(),
+    loadedSubscriptions: new Map<string, Subscription>(),
   }),
   actions: {
     async getEvent(slug: string): Promise<Event> {
@@ -41,6 +54,44 @@ export const useEventStore = defineStore("event", {
       this.loadedEvents.set(slug, event.value);
 
       return event.value;
+    },
+
+    async createSubscription(eventSlug: string, scheduleId: string) {
+      const subscription = await fetchWithAuth(
+        `/api/v1/event/${eventSlug}/subscription`,
+        {
+          method: "POST",
+          body: { scheduleId },
+        },
+      );
+
+      this.loadedSubscriptions.set(eventSlug, subscription);
+    },
+
+    async getSubscription(eventSlug: string): Promise<Subscription | null> {
+      if (this.loadedSubscriptions.has(eventSlug)) {
+        return this.loadedSubscriptions.get(eventSlug)!;
+      }
+
+      const subscription = await fetchWithAuth(
+        `/api/v1/event/${eventSlug}/subscription/mine`,
+      )?.catch(() => null);
+
+      if (!subscription) {
+        return null;
+      }
+
+      this.loadedSubscriptions.set(eventSlug, subscription);
+
+      return subscription;
+    },
+
+    async cancelSubscription(eventSlug: string) {
+      await fetchWithAuth(`/api/v1/event/${eventSlug}/subscription/mine`, {
+        method: "DELETE",
+      });
+
+      this.loadedSubscriptions.delete(eventSlug);
     },
   },
 });
