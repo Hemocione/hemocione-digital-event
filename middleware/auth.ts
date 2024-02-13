@@ -70,7 +70,6 @@ export function redirectToID(fullPath: string) {
 
   const url = new URL(redirectUrl);
   url.searchParams.delete("token");
-  window.history.replaceState({}, document.title, url.toString());
 
   window.location.href = getHemocioneIdUrl(url.toString());
 }
