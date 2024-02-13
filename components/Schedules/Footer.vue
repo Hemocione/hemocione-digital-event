@@ -43,8 +43,14 @@ async function selectSchedule() {
   state.loading = true;
 
   try {
-    // TODO: Implement the API call to save the selected schedule
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    await fetchWithAuth(`/api/v1/event/${props.eventSlug}/subscription`, {
+      method: "POST",
+      body: {
+        scheduleId: props.selectedScheduleId,
+        startAt: new Date().toISOString(),
+        endAt: new Date().toISOString(),
+      },
+    });
     navigateTo(`/event/${props.eventSlug}/ticket`);
   } catch (error) {
     ElNotification({

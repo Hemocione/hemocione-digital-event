@@ -35,8 +35,13 @@ definePageMeta({
 });
 
 const route = useRoute();
+const eventStore = useEventStore();
 const eventSlug = route.params.eventSlug as string;
-const { data: eventConfig } = await useFetch(`/api/v1/event/${eventSlug}`);
+const eventConfig = await eventStore.getEvent(eventSlug);
+
+if (!eventConfig) {
+  navigateTo("/404");
+}
 
 interface Schedule {
   id: string;
@@ -54,7 +59,7 @@ const state = reactive({
 });
 
 const schedules = computed(() => {
-  const subscription = eventConfig.value?.subscription;
+  const subscription = eventConfig.subscription;
 
   if (!subscription?.enabled) return [];
 

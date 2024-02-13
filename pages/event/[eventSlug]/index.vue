@@ -6,21 +6,21 @@
       </ElIcon>
       <NuxtImg
         fit="cover"
-        :format="eventConfig?.banner ? 'webp' : undefined"
+        :format="eventConfig.banner ? 'webp' : undefined"
         :src="
-          eventConfig?.banner ||
+          eventConfig.banner ||
           '/images/illustrations/rafiki-blood-donation.svg'
         "
         class="event-banner"
-        :alt="`Banner - ${eventConfig?.name}`"
+        :alt="`Banner - ${eventConfig.name}`"
       />
       <div class="event-header">
         <h1 class="text-heading">
-          {{ eventConfig?.name }}
+          {{ eventConfig.name }}
         </h1>
         <MicroDateBox
-          v-if="eventConfig?.startAt"
-          :date="eventConfig?.startAt"
+          v-if="eventConfig.startAt"
+          :date="eventConfig.startAt"
           light
         />
       </div>
@@ -37,12 +37,15 @@
       />
       <div class="map-subtitle">
         <h2 class="text-subheading">
-          {{ eventConfig?.name }}
+          {{ eventConfig.name }}
         </h2>
         <span>{{ addressText }}</span>
       </div>
     </section>
-    <EventsFooter :event-slug="eventSlug" :register-donation-url="registerDonationUrl"/>
+    <EventsFooter
+      :event-slug="eventSlug"
+      :register-donation-url="registerDonationUrl"
+    />
   </div>
 </template>
 
@@ -51,8 +54,9 @@ import { formatAddress, formatTimeDuration } from "~/helpers/formatter";
 
 const route = useRoute();
 const router = useRouter();
+const eventStore = useEventStore();
 const eventSlug = route.params.eventSlug as string;
-const { data: eventConfig } = await useFetch(`/api/v1/event/${eventSlug}`);
+const eventConfig = await eventStore.getEvent(eventSlug);
 definePageMeta({
   name: "EventPage",
   scrollToTop: true,
@@ -75,74 +79,76 @@ definePageMeta({
 const goToEventListPage = () => {
   router.push("/");
 };
-if (!eventConfig.value) goToEventListPage();
+if (!eventConfig) goToEventListPage();
 
 const timeText = computed(() => {
-  if (!eventConfig.value?.startAt) return "";
+  if (!eventConfig.startAt) return "";
 
-  return formatTimeDuration(eventConfig.value.startAt, eventConfig.value.endAt);
+  return formatTimeDuration(eventConfig.startAt, eventConfig.endAt);
 });
 
 const addressText = computed(() => {
-  if (!eventConfig.value?.location) return null;
+  if (!eventConfig.location) return null;
 
-  return formatAddress(eventConfig.value.location);
+  return formatAddress(eventConfig.location);
 });
 
 const config = useRuntimeConfig();
 
 const isEventTodayAndAlreadyStarted = computed(() => {
-  if (!eventConfig.value?.startAt) return false;
+  if (!eventConfig.startAt) return false;
 
-  const startAt = new Date(eventConfig.value.startAt);
+  const startAt = new Date(eventConfig.startAt);
   const today = new Date();
 
-  const isToday = startAt.getDate() === today.getDate() &&
+  const isToday =
+    startAt.getDate() === today.getDate() &&
     startAt.getMonth() === today.getMonth() &&
     startAt.getFullYear() === today.getFullYear();
 
   const hasStarted = startAt.getTime() < today.getTime();
 
-  return (isToday && hasStarted);
+  return isToday && hasStarted;
 });
 
 const registerDonationUrl = computed(() => {
-  if (!eventConfig.value?.registerDonationUrl || !isEventTodayAndAlreadyStarted.value) return;
-  return eventConfig.value.registerDonationUrl;
+  if (!eventConfig.registerDonationUrl || !isEventTodayAndAlreadyStarted.value)
+    return;
+  return eventConfig.registerDonationUrl;
 });
 
 // TODO: performer = banco de sangue
 // REF: https://developers.google.com/search/docs/appearance/structured-data/event
 useHead({
-  title: `${eventConfig.value?.name ?? eventConfig.value?.slug}`,
+  title: `${eventConfig.name ?? eventConfig.slug}`,
 });
 useSchemaOrg([
   defineEvent({
-    name: eventConfig.value?.name,
-    startDate: eventConfig.value?.startAt,
-    endDate: eventConfig.value?.endAt,
+    name: eventConfig.name,
+    startDate: eventConfig.startAt,
+    endDate: eventConfig.endAt,
     eventAttendanceMode: "OfflineEventAttendanceMode",
     eventStatus: "EventScheduled",
     location: [
       {
         "@type": "Place",
-        name: eventConfig.value?.name,
+        name: eventConfig.name,
         address: {
-          streetAddress: eventConfig.value?.location?.address,
-          addressLocality: eventConfig.value?.location?.city,
-          addressRegion: eventConfig.value?.location?.state,
+          streetAddress: eventConfig.location?.address,
+          addressLocality: eventConfig.location?.city,
+          addressRegion: eventConfig.location?.state,
           addressCountry: "BR",
         },
       },
     ],
     image: [
-      eventConfig.value?.banner ??
+      eventConfig.banner ??
         "https://cdn.hemocione.com.br/events/uploads/1699940076138-logo_hemocione_fb-2(1).png",
     ],
     description:
-      eventConfig.value?.description ??
+      eventConfig.description ??
       `Evento de doação de sangue do Hemocione - ${
-        eventConfig.value?.name ?? eventConfig.value?.slug
+        eventConfig.name ?? eventConfig.slug
       }`,
     organizer: {
       "@type": "Organization",
@@ -159,44 +165,44 @@ useSchemaOrg([
     offers: {
       price: 0,
       priceCurrency: "BRL",
-      url: `${config.public.siteUrl}/event/${eventConfig.value?.slug}`,
-      validFrom: eventConfig.value?.startAt,
-      validUntil: eventConfig.value?.endAt,
+      url: `${config.public.siteUrl}/event/${eventConfig.slug}`,
+      validFrom: eventConfig.startAt,
+      validUntil: eventConfig.endAt,
     },
   }),
 ]);
 useServerSeoMeta({
-  title: `${eventConfig.value?.name ?? eventConfig.value?.slug}`,
-  ogTitle: `${eventConfig.value?.name ?? eventConfig.value?.slug}`,
+  title: `${eventConfig.name ?? eventConfig.slug}`,
+  ogTitle: `${eventConfig.name ?? eventConfig.slug}`,
   description:
-    eventConfig.value?.description ??
+    eventConfig.description ??
     `Evento de doação de sangue do Hemocione - ${
-      eventConfig.value?.name ?? eventConfig.value?.slug
+      eventConfig.name ?? eventConfig.slug
     }`,
   ogDescription:
-    eventConfig.value?.description ??
+    eventConfig.description ??
     `Evento de doação de sangue do Hemocione - ${
-      eventConfig.value?.name ?? eventConfig.value?.slug
+      eventConfig.name ?? eventConfig.slug
     }`,
   twitterCard: "summary_large_image",
   fbAppId: "Hemocione",
-  ogUrl: `${config.public.siteUrl}/event/${eventConfig.value?.slug}`,
+  ogUrl: `${config.public.siteUrl}/event/${eventConfig.slug}`,
 });
 
 const ogImageOptions = {
   width: 800,
   height: 400,
   component: "EventDetail",
-  title: `${eventConfig.value?.name ?? eventConfig.value?.slug}`,
+  title: `${eventConfig.name ?? eventConfig.slug}`,
   description:
-    eventConfig.value?.description ??
+    eventConfig.description ??
     `Evento de doação de sangue do Hemocione - ${
-      eventConfig.value?.name ?? eventConfig.value?.slug
+      eventConfig.name ?? eventConfig.slug
     }`,
   addressText,
   timeText,
-  startAt: eventConfig.value?.startAt,
-  logo: eventConfig.value?.logo,
+  startAt: eventConfig.startAt,
+  logo: eventConfig.logo,
 };
 
 defineOgImage(ogImageOptions);

@@ -1,5 +1,4 @@
 import type { LocationQuery } from "#vue-router";
-import { getHemocioneIdUrl } from "~/helpers/hemocioneID";
 import type { CurrentUserData } from "~/utils/currentUserTokenDecoder";
 
 export default defineNuxtRouteMiddleware((to, from) => {
@@ -21,8 +20,9 @@ export default defineNuxtRouteMiddleware((to, from) => {
 
 function evaluateCurrentLogin(query?: LocationQuery) {
   const config = useRuntimeConfig();
-  const { user, setUser } = useUserStore();
+  const { user, setUser, setToken } = useUserStore();
   let currentUser: CurrentUserData | null = null;
+  let currentToken: string | null = null;
 
   if (user) return true;
 
@@ -30,8 +30,11 @@ function evaluateCurrentLogin(query?: LocationQuery) {
     decode: currentUserTokenDecoder,
   }).value;
 
+  currentToken = useCookie(config.public.authCookieKey).value as string;
+
   if (query?.token) {
     currentUser = currentUserTokenDecoder(query.token as string);
+    currentToken = query.token as string;
   }
 
   if (!currentUser) {
@@ -39,5 +42,6 @@ function evaluateCurrentLogin(query?: LocationQuery) {
   }
 
   setUser(currentUser);
+  setToken(currentToken);
   return true;
 }

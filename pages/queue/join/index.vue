@@ -1,6 +1,4 @@
 <script setup lang="ts">
-import { getHemocioneIdUrl } from "~/helpers/hemocioneID";
-
 definePageMeta({
   layout: "no-scroll",
 });

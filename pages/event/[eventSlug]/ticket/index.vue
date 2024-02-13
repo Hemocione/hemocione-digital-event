@@ -27,20 +27,24 @@ definePageMeta({
 });
 
 const route = useRoute();
+const eventStore = useEventStore();
 const eventSlug = route.params.eventSlug as string;
+const eventConfig = await eventStore.getEvent(eventSlug);
 
-const { data: eventConfig } = await useFetch(`/api/v1/event/${eventSlug}`);
+if (!eventConfig) {
+  navigateTo("/404");
+}
 
 const timeText = computed(() => {
-  if (!eventConfig.value?.startAt) return "";
+  if (!eventConfig.startAt) return "";
 
-  return formatTimeDuration(eventConfig.value.startAt, eventConfig.value.endAt);
+  return formatTimeDuration(eventConfig.startAt, eventConfig.endAt);
 });
 
 const addressText = computed(() => {
-  if (!eventConfig.value?.location) return null;
+  if (!eventConfig.location) return null;
 
-  return formatAddress(eventConfig.value.location);
+  return formatAddress(eventConfig.location);
 });
 
 function goBack() {

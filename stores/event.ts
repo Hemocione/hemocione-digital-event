@@ -1,0 +1,46 @@
+import type { Address } from "~/helpers/formatter";
+
+interface Event {
+  slug: string;
+  name: string;
+  banner?: string | null;
+  description?: string | null;
+  logo?: string | null;
+  startAt?: string;
+  endAt: string;
+  location?: Address | null;
+  registerDonationUrl?: string | null;
+  subscription?: {
+    enabled: boolean;
+    schedules: {
+      _id: unknown;
+      slots: number;
+      occupiedSlots: number;
+      startAt: string;
+      endAt: string;
+    }[];
+  } | null;
+}
+
+export const useEventStore = defineStore("event", {
+  state: () => ({
+    loadedEvents: new Map<string, Event>(),
+  }),
+  actions: {
+    async getEvent(slug: string): Promise<Event> {
+      if (this.loadedEvents.has(slug)) {
+        return this.loadedEvents.get(slug)!;
+      }
+
+      const { data: event } = await useFetch(`/api/v1/event/${slug}`);
+
+      if (!event.value) {
+        throw new Error("Event not found");
+      }
+
+      this.loadedEvents.set(slug, event.value);
+
+      return event.value;
+    },
+  },
+});

@@ -32,7 +32,7 @@ export function formatTimeDuration(
   return `${startAtText} - ${endAtText}`;
 }
 
-interface Address {
+export interface Address {
   address: string;
   city: string;
   state: string;
