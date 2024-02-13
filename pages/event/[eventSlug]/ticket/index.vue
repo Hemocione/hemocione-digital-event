@@ -24,6 +24,7 @@
         <EventsInfo :address-text="addressText" :time-text="timeText" />
       </section>
     </article>
+    <TicketFooter :event-slug="eventSlug" />
   </main>
 </template>
 
