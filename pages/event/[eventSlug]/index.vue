@@ -44,7 +44,7 @@
     </section>
     <EventsFooter
       :event-slug="eventSlug"
-      :register-donation-url="registerDonationUrl"
+      :register-donation-url="eventConfig.registerDonationUrl"
     />
   </div>
 </template>
@@ -94,28 +94,6 @@ const addressText = computed(() => {
 });
 
 const config = useRuntimeConfig();
-
-const isEventTodayAndAlreadyStarted = computed(() => {
-  if (!eventConfig.startAt) return false;
-
-  const startAt = new Date(eventConfig.startAt);
-  const today = new Date();
-
-  const isToday =
-    startAt.getDate() === today.getDate() &&
-    startAt.getMonth() === today.getMonth() &&
-    startAt.getFullYear() === today.getFullYear();
-
-  const hasStarted = startAt.getTime() < today.getTime();
-
-  return isToday && hasStarted;
-});
-
-const registerDonationUrl = computed(() => {
-  if (!eventConfig.registerDonationUrl || !isEventTodayAndAlreadyStarted.value)
-    return;
-  return eventConfig.registerDonationUrl;
-});
 
 // TODO: performer = banco de sangue
 // REF: https://developers.google.com/search/docs/appearance/structured-data/event

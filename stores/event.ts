@@ -61,7 +61,12 @@ export const useEventStore = defineStore("event", {
         `/api/v1/event/${eventSlug}/subscription`,
         {
           method: "POST",
-          body: { scheduleId },
+          body: {
+            scheduleId,
+            // TODO: Remove this or change (wait for guima anwser)
+            startAt: new Date().toISOString(),
+            endAt: new Date().toISOString(),
+          },
         },
       );
 
