@@ -14,7 +14,7 @@
 <script setup lang="ts">
 import { reactive } from "vue";
 
-const eventStore = useEventStore();
+const userStore = useUserStore();
 
 const props = defineProps({
   eventSlug: {
@@ -45,7 +45,7 @@ async function selectSchedule() {
   state.loading = true;
 
   try {
-    await eventStore.createSubscription(
+    await userStore.createSubscription(
       props.eventSlug,
       props.selectedScheduleId,
     );

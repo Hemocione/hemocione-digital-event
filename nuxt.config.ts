@@ -98,6 +98,14 @@ export default defineNuxtConfig({
       cdn: "https://cdn.hemocione.com.br",
     },
   },
+  routeRules: {
+    "/event/:eventSlug/ticket": {
+      ssr: false,
+    },
+    "/event/:eventSlug/schedules": {
+      ssr: false,
+    },
+  },
   experimental: {
     componentIslands: true,
   },

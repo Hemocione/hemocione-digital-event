@@ -29,7 +29,7 @@
 <script setup lang="ts">
 import dayjs from "dayjs";
 import { computed, reactive } from "vue";
-import { isEventAlreadyStarted } from "~/helpers/event";
+import { isTodayAndPast } from "~/helpers/todayAndPast";
 
 definePageMeta({
   middleware: ["auth"],
@@ -37,12 +37,16 @@ definePageMeta({
 
 const route = useRoute();
 const eventStore = useEventStore();
+const userStore = useUserStore();
 const eventSlug = route.params.eventSlug as string;
 const eventConfig = await eventStore.getEvent(eventSlug);
-const subscription = await eventStore.getSubscription(eventSlug);
-const isEventTodayAndAlreadyStarted = computed(
-  () => eventConfig.startAt && isEventAlreadyStarted(eventConfig.startAt),
-);
+const subscription = await userStore.getSubscription(eventSlug);
+const isEventTodayAndAlreadyStarted = computed(() => {
+  if (!eventConfig.startAt) return false;
+
+  return isTodayAndPast(eventConfig.startAt);
+});
+
 
 if (!eventConfig) {
   navigateTo("/404");

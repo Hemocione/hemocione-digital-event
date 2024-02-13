@@ -5,12 +5,6 @@
 </template>
 
 <script setup lang="ts">
-import { evaluateCurrentLogin } from "./middleware/auth";
-
-const route = useRoute();
-
-await evaluateCurrentLogin(route.query);
-
 useServerSeoMeta({
   description:
     "Encontre eventos de doação de sangue próximos a você e ajude a salvar vidas!",

@@ -38,14 +38,15 @@ import { formatTimeDuration, formatAddress } from "~/helpers/formatter";
 const MIN_HOURS_TO_CANCEL = 24;
 
 definePageMeta({
-  middleware: ["auth"],
+  middleware: ["auth"]
 });
 
 const route = useRoute();
 const eventStore = useEventStore();
+const userStore = useUserStore();
 const eventSlug = route.params.eventSlug as string;
 const eventConfig = await eventStore.getEvent(eventSlug);
-const subscription = await eventStore.getSubscription(eventSlug);
+const subscription = await userStore.getSubscription(eventSlug);
 
 if (!eventConfig) {
   navigateTo("/404");
@@ -66,7 +67,7 @@ const state = reactive({
 const isAllowedToCancel = computed(() => {
   if (!subscription) return false;
 
-  const startAt = dayjs(subscription.schedule.startAt);
+  const startAt = dayjs(eventConfig.startAt);
   const now = dayjs();
 
   return startAt.diff(now, "hours") > MIN_HOURS_TO_CANCEL;
@@ -94,7 +95,7 @@ async function cancelSubscription() {
   state.loading = true;
 
   try {
-    await eventStore.cancelSubscription(eventSlug);
+    await userStore.cancelSubscription(eventSlug);
     goBack();
   } catch (error) {
     ElNotification({

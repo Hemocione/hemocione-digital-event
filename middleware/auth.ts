@@ -3,7 +3,8 @@ import type { LocationQuery } from "#vue-router";
 export default defineNuxtRouteMiddleware(async (to, from) => {
   if (process.server) return;
 
-  if (!(await evaluateCurrentLogin(from.query))) {
+  const isLoggedIn = await evaluateCurrentLogin(from.query);
+  if (!isLoggedIn) {
     redirectToID(to.fullPath);
     return;
   }
@@ -24,7 +25,7 @@ export async function evaluateCurrentLogin(query?: LocationQuery) {
   if (!token) return false;
 
   try {
-    await $fetch(`${config.public.hemocioneIdApiUrl}/users/validate-token`, {
+    await useFetch(`${config.public.hemocioneIdApiUrl}/users/validate-token`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -46,30 +47,22 @@ export async function evaluateCurrentLogin(query?: LocationQuery) {
 }
 
 export function getCurrentToken(query?: LocationQuery): string | null {
+  if (query?.token) {
+    return String(query.token);
+  }
+
   const { token } = useUserStore();
   if (token) {
     return token;
   }
 
   const config = useRuntimeConfig();
-  let currentToken: string | null = null;
-
-  currentToken = useCookie(config.public.authCookieKey).value as string;
-
-  // Fallback if no cookie is found
-  if (!currentToken && query?.token) {
-    currentToken = query.token as string;
-  }
-
-  return currentToken;
+  const cookieToken = useCookie(config.public.authCookieKey).value as string;
+  return cookieToken;
 }
 
 export function redirectToID(fullPath: string) {
   const config = useRuntimeConfig();
   const redirectUrl = `${config.public.siteUrl}${fullPath}`;
-
-  const url = new URL(redirectUrl);
-  url.searchParams.delete("token");
-
-  window.location.href = getHemocioneIdUrl(url.toString());
+  navigateTo(getHemocioneIdUrl(redirectUrl), { external: true });
 }

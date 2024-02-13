@@ -1,5 +1,5 @@
 <template>
-  <transition-group name="slide-top">
+  <transition-group name="fade" appear>
     <footer v-if="isOpen">
       <div class="wrapper">
         <slot />

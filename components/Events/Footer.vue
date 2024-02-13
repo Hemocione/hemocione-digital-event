@@ -1,10 +1,10 @@
 <template>
-  <CommonCoolFooter v-if="buttons.length" height="fit-content">
+  <CommonCoolFooter v-if="buttons.length && !loading" height="fit-content">
     <ElButton
       v-for="button in buttons"
       :key="button.label"
       :type="button.type"
-      :disabled="!button.action"
+      :disabled="button.disabled"
       size="large"
       @click="button.action"
     >
@@ -14,14 +14,21 @@
 </template>
 
 <script setup lang="ts">
-import { isEventAlreadyStarted } from "~/helpers/event";
+import { isTodayAndPast } from '~/helpers/todayAndPast';
 
 interface Button {
   label: string;
   type?: "primary";
+  disabled?: boolean;
   visible: boolean;
   action?: () => void;
 }
+
+const loading = ref(true);
+
+onMounted(() => {
+  loading.value = false;
+});
 
 const props = defineProps({
   eventSlug: {
@@ -35,19 +42,23 @@ const props = defineProps({
 });
 
 const eventStore = useEventStore();
-const { user } = useUserStore();
-const subscription = await eventStore.getSubscription(props.eventSlug);
+const userStore = useUserStore();
+const { user } = userStore
+const subscription = await userStore.getSubscription(props.eventSlug);
 const eventConfig = await eventStore.getEvent(props.eventSlug);
 
-const isEventTodayAndAlreadyStarted = computed(
-  () => eventConfig.startAt && isEventAlreadyStarted(eventConfig.startAt),
-);
-const isSchedulesEnabled = computed(() => eventConfig.subscription?.enabled);
+const isEventTodayAndAlreadyStarted = computed(() => {
+  if (!eventConfig.startAt) return false;
+
+  return isTodayAndPast(eventConfig.startAt);
+});
 
 const buttons = computed((): Button[] => {
-  const isLogged = !!user;
-  const hasSubscription = !!subscription;
+  const isLogged = Boolean(user);
+  const hasSubscription = Boolean(subscription);
   const alreadyStarted = isEventTodayAndAlreadyStarted.value;
+  const isSchedulesEnabled = eventConfig.subscription?.enabled;
+  console.dir(eventConfig, { depth: null })
 
   const computedButtons = [
     {
@@ -58,23 +69,23 @@ const buttons = computed((): Button[] => {
     {
       label: "Agendar horário",
       type: "primary",
-      visible: isSchedulesEnabled.value && !alreadyStarted && !hasSubscription,
+      visible: isSchedulesEnabled && !alreadyStarted && !hasSubscription,
       action: goToSchedule,
     },
     {
       label: "Acessar ingresso",
       type: "primary",
-      visible: hasSubscription || (alreadyStarted && !isLogged),
+      visible: isSchedulesEnabled && (hasSubscription || (alreadyStarted && !isLogged)),
       action: goToTicket,
     },
     {
-      label: "Você não agendou",
+      label: "Inscrições encerradas",
       type: "primary",
+      disabled: true,
       visible:
-        isSchedulesEnabled.value && alreadyStarted && isLogged && !subscription,
+        isSchedulesEnabled && alreadyStarted && isLogged && !hasSubscription,
     },
   ];
-
   return computedButtons.filter((button) => button.visible) as Button[];
 });
 

@@ -22,22 +22,9 @@ interface Event {
   } | null;
 }
 
-interface Subscription {
-  eventSlug: string;
-  hemocioneId: string;
-  name: string;
-  code: string;
-  schedule: {
-    _id: unknown;
-    startAt: string;
-    endAt: string;
-  };
-}
-
 export const useEventStore = defineStore("event", {
   state: () => ({
-    loadedEvents: new Map<string, Event>(),
-    loadedSubscriptions: new Map<string, Subscription>(),
+    loadedEvents: new Map<string, Event>()
   }),
   actions: {
     async getEvent(slug: string): Promise<Event> {
@@ -55,43 +42,21 @@ export const useEventStore = defineStore("event", {
 
       return event.value;
     },
+    incrementSlot(eventSlug: string, scheduleId: string, increment: number = 1) {
+      const event = this.loadedEvents.get(eventSlug);
+      if (!event) {
+        return;
+      }
 
-    async createSubscription(eventSlug: string, scheduleId: string) {
-      const subscription = await fetchWithAuth(
-        `/api/v1/event/${eventSlug}/subscription`,
-        {
-          method: "POST",
-          body: { scheduleId },
-        },
+      const schedule = event.subscription?.schedules.find(
+        (s) => s._id === scheduleId
       );
-
-      this.loadedSubscriptions.set(eventSlug, subscription);
-    },
-
-    async getSubscription(eventSlug: string): Promise<Subscription | null> {
-      if (this.loadedSubscriptions.has(eventSlug)) {
-        return this.loadedSubscriptions.get(eventSlug)!;
+      
+      if (!schedule) {
+        return;
       }
 
-      const subscription = await fetchWithAuth(
-        `/api/v1/event/${eventSlug}/subscription/mine`,
-      )?.catch(() => null);
-
-      if (!subscription) {
-        return null;
-      }
-
-      this.loadedSubscriptions.set(eventSlug, subscription);
-
-      return subscription;
-    },
-
-    async cancelSubscription(eventSlug: string) {
-      await fetchWithAuth(`/api/v1/event/${eventSlug}/subscription/mine`, {
-        method: "DELETE",
-      });
-
-      this.loadedSubscriptions.delete(eventSlug);
-    },
+      schedule.occupiedSlots += increment; 
+    }
   },
 });
