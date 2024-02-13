@@ -44,8 +44,16 @@ export function getCurrentToken(query?: LocationQuery): string | null {
 
   currentToken = useCookie(config.public.authCookieKey).value as string;
 
-  if (!currentToken && query?.token) {
-    currentToken = query.token as string;
+  if (!currentToken) {
+    if (query?.token) {
+      currentToken = query.token as string;
+
+      if (process.browser) {
+        localStorage.setItem(config.public.authCookieKey, currentToken);
+      }
+    } else if (process.browser) {
+      currentToken = localStorage.getItem(config.public.authCookieKey);
+    }
   }
 
   return currentToken;
