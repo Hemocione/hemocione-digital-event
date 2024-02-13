@@ -45,6 +45,7 @@ export function useHemocioneUserAuth(event: H3Event) {
       verifyAndReturnData<HemocioneUserAuthTokenData>(token);
     return hemocioneUser;
   } catch (error) {
+    console.error(error);
     throw createError({
       statusCode: 401,
       statusMessage: "Unauthorized - Invalid Token",
