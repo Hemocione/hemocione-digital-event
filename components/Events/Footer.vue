@@ -1,5 +1,5 @@
 <template>
-  <CommonCoolFooter height="fit-content">
+  <CommonCoolFooter v-if="buttons.length" height="fit-content">
     <ElButton
       v-for="button in buttons"
       :key="button.label"
