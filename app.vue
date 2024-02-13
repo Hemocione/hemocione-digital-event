@@ -9,7 +9,7 @@ import { evaluateCurrentLogin } from "./middleware/auth";
 
 const route = useRoute();
 
-evaluateCurrentLogin(route.query);
+await evaluateCurrentLogin(route.query);
 
 useServerSeoMeta({
   description:

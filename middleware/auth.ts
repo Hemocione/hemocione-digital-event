@@ -1,9 +1,9 @@
 import type { LocationQuery } from "#vue-router";
 
-export default defineNuxtRouteMiddleware((to, from) => {
+export default defineNuxtRouteMiddleware(async (to, from) => {
   if (process.server) return;
 
-  if (!evaluateCurrentLogin(from.query)) {
+  if (!(await evaluateCurrentLogin(from.query))) {
     redirectToID(to.fullPath);
     return;
   }
@@ -13,14 +13,26 @@ export default defineNuxtRouteMiddleware((to, from) => {
   window.history.replaceState({}, document.title, url.toString());
 });
 
-export function evaluateCurrentLogin(query?: LocationQuery) {
+export async function evaluateCurrentLogin(query?: LocationQuery) {
   const { user, setUser, setToken } = useUserStore();
+  const config = useRuntimeConfig();
 
   if (user) return true;
 
   const token = getCurrentToken(query);
 
   if (!token) return false;
+
+  try {
+    await $fetch(`${config.public.hemocioneIdApiUrl}/users/validate-token`, {
+      method: "GET",
+      headers: {
+        Authorization: `Bearer ${token}`,
+      },
+    });
+  } catch (error) {
+    return false;
+  }
 
   const currentUser = currentUserTokenDecoder(token);
 
