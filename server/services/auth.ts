@@ -1,5 +1,5 @@
-import { verifyAndReturnData } from "./jwt";
 import type { H3Event } from "h3";
+import { verifyAndReturnData } from "./jwt";
 const config = useRuntimeConfig();
 
 export function assertSecretAuth(event: H3Event) {
@@ -15,10 +15,10 @@ export function assertSecretAuth(event: H3Event) {
 }
 
 const BLOODTYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"] as const;
-export type BloodType = typeof BLOODTYPES[number];
+export type BloodType = (typeof BLOODTYPES)[number];
 
 const GENDERS = ["M", "F", "O"] as const;
-export type Gender = typeof GENDERS[number];
+export type Gender = (typeof GENDERS)[number];
 
 export interface HemocioneUserAuthTokenData {
   id: string;
@@ -28,7 +28,7 @@ export interface HemocioneUserAuthTokenData {
   email: string;
   phone: string;
   gender: Gender;
-} 
+}
 
 export function useHemocioneUserAuth(event: H3Event) {
   const headers = event.headers;
@@ -41,7 +41,8 @@ export function useHemocioneUserAuth(event: H3Event) {
   }
 
   try {
-    const hemocioneUser = verifyAndReturnData<HemocioneUserAuthTokenData>(token);
+    const hemocioneUser =
+      verifyAndReturnData<HemocioneUserAuthTokenData>(token);
     return hemocioneUser;
   } catch (error) {
     throw createError({

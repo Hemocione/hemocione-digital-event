@@ -12,7 +12,11 @@ export default defineEventHandler(async (event) => {
 
   const eventSlug = String(getRouterParam(event, "eventSlug"));
   const scheduleId = String(getRouterParam(event, "scheduleId"));
-  const updatedEvent = await updateEventScheduleSlots(eventSlug, scheduleId, slotsAsNumber);
+  const updatedEvent = await updateEventScheduleSlots(
+    eventSlug,
+    scheduleId,
+    slotsAsNumber,
+  );
 
   if (!updatedEvent) {
     return;

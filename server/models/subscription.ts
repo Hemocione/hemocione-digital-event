@@ -57,12 +57,18 @@ const SubscriptionSchema = new Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
-SubscriptionSchema.index({ hemocioneId: 1, eventSlug: 1 }, { unique: true, partialFilterExpression: { deletedAt: null } });
+SubscriptionSchema.index(
+  { hemocioneId: 1, eventSlug: 1 },
+  { unique: true, partialFilterExpression: { deletedAt: null } },
+);
 SubscriptionSchema.index({ code: 1, eventSlug: 1 }, { unique: true });
 
 export type SubscriptionSchema = InferSchemaType<typeof SubscriptionSchema>;
 
-export const Subscription = model<SubscriptionSchema>("Subscription", SubscriptionSchema);
+export const Subscription = model<SubscriptionSchema>(
+  "Subscription",
+  SubscriptionSchema,
+);

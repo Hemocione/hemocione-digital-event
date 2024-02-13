@@ -55,6 +55,10 @@ if (!subscription) {
   navigateTo(`/event/${eventSlug}`);
 }
 
+useServerSeoMeta({
+  title: `Agendamento - ${eventConfig?.name}`,
+});
+
 const state = reactive({
   loading: false,
 });

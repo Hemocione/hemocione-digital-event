@@ -51,6 +51,10 @@ if (isEventTodayAndAlreadyStarted.value) {
   navigateTo(`/event/${eventSlug}`);
 }
 
+useServerSeoMeta({
+  title: `Horários - ${eventConfig?.name}`,
+});
+
 interface Schedule {
   id: string;
   slots: number;

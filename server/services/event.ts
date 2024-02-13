@@ -43,7 +43,11 @@ export interface UpdateEventDTO {
   registerDonationUrl?: string;
 }
 
-export async function incrementEventScheduleOccupiedSlots(eventSlug: string, scheduleId: string, increment: number) {
+export async function incrementEventScheduleOccupiedSlots(
+  eventSlug: string,
+  scheduleId: string,
+  increment: number,
+) {
   const event = await Event.findOneAndUpdate(
     {
       slug: eventSlug,
@@ -78,7 +82,11 @@ export async function enableEventSubscription(eventSlug: string) {
   return event;
 }
 
-export async function updateEventScheduleSlots(eventSlug: string, scheduleId: string, slots: number) {
+export async function updateEventScheduleSlots(
+  eventSlug: string,
+  scheduleId: string,
+  slots: number,
+) {
   const event = await Event.findOneAndUpdate(
     {
       slug: eventSlug,
@@ -96,8 +104,25 @@ export async function updateEventScheduleSlots(eventSlug: string, scheduleId: st
   return event;
 }
 
+const getEventBySlugPromise = (
+  eventSlug: string,
+  activeOnly: boolean,
+  options: { lean?: boolean },
+) => {
+  return Event.findOne(
+    {
+      slug: eventSlug,
+      ...(activeOnly ? { active: true } : {}),
+    },
+    null,
+    options,
+  );
+};
+
 const MAX_CURRENT_EVENTS_CACHE_TTL = 1000 * 60 * 5; // 30 minutes
 const MAX_SIZE_CURRENT_EVENTS_CACHE = 10; // at most 10 events cached at a time
+
+type EventFromDb = Awaited<ReturnType<typeof getEventBySlugPromise>>;
 
 const currentEventsBySlugCache: {
   [cacheKey: string]: {
@@ -115,33 +140,23 @@ const addEventToCache = (event: EventFromDb, key: string) => {
   const keys = Object.keys(currentEventsBySlugCache);
   if (keys.length > MAX_SIZE_CURRENT_EVENTS_CACHE) {
     const oldestKey = keys.reduce((oldest, key) => {
-      return currentEventsBySlugCache[key].generatedAt < currentEventsBySlugCache[oldest].generatedAt
+      return currentEventsBySlugCache[key].generatedAt <
+        currentEventsBySlugCache[oldest].generatedAt
         ? key
         : oldest;
     }, keys[0]);
     delete currentEventsBySlugCache[oldestKey];
   }
-}
+};
 
 const removeEventFromCache = (eventSlug: string) => {
-  const eventCacheKey = Object.keys(currentEventsBySlugCache).find((key) => key.startsWith(`${eventSlug}:`));
+  const eventCacheKey = Object.keys(currentEventsBySlugCache).find((key) =>
+    key.startsWith(`${eventSlug}:`),
+  );
   if (eventCacheKey) {
     delete currentEventsBySlugCache[eventCacheKey];
   }
-}
-
-type EventFromDb = Awaited<ReturnType<typeof getEventBySlugPromise>>;
-
-const getEventBySlugPromise = (eventSlug: string, activeOnly: boolean, options: { lean?: boolean }) => {
-  return Event.findOne(
-    {
-      slug: eventSlug,
-      ...(activeOnly ? { active: true } : {}),
-    },
-    null,
-    options,
-  );
-}
+};
 
 export async function getEventBySlug(
   eventSlug: string,
@@ -152,9 +167,16 @@ export async function getEventBySlug(
     lean: true,
   },
 ) {
-  const cacheKey = `${eventSlug}:${getCacheKeyFromParams({ eventSlug, activeOnly, options })}`;
+  const cacheKey = `${eventSlug}:${getCacheKeyFromParams({
+    eventSlug,
+    activeOnly,
+    options,
+  })}`;
   const cached = currentEventsBySlugCache[cacheKey];
-  if (cached && cached.generatedAt.getTime() + MAX_CURRENT_EVENTS_CACHE_TTL >= Date.now()) {
+  if (
+    cached &&
+    cached.generatedAt.getTime() + MAX_CURRENT_EVENTS_CACHE_TTL >= Date.now()
+  ) {
     return cached.data;
   }
 
@@ -201,7 +223,11 @@ export async function createEvent(data: CreateEventDTO) {
   return (await Event.create({ ...data, slug })).toObject();
 }
 
-export async function setEventDefaultSchedule(eventSlug: string, timeInterval: number = 60, slotsPerInterval: number = 30) {
+export async function setEventDefaultSchedule(
+  eventSlug: string,
+  timeInterval: number = 60,
+  slotsPerInterval: number = 30,
+) {
   const event = await getEventBySlug(eventSlug, false, { lean: false });
   if (!event) return null;
 
@@ -217,12 +243,11 @@ export async function setEventDefaultSchedule(eventSlug: string, timeInterval: n
     ...schedule,
     slots: slotsPerInterval,
   }));
-  const subscription = { schedules }
+  const subscription = { schedules };
   event.set({ subscription });
-  const hemoEvent = await event.save()
+  const hemoEvent = await event.save();
   return hemoEvent.toObject();
 }
-
 
 const getEventsFromDBPromise = (filter: Record<string, unknown>) => {
   return Event.find({

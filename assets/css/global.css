@@ -1,16 +1,16 @@
 :root {
   --hemo-color-primary: #bb0a08;
   --hemo-color-primary-dark: #8a0000;
-  --hemo-color-primary-light: #FF6262;
+  --hemo-color-primary-light: #ff6262;
   --hemo-color-secondary: #f2f2f2;
   --hemo-color-success: #2ac769;
   --hemo-color-warn: #f6a609;
-  --hemo-color-text-secondary: #25282B;
-  --hemo-color-text-secondary-opaque: rgba(37, 40, 43, 0.2) ;
+  --hemo-color-text-secondary: #25282b;
+  --hemo-color-text-secondary-opaque: rgba(37, 40, 43, 0.2);
   --hemo-color-text-primary: #f2f2f2;
-  --hemo-color-link: #005FED;
+  --hemo-color-link: #005fed;
   --hemo-color-white: #ffffff;
-  --hemo-color-black-80: #52575C;
+  --hemo-color-black-80: #52575c;
   --el-color-primary: var(--hemo-color-primary) !important;
   --el-color-primary-light-3: var(--hemo-color-primary) !important;
   --el-color-primary-light-5: var(--hemo-color-primary-dark) !important;
@@ -31,7 +31,7 @@
   --hemo-page-max-width: 1080px;
 }
 
-.el-button+.el-button {
+.el-button + .el-button {
   margin: 0 !important;
 }
 
@@ -55,7 +55,6 @@
 .el-tabs__header {
   margin: 0 !important;
 }
-
 
 html,
 body {
@@ -82,7 +81,6 @@ body {
   min-height: 100dvh;
 }
 
-
 body {
   min-height: 100dvh;
   width: 100vw;
@@ -98,7 +96,10 @@ a {
   text-decoration: none;
 }
 
-a:active, a:focus, a:hover, a:visited {
+a:active,
+a:focus,
+a:hover,
+a:visited {
   outline: 0;
   -moz-outline-style: none;
   outline-style: none;

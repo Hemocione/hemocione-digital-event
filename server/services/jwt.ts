@@ -6,4 +6,4 @@ const config = useRuntimeConfig();
 export function verifyAndReturnData<T>(token: string): JwtData<T> {
   const data = jwt.verify(token, config.hemocioneIdJwtSecretKey);
   return data as JwtData<T>;
-};
+}

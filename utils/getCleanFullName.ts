@@ -1,3 +1,3 @@
-export function getCleanFullName (givenName: string, surName: string) {
-  return `${givenName.trim()} ${surName.trim()}`
+export function getCleanFullName(givenName: string, surName: string) {
+  return `${givenName.trim()} ${surName.trim()}`;
 }

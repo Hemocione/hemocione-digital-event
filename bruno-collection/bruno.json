@@ -2,8 +2,5 @@
   "version": "1",
   "name": "Hemocione Digital Events",
   "type": "collection",
-  "ignore": [
-    "node_modules",
-    ".git"
-  ]
+  "ignore": ["node_modules", ".git"]
 }
