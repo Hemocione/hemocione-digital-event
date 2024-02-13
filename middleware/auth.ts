@@ -68,5 +68,9 @@ export function redirectToID(fullPath: string) {
   const config = useRuntimeConfig();
   const redirectUrl = `${config.public.siteUrl}${fullPath}`;
 
-  window.location.href = getHemocioneIdUrl(redirectUrl);
+  const url = new URL(redirectUrl);
+  url.searchParams.delete("token");
+  window.history.replaceState({}, document.title, url.toString());
+
+  window.location.href = getHemocioneIdUrl(url.toString());
 }
