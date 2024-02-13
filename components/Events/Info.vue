@@ -21,7 +21,7 @@
         <ElIconUser />
       </ElIcon>
       <span class="extra-info-text">
-        <template v-if="participants > 1">
+        <template v-if="participants !== 1">
           {{ participants }} participantes confirmados
         </template>
         <template v-else>{{ participants }} participante confirmado</template>
