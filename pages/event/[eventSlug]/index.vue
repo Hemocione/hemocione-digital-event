@@ -28,6 +28,7 @@
         class="event-info"
         :address-text="addressText"
         :time-text="timeText"
+        :participants="participants"
       />
       <h1 style="padding: 1rem" class="text-heading">Localização</h1>
       <GoogleMapsAddress
@@ -91,6 +92,15 @@ const addressText = computed(() => {
   if (!eventConfig.location) return null;
 
   return formatAddress(eventConfig.location);
+});
+
+const participants = computed(() => {
+  if (!eventConfig.subscription?.enabled) return null;
+
+  return eventConfig.subscription.schedules.reduce(
+    (acc, schedule) => acc + schedule.occupiedSlots,
+    0,
+  );
 });
 
 const config = useRuntimeConfig();

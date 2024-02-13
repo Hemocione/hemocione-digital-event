@@ -16,6 +16,17 @@
         {{ addressText }}
       </span>
     </div>
+    <div v-if="participants" class="event-extra-info">
+      <ElIcon class="icon">
+        <ElIconUser />
+      </ElIcon>
+      <span class="extra-info-text">
+        <template v-if="participants > 1">
+          {{ participants }} participantes confirmados
+        </template>
+        <template v-else>{{ participants }} participante confirmado</template>
+      </span>
+    </div>
   </section>
 </template>
 
@@ -27,6 +38,10 @@ defineProps({
   },
   addressText: {
     type: String as PropType<string | null>,
+    default: null,
+  },
+  participants: {
+    type: Number as PropType<number | null>,
     default: null,
   },
 });

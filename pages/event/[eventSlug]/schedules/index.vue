@@ -1,6 +1,6 @@
 <template>
   <main v-if="eventConfig" class="schedules-page">
-    <CommonEventHeader :event-name="eventConfig?.name" @back="goBack" />
+    <CommonEventHeader :event-name="eventConfig.name" @back="goBack" />
     <article>
       <h3>Selecione um horário para a doação:</h3>
       <div class="schedules">
