@@ -5,11 +5,18 @@ meta {
 }
 
 post {
-  url: {{api_url}}/v1/event/:eventSlug/default_schedules
-  body: none
+  url: {{api_url}}/v1/event/colegio-santo-inacio-28112023/default_schedules
+  body: json
   auth: none
 }
 
 headers {
   x-secret: {{secret}}
+}
+
+body:json {
+  {
+    "timeInterval": 3,
+    "slotsPerInterval": 3
+  }
 }
