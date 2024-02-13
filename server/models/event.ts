@@ -82,34 +82,36 @@ const EventSchema = new Schema(
         default: false,
       },
       schedules: {
-        type: [{
-          _id: {
-            type: Types.ObjectId,
-            default: () => new Types.ObjectId(),
-            unique: true,
+        type: [
+          {
+            _id: {
+              type: Types.ObjectId,
+              default: () => new Types.ObjectId(),
+              unique: true,
+            },
+            startAt: {
+              type: Date,
+              required: true,
+            },
+            endAt: {
+              type: Date,
+              required: true,
+            },
+            slots: {
+              type: Number,
+              required: true,
+              default: 30,
+            },
+            occupiedSlots: {
+              type: Number,
+              required: true,
+              default: 0,
+            },
           },
-          startAt: {
-            type: Date,
-            required: true,
-          },
-          endAt: {
-            type: Date,
-            required: true,
-          },
-          slots: {
-            type: Number,
-            required: true,
-            default: 30,
-          },
-          occupiedSlots: {
-            type: Number,
-            required: true,
-            default: 0,
-          },
-        }],
+        ],
         default: [],
       },
-    }
+    },
   },
   {
     timestamps: true,

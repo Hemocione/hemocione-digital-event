@@ -17,6 +17,9 @@ export default defineNuxtConfig({
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY ?? "mock-key",
       siteUrl,
       authCookieKey: process.env.HEMOCIONE_AUTH_COOKIE_KEY ?? "hemocioneId",
+      hemocioneIdApiUrl:
+        process.env.NUXT_HEMOCIONE_ID_API_URL ||
+        "https://hemocione-id-dev.cpt.hemocione.com.br",
       hemocioneIdUrl:
         process.env.HEMOCIONE_ID_URL ?? "https://id.hemocione.com.br",
     },
@@ -25,6 +28,7 @@ export default defineNuxtConfig({
       basePath: process.env.CDN_BASE_PATH ?? "events/uploads",
       baseUrl: process.env.CDN_BASE_URL ?? "https://cdn.hemocione.com.br",
     },
+    hemocioneIdJwtSecretKey: process.env.HEMOCIONE_ID_JWT_SECRET_KEY ?? "secret",
     secret: process.env.API_SECRET ?? "secret",
     mongodbUri: process.env.MONGODB_URI ??
       "mongodb://admin:password@localhost:27017",
@@ -41,6 +45,7 @@ export default defineNuxtConfig({
     "@nuxt/image",
     "nuxt-vercel-analytics",
     "@nuxtseo/module",
+    "@pinia/nuxt",
   ],
   nitro: {
     preset: "vercel",
@@ -91,6 +96,14 @@ export default defineNuxtConfig({
     domains: ["cdn.hemocione.com.br"],
     alias: {
       cdn: "https://cdn.hemocione.com.br",
+    },
+  },
+  routeRules: {
+    "/event/:eventSlug/ticket": {
+      ssr: false,
+    },
+    "/event/:eventSlug/schedules": {
+      ssr: false,
     },
   },
   experimental: {

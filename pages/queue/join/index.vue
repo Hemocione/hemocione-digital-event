@@ -80,10 +80,13 @@ async function onSubmit() {
     if (!queueId) throw new Error("Queue not found");
 
     buttonLoading.value = true;
-    const queueParticipant = await $fetch(`/api/v1/event/${eventId}/queue/${queueId}/participant`, {
-      method: "POST",
-      body: JSON.stringify(payload),
-    });
+    const queueParticipant = await $fetch(
+      `/api/v1/event/${eventId}/queue/${queueId}/participant`,
+      {
+        method: "POST",
+        body: JSON.stringify(payload),
+      },
+    );
     if (leadId && uuid) {
       await navigateTo({
         path: "/queue/join/success",
@@ -96,7 +99,7 @@ async function onSubmit() {
       await navigateTo({
         path: `/queue/${queueId}/participant/${queueParticipant._id}`,
         query: {
-          eventId
+          eventId,
         },
       });
     }
@@ -136,10 +139,9 @@ const joinQueueText = computed(() => {
 });
 
 const hemocioneIdUrl = computed(() => {
-  const encodedRedirectUrl = encodeURIComponent(
+  return getHemocioneIdUrl(
     `${config.public.siteUrl}${route.fullPath}&autoJoin=1`,
   );
-  return `${config.public.hemocioneIdUrl}?redirect=${encodedRedirectUrl}`;
 });
 
 const hemocioneIdButtonText = computed(() => {
@@ -165,7 +167,12 @@ onMounted(() => {
 <template>
   <div class="page queue-join-page">
     <div class="event-header">
-      <NuxtImg v-if="eventConfig?.logo" format="webp" :src="eventConfig?.logo" class="event-logo" />
+      <NuxtImg
+        v-if="eventConfig?.logo"
+        format="webp"
+        :src="eventConfig?.logo"
+        class="event-logo"
+      />
       <h1>{{ eventConfig?.name ?? eventConfig?.slug ?? eventId }}</h1>
     </div>
     <el-form :model="form" class="form-wrapper">

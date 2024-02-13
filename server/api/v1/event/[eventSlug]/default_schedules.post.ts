@@ -6,8 +6,11 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
   const { timeInterval, slotsPerInterval } = body;
   const eventSlug = String(getRouterParam(event, "eventSlug"));
-  const hemoEvent = await setEventDefaultSchedule(eventSlug, Number(timeInterval ?? 60), Number(slotsPerInterval ?? 30));
-
+  const hemoEvent = await setEventDefaultSchedule(
+    eventSlug,
+    Number(timeInterval ?? 60),
+    Number(slotsPerInterval ?? 30),
+  );
 
   return {
     ...hemoEvent,

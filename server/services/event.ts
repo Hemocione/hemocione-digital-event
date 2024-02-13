@@ -1,6 +1,7 @@
 import slugify from "slugify";
 import { Event } from "../models/event";
 import { getTimeBlocks } from "~/utils/getTimeBlocks";
+import { getCacheKeyFromParams } from "~/utils/getCacheKeyFromParams";
 
 export interface CreateEventDTO {
   name: string;
@@ -42,6 +43,121 @@ export interface UpdateEventDTO {
   registerDonationUrl?: string;
 }
 
+export async function incrementEventScheduleOccupiedSlots(
+  eventSlug: string,
+  scheduleId: string,
+  increment: number,
+) {
+  const event = await Event.findOneAndUpdate(
+    {
+      slug: eventSlug,
+      "subscription.schedules._id": scheduleId,
+    },
+    {
+      $inc: { "subscription.schedules.$.occupiedSlots": increment },
+    },
+    {
+      lean: true,
+      new: true,
+    },
+  );
+  removeEventFromCache(eventSlug);
+  return event;
+}
+
+export async function enableEventSubscription(eventSlug: string) {
+  const event = await Event.findOneAndUpdate(
+    {
+      slug: eventSlug,
+    },
+    {
+      "subscription.enabled": true,
+    },
+    {
+      lean: true,
+      new: true,
+    },
+  );
+  removeEventFromCache(eventSlug);
+  return event;
+}
+
+export async function updateEventScheduleSlots(
+  eventSlug: string,
+  scheduleId: string,
+  slots: number,
+) {
+  const event = await Event.findOneAndUpdate(
+    {
+      slug: eventSlug,
+      "subscription.schedules._id": scheduleId,
+    },
+    {
+      $set: { "subscription.schedules.$.slots": slots },
+    },
+    {
+      lean: true,
+      new: true,
+    },
+  );
+  removeEventFromCache(eventSlug);
+  return event;
+}
+
+const getEventBySlugPromise = (
+  eventSlug: string,
+  activeOnly: boolean,
+  options: { lean?: boolean },
+) => {
+  return Event.findOne(
+    {
+      slug: eventSlug,
+      ...(activeOnly ? { active: true } : {}),
+    },
+    null,
+    options,
+  );
+};
+
+const MAX_CURRENT_EVENTS_CACHE_TTL = 1000 * 60 * 5; // 30 minutes
+const MAX_SIZE_CURRENT_EVENTS_CACHE = 10; // at most 10 events cached at a time
+
+type EventFromDb = Awaited<ReturnType<typeof getEventBySlugPromise>>;
+
+const currentEventsBySlugCache: {
+  [cacheKey: string]: {
+    generatedAt: Date;
+    data: EventFromDb;
+  };
+} = {};
+
+const addEventToCache = (event: EventFromDb, key: string) => {
+  currentEventsBySlugCache[key] = {
+    generatedAt: new Date(),
+    data: event,
+  };
+
+  const keys = Object.keys(currentEventsBySlugCache);
+  if (keys.length > MAX_SIZE_CURRENT_EVENTS_CACHE) {
+    const oldestKey = keys.reduce((oldest, key) => {
+      return currentEventsBySlugCache[key].generatedAt <
+        currentEventsBySlugCache[oldest].generatedAt
+        ? key
+        : oldest;
+    }, keys[0]);
+    delete currentEventsBySlugCache[oldestKey];
+  }
+};
+
+const removeEventFromCache = (eventSlug: string) => {
+  const eventCacheKey = Object.keys(currentEventsBySlugCache).find((key) =>
+    key.startsWith(`${eventSlug}:`),
+  );
+  if (eventCacheKey) {
+    delete currentEventsBySlugCache[eventCacheKey];
+  }
+};
+
 export async function getEventBySlug(
   eventSlug: string,
   activeOnly: boolean = true,
@@ -51,14 +167,25 @@ export async function getEventBySlug(
     lean: true,
   },
 ) {
-  return await Event.findOne(
-    {
-      slug: eventSlug,
-      ...(activeOnly ? { active: true } : {}),
-    },
-    null,
+  const cacheKey = `${eventSlug}:${getCacheKeyFromParams({
+    eventSlug,
+    activeOnly,
     options,
-  );
+  })}`;
+  const cached = currentEventsBySlugCache[cacheKey];
+  if (
+    cached &&
+    cached.generatedAt.getTime() + MAX_CURRENT_EVENTS_CACHE_TTL >= Date.now()
+  ) {
+    return cached.data;
+  }
+
+  const event = await getEventBySlugPromise(eventSlug, activeOnly, options);
+  if (event) {
+    addEventToCache(event, cacheKey);
+  }
+
+  return event;
 }
 
 export async function deleteEventBySlug(eventSlug: string) {
@@ -96,21 +223,31 @@ export async function createEvent(data: CreateEventDTO) {
   return (await Event.create({ ...data, slug })).toObject();
 }
 
-export async function setEventDefaultSchedule(eventSlug: string, timeInterval: number = 60, slotsPerInterval: number = 30) {
+export async function setEventDefaultSchedule(
+  eventSlug: string,
+  timeInterval: number = 60,
+  slotsPerInterval: number = 30,
+) {
   const event = await getEventBySlug(eventSlug, false, { lean: false });
   if (!event) return null;
+
+  if (event.subscription?.enabled) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Subscription is already enabled - do it manually!",
+    });
+  }
 
   const timeBlocks = getTimeBlocks(event.startAt, event.endAt, timeInterval);
   const schedules = timeBlocks.map((schedule) => ({
     ...schedule,
     slots: slotsPerInterval,
   }));
-  const subscription = { schedules }
+  const subscription = { schedules };
   event.set({ subscription });
-  const hemoEvent = await event.save()
+  const hemoEvent = await event.save();
   return hemoEvent.toObject();
 }
-
 
 const getEventsFromDBPromise = (filter: Record<string, unknown>) => {
   return Event.find({

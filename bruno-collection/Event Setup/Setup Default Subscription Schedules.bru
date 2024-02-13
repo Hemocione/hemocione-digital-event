@@ -1,0 +1,22 @@
+meta {
+  name: Setup Default Subscription Schedules
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{api_url}}/v1/event/colegio-guima/default_schedules
+  body: json
+  auth: none
+}
+
+headers {
+  x-secret: {{secret}}
+}
+
+body:json {
+  {
+    "timeInterval": 3,
+    "slotsPerInterval": 2
+  }
+}

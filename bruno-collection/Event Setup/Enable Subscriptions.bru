@@ -1,0 +1,22 @@
+meta {
+  name: Enable Subscriptions
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{api_url}}/v1/event/colegio-guima/subscription/enable
+  body: json
+  auth: none
+}
+
+headers {
+  x-secret: {{secret}}
+}
+
+body:json {
+  {
+    "timeInterval": 3,
+    "slotsPerInterval": 2
+  }
+}
