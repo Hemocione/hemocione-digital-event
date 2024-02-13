@@ -7,7 +7,9 @@
 <script setup lang="ts">
 import { evaluateCurrentLogin } from "./middleware/auth";
 
-evaluateCurrentLogin();
+const route = useRoute();
+
+evaluateCurrentLogin(route.query);
 
 useServerSeoMeta({
   description:
