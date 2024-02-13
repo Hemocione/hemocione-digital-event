@@ -3,7 +3,7 @@
     <CommonEventHeader :event-name="eventConfig.name" @back="goBack" />
     <article>
       <CommonCard class="ticket-card">
-        <span>#{{ subscription.code }}</span>
+        <span class="ticket-code">#{{ subscription.code }}</span>
         <span>{{ subscription.name }}</span>
         <section class="schedule-time">
           <span>Seu horário para doação é: {{ ticketStartAt }}</span>
@@ -102,6 +102,11 @@ function goBack() {
   justify-content: flex-start;
   background-color: var(--hemo-color-white);
   color: var(--hemo-color-text-secondary);
+}
+
+.ticket-code {
+  color: var(--hemo-color-black-80);
+  font-size: 0.875rem;
 }
 
 article {
