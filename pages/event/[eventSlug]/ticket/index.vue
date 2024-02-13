@@ -24,7 +24,9 @@
         <EventsInfo :address-text="addressText" :time-text="timeText" />
       </section>
     </article>
-    <TicketFooter :event-slug="eventSlug" />
+    <ClientOnly>
+      <TicketFooter :event-slug="eventSlug" />
+    </ClientOnly>
   </main>
 </template>
 
