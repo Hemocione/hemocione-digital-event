@@ -3,7 +3,6 @@ export function getTimeBlocks(start: Date, end: Date, intervalMinutes: number = 
     const timeBlocks: Date[] = [];
     const current = new Date(start);
     while (current < end) {
-        console.log({ current, end })
         timeBlocks.push(new Date(current));
         current.setMinutes(current.getMinutes() + intervalMinutes);
     }

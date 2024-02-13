@@ -61,6 +61,23 @@ export async function incrementEventScheduleOccupiedSlots(eventSlug: string, sch
   return event;
 }
 
+export async function enableEventSubscription(eventSlug: string) {
+  const event = await Event.findOneAndUpdate(
+    {
+      slug: eventSlug,
+    },
+    {
+      "subscription.enabled": true,
+    },
+    {
+      lean: true,
+      new: true,
+    },
+  );
+  removeEventFromCache(eventSlug);
+  return event;
+}
+
 export async function updateEventScheduleSlots(eventSlug: string, scheduleId: string, slots: number) {
   const event = await Event.findOneAndUpdate(
     {

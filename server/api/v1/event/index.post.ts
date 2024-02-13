@@ -1,5 +1,6 @@
 import { assertSecretAuth } from "~/server/services/auth";
-import { CreateEventDTO, createEvent } from "~/server/services/event";
+import { createEvent } from "~/server/services/event";
+import type { CreateEventDTO } from "~/server/services/event";
 
 function assertCreateEventDTO(body: any): asserts body is CreateEventDTO {
   if (typeof body !== "object" || body === null) {
