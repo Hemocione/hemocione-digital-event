@@ -1,8 +1,13 @@
 import dayjs from "dayjs";
 
-export function isEventAlreadyStarted(startAt: string) {
-  const startAtDate = new Date(startAt);
-  const now = new Date();
+const MINIMUM_HOURS_DISTANCE_TO_START = 1;
 
-  return dayjs(now).isAfter(startAtDate);
+export function isEventAlreadyStarted(startAt: string) {
+  const maximumStartAtDate = dayjs(startAt).subtract(
+    MINIMUM_HOURS_DISTANCE_TO_START,
+    "hour",
+  );
+  const now = dayjs();
+
+  return now.isAfter(maximumStartAtDate);
 }
