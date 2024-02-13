@@ -39,6 +39,7 @@ const route = useRoute();
 const eventStore = useEventStore();
 const eventSlug = route.params.eventSlug as string;
 const eventConfig = await eventStore.getEvent(eventSlug);
+const subscription = await eventStore.getSubscription(eventSlug);
 const isEventTodayAndAlreadyStarted = computed(
   () => eventConfig.startAt && isEventAlreadyStarted(eventConfig.startAt),
 );
@@ -49,6 +50,10 @@ if (!eventConfig) {
 
 if (isEventTodayAndAlreadyStarted.value) {
   navigateTo(`/event/${eventSlug}`);
+}
+
+if (subscription) {
+  navigateTo(`/event/${eventSlug}/ticket`);
 }
 
 useServerSeoMeta({
