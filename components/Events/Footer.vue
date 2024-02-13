@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import dayjs from "dayjs";
+import { isEventAlreadyStarted } from "~/helpers/event";
 
 interface Button {
   label: string;
@@ -39,17 +39,9 @@ const { user } = useUserStore();
 const subscription = await eventStore.getSubscription(props.eventSlug);
 const eventConfig = await eventStore.getEvent(props.eventSlug);
 
-const isEventTodayAndAlreadyStarted = computed(() => {
-  if (!eventConfig.startAt) return false;
-
-  const startAt = new Date(eventConfig.startAt);
-  const today = new Date();
-
-  const isToday = dayjs(startAt).isSame(today, "day");
-  const hasStarted = dayjs(startAt).isBefore(today);
-
-  return isToday && hasStarted;
-});
+const isEventTodayAndAlreadyStarted = computed(
+  () => eventConfig.startAt && isEventAlreadyStarted(eventConfig.startAt),
+);
 const isSchedulesEnabled = computed(() => eventConfig.subscription?.enabled);
 
 const buttons = computed((): Button[] => {

@@ -13,7 +13,7 @@ export default defineNuxtRouteMiddleware((to, from) => {
   window.history.replaceState({}, document.title, url.toString());
 });
 
-function evaluateCurrentLogin(query?: LocationQuery) {
+export function evaluateCurrentLogin(query?: LocationQuery) {
   const { user, setUser, setToken } = useUserStore();
 
   if (user) return true;

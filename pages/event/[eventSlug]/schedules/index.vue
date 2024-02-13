@@ -29,6 +29,7 @@
 <script setup lang="ts">
 import dayjs from "dayjs";
 import { computed, reactive } from "vue";
+import { isEventAlreadyStarted } from "~/helpers/event";
 
 definePageMeta({
   middleware: ["auth"],
@@ -38,9 +39,16 @@ const route = useRoute();
 const eventStore = useEventStore();
 const eventSlug = route.params.eventSlug as string;
 const eventConfig = await eventStore.getEvent(eventSlug);
+const isEventTodayAndAlreadyStarted = computed(
+  () => eventConfig.startAt && isEventAlreadyStarted(eventConfig.startAt),
+);
 
 if (!eventConfig) {
   navigateTo("/404");
+}
+
+if (isEventTodayAndAlreadyStarted.value) {
+  navigateTo(`/event/${eventSlug}`);
 }
 
 interface Schedule {

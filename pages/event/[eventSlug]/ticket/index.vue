@@ -8,7 +8,11 @@
         <section class="schedule-time">
           <span>Seu horário para doação é: {{ ticketStartAt }}</span>
         </section>
-        <ElButton :loading="state.loading" @click="cancelSubscription">
+        <ElButton
+          v-if="isAllowedToCancel"
+          :loading="state.loading"
+          @click="cancelSubscription"
+        >
           Cancelar agendamento
         </ElButton>
       </CommonCard>
@@ -27,6 +31,8 @@
 import { reactive } from "vue";
 import dayjs from "dayjs";
 import { formatTimeDuration, formatAddress } from "~/helpers/formatter";
+
+const MIN_HOURS_TO_CANCEL = 24;
 
 definePageMeta({
   middleware: ["auth"],
@@ -48,6 +54,15 @@ if (!subscription) {
 
 const state = reactive({
   loading: false,
+});
+
+const isAllowedToCancel = computed(() => {
+  if (!subscription) return false;
+
+  const startAt = dayjs(subscription.schedule.startAt);
+  const now = dayjs();
+
+  return startAt.diff(now, "hours") > MIN_HOURS_TO_CANCEL;
 });
 
 const ticketStartAt = computed(() => {

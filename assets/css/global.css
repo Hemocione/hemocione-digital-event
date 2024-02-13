@@ -13,6 +13,7 @@
   --hemo-color-black-80: #52575C;
   --el-color-primary: var(--hemo-color-primary) !important;
   --el-color-primary-light-3: var(--hemo-color-primary) !important;
+  --el-color-primary-light-5: var(--hemo-color-primary-dark) !important;
   --el-color-primary-light-7: var(--hemo-color-primary) !important;
   --el-color-primary-light-9: var(--hemo-color-white) !important;
   --el-color-primary-dark-2: var(--hemo-color-primary-dark) !important;

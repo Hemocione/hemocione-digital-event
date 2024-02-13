@@ -5,6 +5,10 @@
 </template>
 
 <script setup lang="ts">
+import { evaluateCurrentLogin } from "./middleware/auth";
+
+evaluateCurrentLogin();
+
 useServerSeoMeta({
   description:
     "Encontre eventos de doação de sangue próximos a você e ajude a salvar vidas!",
