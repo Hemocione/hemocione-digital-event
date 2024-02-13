@@ -1,6 +1,5 @@
 <template>
   <CommonCoolFooter height="fit-content" desktop-border-radius="0">
-    <ElButton size="large">Adicionar ao calendário</ElButton>
     <ElButton
       v-if="hasShareAPI"
       type="primary"
