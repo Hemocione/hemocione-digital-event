@@ -53,18 +53,44 @@ const isEventTodayAndAlreadyStarted = computed(() => {
   return isTodayAndPast(eventConfig.startAt);
 });
 
+const eventDateObj = computed(() => {
+  if (!eventConfig.startAt) return null;
+
+  return readableSlimDate(eventConfig.startAt);
+});
+
+const isEventFinished = computed(() => {
+  if (!eventConfig.endAt) return false;
+
+  const endAtDate = new Date(eventConfig.endAt);
+  const now = new Date();
+  return isTodayAndPast(eventConfig.endAt) || now > endAtDate;
+});
+
+const registerDonationDateLimitIsOver = computed(() => {
+  if (!eventConfig.registerDonationDateLimit) return false;
+
+  const registerDonationDateLimit = new Date(eventConfig.registerDonationDateLimit);
+  const now = new Date();
+  return now > registerDonationDateLimit;
+});
+
 const buttons = computed((): Button[] => {
   const isLogged = Boolean(user);
   const hasSubscription = Boolean(subscription);
   const alreadyStarted = isEventTodayAndAlreadyStarted.value;
   const isSchedulesEnabled = eventConfig.subscription?.enabled;
-  console.dir(eventConfig, { depth: null })
 
   const computedButtons = [
     {
       label: "Registrar doação",
-      visible: alreadyStarted && props.registerDonationUrl,
+      visible: alreadyStarted && props.registerDonationUrl && !registerDonationDateLimitIsOver,
       action: goToRegisterDonation,
+    },
+    {
+      label: `Registre sua doação no dia ${eventDateObj.value?.day}, a partir das ${eventDateObj.value?.hour}`,
+      visible: !alreadyStarted && props.registerDonationUrl,
+      disabled: true,
     },
     {
       label: "Agendar horário",

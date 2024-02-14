@@ -75,6 +75,11 @@ const EventSchema = new Schema(
       required: false,
       default: null,
     },
+    registerDonationDateLimit: {
+      type: Date,
+      required: false,
+      default: null,
+    },
     subscription: {
       enabled: {
         type: Boolean,

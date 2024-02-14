@@ -10,6 +10,7 @@ interface Event {
   endAt: string;
   location?: Address | null;
   registerDonationUrl?: string | null;
+  registerDonationDateLimit?: string | null;
   subscription?: {
     enabled: boolean;
     schedules: {
