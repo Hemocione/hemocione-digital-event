@@ -19,6 +19,7 @@ export interface CreateEventDTO {
     state: string;
   };
   registerDonationUrl?: string;
+  registerDonationDateLimit?: string;
 }
 
 export interface UpdateEventDTO {
@@ -41,6 +42,7 @@ export interface UpdateEventDTO {
     enabled?: boolean;
   };
   registerDonationUrl?: string;
+  registerDonationDateLimit?: string
 }
 
 export async function incrementEventScheduleOccupiedSlots(

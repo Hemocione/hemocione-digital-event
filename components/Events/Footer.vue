@@ -67,6 +67,14 @@ const isEventFinished = computed(() => {
   return isTodayAndPast(eventConfig.endAt) || now > endAtDate;
 });
 
+const registerDonationDateLimitIsOver = computed(() => {
+  if (!eventConfig.registerDonationDateLimit) return false;
+
+  const registerDonationDateLimit = new Date(eventConfig.registerDonationDateLimit);
+  const now = new Date();
+  return now > registerDonationDateLimit;
+});
+
 const buttons = computed((): Button[] => {
   const isLogged = Boolean(user);
   const hasSubscription = Boolean(subscription);
@@ -76,7 +84,7 @@ const buttons = computed((): Button[] => {
   const computedButtons = [
     {
       label: "Registrar doação",
-      visible: alreadyStarted && props.registerDonationUrl && !isEventFinished,
+      visible: alreadyStarted && props.registerDonationUrl && !registerDonationDateLimitIsOver,
       action: goToRegisterDonation,
     },
     {
