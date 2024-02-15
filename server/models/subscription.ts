@@ -70,15 +70,10 @@ SubscriptionSchema.index(
 SubscriptionSchema.index({ code: 1, eventSlug: 1 }, { unique: true });
 
 SubscriptionSchema.pre("validate", function (next) {
-  if (
-    this.participant.phone.startsWith("+55") &&
-    this.participant.phone.length === 14
-  )
-    return next();
+  if (this.phone.startsWith("+55") && this.phone.length === 14) return next();
 
-  this.participant.phone = this.participant.phone.replace(/\D/g, "");
-  if (this.participant.phone.length === 11)
-    this.participant.phone = `+55${this.participant.phone}`;
+  this.phone = this.phone.replace(/\D/g, "");
+  if (this.phone.length === 11) this.phone = `+55${this.phone}`;
 
   next();
 });
