@@ -1,10 +1,12 @@
 <template>
   <nav v-if="!isIframed" :class="{ 'nav-bar': true, hide: !validatedIframe }">
-    <NuxtImg
-      src="/images/logo-horizontal-branca.svg"
-      alt="logo hemocione branca"
-      class="logo"
-    />
+    <NuxtLink to="/" class="logo-wrapper">
+      <NuxtImg
+        src="/images/logo-horizontal-branca.svg"
+        alt="logo hemocione branca"
+        class="logo"
+      />
+    </NuxtLink>
   </nav>
 </template>
 
@@ -35,8 +37,12 @@ onMounted(() => {
 .hide {
   visibility: hidden;
 }
+.logo-wrapper {
+  width: 50%;
+  max-width: 250px;
+}
+
 .logo {
-  height: 100%;
-  max-width: 50%;
+  width: 100%;
 }
 </style>
