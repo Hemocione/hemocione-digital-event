@@ -26,7 +26,10 @@ const SubscriptionSchema = new Schema(
     phone: {
       type: String,
       required: true,
-      default: null,
+      validate: {
+        validator: (v: string) => v.length === 14,
+        message: "Invalid phone.",
+      },
     },
     code: {
       type: String,
@@ -65,6 +68,15 @@ SubscriptionSchema.index(
   { unique: true, partialFilterExpression: { deletedAt: null } },
 );
 SubscriptionSchema.index({ code: 1, eventSlug: 1 }, { unique: true });
+
+SubscriptionSchema.pre("validate", function (next) {
+  if (this.phone.startsWith("+55") && this.phone.length === 14) return next();
+
+  this.phone = this.phone.replace(/\D/g, "");
+  if (this.phone.length === 11) this.phone = `+55${this.phone}`;
+
+  next();
+});
 
 export type SubscriptionSchema = InferSchemaType<typeof SubscriptionSchema>;
 
