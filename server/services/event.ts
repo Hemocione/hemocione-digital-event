@@ -121,7 +121,7 @@ const getEventBySlugPromise = (
   );
 };
 
-const MAX_CURRENT_EVENTS_CACHE_TTL = 1000 * 60 * 5; // 30 minutes
+const MAX_CURRENT_EVENTS_CACHE_TTL = 1000 * 60 * 1; // 1 minute
 const MAX_SIZE_CURRENT_EVENTS_CACHE = 10; // at most 10 events cached at a time
 
 type EventFromDb = Awaited<ReturnType<typeof getEventBySlugPromise>>;
