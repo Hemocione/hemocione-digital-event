@@ -25,7 +25,13 @@
       </section>
     </article>
     <ClientOnly>
-      <TicketFooter :event-slug="eventSlug" />
+      <TicketFooter
+        :event-slug="eventSlug"
+        :event-name="eventConfig.name"
+        :start-at="subscription.schedule.startAt"
+        :end-at="subscription.schedule.endAt"
+        :address="addressText"
+      />
     </ClientOnly>
   </main>
 </template>
@@ -38,7 +44,7 @@ import { formatTimeDuration, formatAddress } from "~/helpers/formatter";
 const MIN_HOURS_TO_CANCEL = 24;
 
 definePageMeta({
-  middleware: ["auth"]
+  middleware: ["auth"],
 });
 
 const route = useRoute();
@@ -86,7 +92,7 @@ const timeText = computed(() => {
 });
 
 const addressText = computed(() => {
-  if (!eventConfig.location) return null;
+  if (!eventConfig.location) return;
 
   return formatAddress(eventConfig.location);
 });
