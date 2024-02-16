@@ -27,6 +27,7 @@ export interface HemocioneUserAuthTokenData {
   bloodType: BloodType;
   email: string;
   phone: string;
+  document: string;
   gender: Gender;
 }
 

@@ -31,6 +31,10 @@ const SubscriptionSchema = new Schema(
         message: "Invalid phone.",
       },
     },
+    document: {
+      type: String,
+      required: true
+    },
     code: {
       type: String,
       required: true,

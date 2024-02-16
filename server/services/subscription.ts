@@ -26,6 +26,7 @@ export async function createSubscription(
     name: getCleanFullName(user.givenName, user.surName),
     email: user.email,
     phone: user.phone,
+    document: user.document,
     schedule,
   });
 
