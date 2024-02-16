@@ -7,7 +7,7 @@ const { bucket, basePath, baseUrl } = config.cdn;
 
 const s3 = new S3Client();
 
-const getUploader = (uploadedFiles: string[]) =>
+const getUploader = (uploadedFiles: string[], extraPrefix: string = "") =>
   multer({
     storage: multerS3({
       s3,
@@ -17,7 +17,7 @@ const getUploader = (uploadedFiles: string[]) =>
         cb(null, { fieldName: file.fieldname });
       },
       key: function (_req, file, cb) {
-        const filePath = `${basePath}/${Date.now().toString()}-${file.originalname
+        const filePath = `${basePath}/${extraPrefix}/${Date.now().toString()}-${file.originalname
           .toLocaleLowerCase()
           .replace(/\s+/g, "-")}`;
         uploadedFiles.push(`${baseUrl}/${filePath}`);
@@ -26,9 +26,9 @@ const getUploader = (uploadedFiles: string[]) =>
     }),
   });
 
-export async function uploadImage(event: H3Event) {
+export async function uploadImage(event: H3Event, extraPrefix: string = "") {
   const uploadedFiles: string[] = [];
-  const uploader = getUploader(uploadedFiles);
+  const uploader = getUploader(uploadedFiles, extraPrefix);
   await callNodeListener(
     // @ts-expect-error: Nuxt 3
     uploader.single("image"),
