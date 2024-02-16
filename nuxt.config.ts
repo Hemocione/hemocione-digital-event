@@ -1,4 +1,5 @@
 const getSiteUrl = () => {
+  console.log("VERCEL_ENV", process.env.VERCEL_ENV);
   if (process.env.VERCEL_ENV === "preview") {
     return `https://${process.env.VERCEL_URL}`;
   }
@@ -9,8 +10,20 @@ const getSiteUrl = () => {
 
   return "https://eventos.hemocione.com.br";
 };
+const getCurrentEnv = () => {
+  if (process.env.VERCEL_ENV === "preview") {
+    return "dev";
+  }
+
+  if (process.env.VERCEL_ENV === "production") {
+    return "prod";
+  }
+
+  return "dev";
+}
 
 const siteUrl = getSiteUrl();
+const currentEnv = getCurrentEnv();
 export default defineNuxtConfig({
   runtimeConfig: {
     public: {
@@ -25,7 +38,7 @@ export default defineNuxtConfig({
     },
     cdn: {
       bucket: process.env.CDN_BUCKET ?? "hemocione-assets",
-      basePath: process.env.CDN_BASE_PATH ?? "events/uploads",
+      basePath: process.env.CDN_BASE_PATH ?? `events/${currentEnv}/uploads`,
       baseUrl: process.env.CDN_BASE_URL ?? "https://cdn.hemocione.com.br",
     },
     hemocioneIdJwtSecretKey: process.env.HEMOCIONE_ID_JWT_SECRET_KEY ?? "secret",
