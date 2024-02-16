@@ -1,4 +1,5 @@
 const getSiteUrl = () => {
+  console.log("VERCEL_ENV", process.env.VERCEL_ENV);
   if (process.env.VERCEL_ENV === "preview") {
     return `https://${process.env.VERCEL_URL}`;
   }
