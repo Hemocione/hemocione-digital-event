@@ -105,6 +105,7 @@ export default defineNuxtConfig({
     "/event/:eventSlug/schedules": {
       ssr: false,
     },
+    '/**': { cors: true }
   },
   experimental: {
     componentIslands: true,
