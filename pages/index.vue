@@ -2,10 +2,19 @@
   <div class="events-page">
     <header class="events-header">
       <h1 class="events-title">Eventos</h1>
+      <ElInput
+        v-model="search"
+        placeholder="Pesquisar eventos"
+        clearable
+        size="large"
+        :prefix-icon="ElIconSearch"
+        class="search-input"
+      />
     </header>
-    <div v-if="currentEvents?.length" class="events-wrapper">
+    <div v-if="filteredEvents?.length" class="events-wrapper">
+      <!-- TODO: add transition group here -->
       <EventsListCard
-        v-for="event in currentEvents"
+        v-for="event in filteredEvents"
         :key="event._id"
         :name="event.name"
         :event-date="event.startAt"
@@ -24,7 +33,7 @@
         <div class="subtitle">
           <span class="no-events-text big-boy">(╯°□°)╯︵ ┻━┻</span>
           <span class="no-events-text">
-            Estamos sem eventos disponíveis no momento.
+            {{ noEventsText }}
           </span>
           <span class="no-events-subtext">
             Acompanhe-nos nas redes sociais e aguarde os próximos eventos.
@@ -37,7 +46,37 @@
 </template>
 
 <script setup lang="ts">
+const route = useRoute();
+const router = useRouter();
+const searchQuery = route.query.search;
+const search = ref(String(searchQuery || ""));
+
+watch(search, () => {
+  router.push({ query: { search: search.value } });
+});
 const { data: currentEvents } = await useFetch("/api/v1/event");
+
+const cleanSearch = computed(() => {
+  return getCleanText(search.value);
+});
+
+const filteredEvents = computed(() => {
+  if (!cleanSearch.value) {
+    return currentEvents.value;
+  }
+  return currentEvents.value?.filter((event) => {
+    const eventBaseString = `${event.name}${event?.location?.address || ""}${event.location?.state || ""}${event.location?.city || ""}`;
+    return getCleanText(eventBaseString).includes(cleanSearch.value)
+  });
+});
+
+const noEventsText = computed(() => {
+  if (cleanSearch.value && currentEvents.value?.length) {
+    return "Nenhum evento encontrado com o termo pesquisado.";
+  }
+  return "Estamos sem eventos disponíveis no momento.";
+});
+
 definePageMeta({
   name: "EventsListPage",
   middleware(_to, from) {
@@ -53,15 +92,26 @@ definePageMeta({
 </script>
 
 <style scoped>
+
 .events-page {
   padding: 1rem;
 }
 
+.search-input {
+  width: 100%;
+  max-width: 300px;
+  margin-bottom: 1rem;
+  --el-input-bg-color: var(--hemo-color-primary-dark);
+  --el-border-color: var(--hemo-color-primary-dark);
+  --el-input-text-color: var(--hemo-color-text-primary);
+  --el-input-icon-color: var(--hemo-color-text-primary);
+  border: none;
+}
 .events-header {
   width: 100%;
   display: flex;
   justify-content: space-between;
-
+  gap: 2rem;
   padding-bottom: 1rem;
 }
 .events-title {
