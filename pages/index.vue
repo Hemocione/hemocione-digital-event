@@ -1,6 +1,8 @@
 <template>
   <div class="events-page">
-    <h1 class="events-title">Eventos</h1>
+    <header class="events-header">
+      <h1 class="events-title">Eventos</h1>
+    </header>
     <div v-if="currentEvents?.length" class="events-wrapper">
       <EventsListCard
         v-for="event in currentEvents"
@@ -54,13 +56,20 @@ definePageMeta({
 .events-page {
   padding: 1rem;
 }
+
+.events-header {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+
+  padding-bottom: 1rem;
+}
 .events-title {
   margin: 0;
   padding: 0;
-  font-size: 3rem;
+  font-size: 2rem;
   font-weight: bold;
-  padding-bottom: 1rem;
-  letter-spacing: 0.2rem;
+  letter-spacing: 0.15rem;
 }
 /* this will be a grid */
 .events-wrapper {
@@ -126,6 +135,9 @@ definePageMeta({
 }
 
 @media (min-width: 992px) {
+  .events-title {
+    font-size: 3rem;
+  }
   .events-wrapper {
     grid-template-columns: 1fr 1fr 1fr;
   }

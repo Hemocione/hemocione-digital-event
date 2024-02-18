@@ -266,7 +266,7 @@ const getEventsFromDBPromise = (filter: Record<string, unknown>) => {
       endAt: 1,
       location: 1,
     })
-    .sort({ endAt: -1, _id: -1 })
+    .sort({ startAt: 1, endAt: 1, _id: 1 })
     .lean();
 };
 

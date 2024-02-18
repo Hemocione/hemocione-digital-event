@@ -123,7 +123,7 @@ const EventSchema = new Schema(
   },
 );
 
-EventSchema.index({ endAt: -1 });
+EventSchema.index({ startAt: 1, endAt: 1, _id: 1 });
 
 export type EventSchema = InferSchemaType<typeof EventSchema>;
 
