@@ -147,7 +147,7 @@ export async function createQueueParticipant(data: CreateQueueParticipant) {
 
   const newParticipant = await QueueParticipant.findOneAndUpdate(
     {
-      participant,
+      "participant.phone": participant.phone,
       queueId,
     },
     {
