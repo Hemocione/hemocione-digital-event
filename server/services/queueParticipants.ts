@@ -2,6 +2,7 @@ import type { Types } from "mongoose";
 import { inngest } from "../inngest/client";
 import { QueueParticipant } from "../models/queueParticipant";
 import { upsertFBDataOnLead } from "./digitalStand";
+import { completePhone } from "~/utils/completePhone";
 
 const getFullQueueParticipantsPromise = (queueId: string) =>
   QueueParticipant.find({
@@ -144,16 +145,20 @@ interface CreateQueueParticipant {
 
 export async function createQueueParticipant(data: CreateQueueParticipant) {
   const { participant, queueId, eventSlug } = data;
+  const participantPhone = completePhone(participant.phone);
 
   const newParticipant = await QueueParticipant.findOneAndUpdate(
     {
-      "participant.phone": participant.phone,
+      "participant.phone": participantPhone,
       queueId,
     },
     {
       $setOnInsert: {
         queueId,
-        participant,
+        participant: {
+          ...participant,
+          phone: participantPhone,
+        },
       },
     },
     {
