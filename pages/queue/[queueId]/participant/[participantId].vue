@@ -98,21 +98,27 @@ const { data: participantInfo, refresh } = await useFetch(
   },
 );
 
-const interval = ref<NodeJS.Timeout>();
+let interval: NodeJS.Timeout | undefined;
 
 const alreadyCalled = computed(() => {
   return participantInfo.value?.position === 0;
 });
 
+const startInterval = () => {
+  if (!interval) {
+    interval = setInterval(async () => {
+      await refresh();
+      if (!participantInfo.value?.position) {
+        clearInterval(interval);
+        interval = undefined;
+      }
+    }, 10 * ONE_SECOND);
+  }
+};
+
 onMounted(async () => {
   await router.isReady();
-
-  interval.value = setInterval(async () => {
-    await refresh();
-    if (!participantInfo.value?.position) {
-      clearInterval(interval.value);
-    }
-  }, 10 * ONE_SECOND);
+  startInterval();
 });
 </script>
 
