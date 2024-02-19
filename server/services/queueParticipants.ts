@@ -145,22 +145,35 @@ interface CreateQueueParticipant {
 export async function createQueueParticipant(data: CreateQueueParticipant) {
   const { participant, queueId, eventSlug } = data;
 
-  const newParticipant = await QueueParticipant.create({
-    participant,
-    queueId,
-  });
+  const newParticipant = await QueueParticipant.findOneAndUpdate(
+    {
+      participant,
+      queueId,
+    },
+    {
+      $setOnInsert: {
+        queueId,
+        participant,
+      },
+    },
+    {
+      upsert: true,
+      new: true,
+    },
+  );
 
   try {
-    const currentWaitingParticipants =
-      await getWaitingQueueParticipants(queueId);
-    const newParticipantPosition =
-      currentWaitingParticipants.findIndex(
-        (p) => String(p._id) === String(newParticipant._id),
-      ) + 1;
+    if (!newParticipant?.initialPosition) {
+      const currentWaitingParticipants =
+        await getWaitingQueueParticipants(queueId);
+      const newParticipantPosition =
+        currentWaitingParticipants.findIndex(
+          (p) => String(p._id) === String(newParticipant._id),
+        ) + 1;
 
-    newParticipant.initialPosition = newParticipantPosition;
-    await newParticipant.save();
-    
+      newParticipant.initialPosition = newParticipantPosition;
+      await newParticipant.save();
+    }
     // REMOVE SMS NOTITFICATIONS FOR NOW
     // await inngest.send({
     //   name: "notify/participant.new",
