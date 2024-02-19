@@ -1,4 +1,6 @@
 <script setup lang="ts">
+import { useUserStore } from "~/stores/user";
+const { user } = useUserStore();
 definePageMeta({
   layout: "no-scroll",
 });
@@ -12,22 +14,17 @@ const config = useRuntimeConfig();
 // TODO: read fbc and fbp -- need to install meta pixel (how?)
 // TODO: whatsapp or push notification instead of SMS
 
-const currentUser = useCookie(config.public.authCookieKey, {
-  decode: currentUserTokenDecoder,
-});
+const currentUser = user;
+const initialPhone = eventRef ? String(eventRef) : currentUser?.phone ?? "";
 
-const initialPhone = eventRef
-  ? String(eventRef)
-  : currentUser?.value?.phone ?? "";
-
-const initialName = currentUser?.value?.givenName
-  ? `${currentUser?.value?.givenName} ${currentUser?.value?.surName}`.trim()
+const initialName = currentUser?.givenName
+  ? `${currentUser?.givenName} ${currentUser?.surName}`.trim()
   : "";
 
 const disablePhone = Boolean(initialPhone.length === 11);
 const disableName = Boolean(initialName.length);
 
-const hemocioneIdIntegrated = Boolean(currentUser.value);
+const hemocioneIdIntegrated = Boolean(currentUser);
 
 if (shouldRedirect) await navigateTo("/queue/not-found");
 
@@ -71,9 +68,9 @@ async function onSubmit() {
     hemocioneIdIntegrated &&
     initialName === name &&
     initialPhone === phone &&
-    currentUser?.value?.id
+    currentUser?.id
   ) {
-    payload.hemocioneId = currentUser.value.id;
+    payload.hemocioneId = currentUser.id;
   }
   try {
     const queueId = eventConfig?.value?.queue?._id;
@@ -134,7 +131,7 @@ function parsePhone(value: string) {
 
 const joinQueueText = computed(() => {
   if (hemocioneIdIntegrated)
-    return `Entrar na fila de doação como ${currentUser?.value?.givenName}`;
+    return `Entrar na fila de doação como ${currentUser?.givenName}`;
   return `Entrar na fila de doação!`;
 });
 
@@ -146,7 +143,7 @@ const hemocioneIdUrl = computed(() => {
 
 const hemocioneIdButtonText = computed(() => {
   if (hemocioneIdIntegrated)
-    return `Não é ${currentUser?.value?.givenName}? Entre com outra conta.`;
+    return `Não é ${currentUser?.givenName}? Entre com outra conta.`;
   return `Entrar com Hemocione`;
 });
 
