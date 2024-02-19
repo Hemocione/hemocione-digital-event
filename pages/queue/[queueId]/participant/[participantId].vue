@@ -112,7 +112,7 @@ onMounted(async () => {
     if (!participantInfo.value?.position) {
       clearInterval(interval.value);
     }
-  }, 30 * ONE_SECOND);
+  }, 10 * ONE_SECOND);
 });
 </script>
 
