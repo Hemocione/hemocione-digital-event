@@ -1,5 +1,6 @@
 import type { InferSchemaType } from "mongoose";
 import { Schema, Types, model } from "mongoose";
+import { completePhone } from "~/utils/completePhone";
 
 const QueueParticipantSchema = new Schema(
   {
@@ -69,16 +70,7 @@ QueueParticipantSchema.index(
 );
 
 QueueParticipantSchema.pre("validate", function (next) {
-  if (
-    this.participant.phone.startsWith("+55") &&
-    this.participant.phone.length === 14
-  )
-    return next();
-
-  this.participant.phone = this.participant.phone.replace(/\D/g, "");
-  if (this.participant.phone.length === 11)
-    this.participant.phone = `+55${this.participant.phone}`;
-
+  this.participant.phone = completePhone(this.participant.phone);
   next();
 });
 
