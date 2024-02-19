@@ -122,6 +122,9 @@ export default defineNuxtConfig({
     "/queue/join": {
       ssr: false,
     },
+    "/queue/:queueId/participant/:participantId": {
+      ssr: false,
+    },
     "/**": { cors: true },
   },
   experimental: {
