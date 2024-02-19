@@ -20,7 +20,7 @@ const getCurrentEnv = () => {
   }
 
   return "dev";
-}
+};
 
 const siteUrl = getSiteUrl();
 const currentEnv = getCurrentEnv();
@@ -41,10 +41,11 @@ export default defineNuxtConfig({
       basePath: process.env.CDN_BASE_PATH ?? `events/${currentEnv}/uploads`,
       baseUrl: process.env.CDN_BASE_URL ?? "https://cdn.hemocione.com.br",
     },
-    hemocioneIdJwtSecretKey: process.env.HEMOCIONE_ID_JWT_SECRET_KEY ?? "secret",
+    hemocioneIdJwtSecretKey:
+      process.env.HEMOCIONE_ID_JWT_SECRET_KEY ?? "secret",
     secret: process.env.API_SECRET ?? "secret",
-    mongodbUri: process.env.MONGODB_URI ??
-      "mongodb://admin:password@localhost:27017",
+    mongodbUri:
+      process.env.MONGODB_URI ?? "mongodb://admin:password@localhost:27017",
     dbName: process.env.DB_NAME ?? "hemo",
     inngestKey: process.env.INNGEST_EVENT_KEY ?? "mock-key",
     digitalStandApiUrl:
@@ -118,7 +119,10 @@ export default defineNuxtConfig({
     "/event/:eventSlug/schedules": {
       ssr: false,
     },
-    '/**': { cors: true }
+    "/queue/join": {
+      ssr: false,
+    },
+    "/**": { cors: true },
   },
   experimental: {
     componentIslands: true,
