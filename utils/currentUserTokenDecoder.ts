@@ -7,6 +7,7 @@ export interface CurrentUserData {
   bloodType: "A+" | "A-" | "B+" | "B-" | "AB+" | "AB-" | "O+" | "O-";
   email: string;
   phone: string;
+  document: string;
 }
 
 export const currentUserTokenDecoder = (token: string) => {
