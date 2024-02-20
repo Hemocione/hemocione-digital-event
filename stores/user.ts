@@ -23,11 +23,11 @@ export const useUserStore = defineStore("user", {
       state.subscriptions.has(eventSlug),
   },
   actions: {
-    setUser(user: CurrentUserData) {
+    setUser(user: CurrentUserData | null) {
       this.user = user;
       this.subscriptions.clear();
     },
-    setToken(token: string) {
+    setToken(token: string | null) {
       this.token = token;
     },
     async createSubscription(eventSlug: string, scheduleId: string) {
