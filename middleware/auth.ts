@@ -31,8 +31,10 @@ export async function evaluateCurrentLogin(query?: LocationQuery) {
       headers: {
         Authorization: `Bearer ${token}`,
       },
-      onRequestError: (error) => {
-        console.error("Error validating token", error);
+      onRequestError: (_error) => {
+        tokenIsValid = false;
+      },
+      onResponseError: (_error) => {
         tokenIsValid = false;
       }
     });
