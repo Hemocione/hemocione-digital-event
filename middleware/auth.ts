@@ -34,16 +34,15 @@ export async function evaluateCurrentLogin(query?: LocationQuery) {
       onRequestError: (error) => {
         console.error("Error validating token", error);
         tokenIsValid = false;
-        setUser(null);
-        setToken(null);
       }
     });
   } catch (error) {
-    console.error("Error validating token", error);
     tokenIsValid = false;
   }
 
   if (!tokenIsValid) {
+    setUser(null);
+    setToken(null);
     return false;
   }
 
