@@ -23,6 +23,7 @@ export async function evaluateCurrentLogin(query?: LocationQuery) {
   const token = getCurrentToken(query);
 
   if (!token) return false;
+  let tokenIsValid = true;
 
   try {
     await useFetch(`${config.public.hemocioneIdApiUrl}/users/validate-token`, {
@@ -30,8 +31,19 @@ export async function evaluateCurrentLogin(query?: LocationQuery) {
       headers: {
         Authorization: `Bearer ${token}`,
       },
+      onRequestError: (error) => {
+        console.error("Error validating token", error);
+        tokenIsValid = false;
+        setUser(null);
+        setToken(null);
+      }
     });
   } catch (error) {
+    console.error("Error validating token", error);
+    tokenIsValid = false;
+  }
+
+  if (!tokenIsValid) {
     return false;
   }
 
