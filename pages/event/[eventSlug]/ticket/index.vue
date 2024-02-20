@@ -41,8 +41,6 @@ import { reactive } from "vue";
 import dayjs from "dayjs";
 import { formatTimeDuration, formatAddress } from "~/helpers/formatter";
 
-const MIN_HOURS_TO_CANCEL = 24;
-
 definePageMeta({
   middleware: ["auth"],
 });
@@ -76,7 +74,7 @@ const isAllowedToCancel = computed(() => {
   const startAt = dayjs(eventConfig.startAt);
   const now = dayjs();
 
-  return startAt.diff(now, "hours") > MIN_HOURS_TO_CANCEL;
+  return now.isBefore(startAt)
 });
 
 const ticketStartAt = computed(() => {
