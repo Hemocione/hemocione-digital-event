@@ -219,12 +219,25 @@ onMounted(() => {
           {{ joinQueueText }}
         </el-button>
       </el-form-item>
+      <span class="disclaimer">
+        Ao entrar na fila de doação, você concorda com os <a href="https://cdn.hemocione.com.br/legal/termos_de_uso.pdf" target="_blank" rel="noopener noreferrer">Termos de Uso</a> e a <a href="https://cdn.hemocione.com.br/legal/politica_de_privacidade.pdf" target="_blank" rel="noopener noreferrer">Política de Privacidade</a> do Hemocione.
+      </span>
     </el-form>
     <NuxtImg src="/images/logo-white.svg" class="logo" />
   </div>
 </template>
 
 <style scoped>
+.disclaimer {
+  font-size: 0.8rem;
+  color: var(--hemo-color-text-secondary);
+  text-align: center;
+}
+
+.disclaimer a {
+  color: var(--hemo-color-primary-light);
+  font-weight: bolder;
+}
 .queue-join-page {
   text-align: center;
   display: flex;
