@@ -79,6 +79,12 @@ const state = reactive({
   selectedScheduleId: null as string | null,
 });
 
+const IsTimeInPast = (time: string) => {
+  const now = new Date();
+  const timeDate = new Date(time);
+  return now > timeDate;
+};
+
 const schedules = computed(() => {
   const subscription = eventConfig.subscription;
 
@@ -90,7 +96,7 @@ const schedules = computed(() => {
     occupiedSlots: schedule.occupiedSlots,
     alert: getScheduleAlert(schedule.slots, schedule.occupiedSlots),
     hour: dayjs(schedule.startAt).format("HH:mm"),
-    disabled: schedule.occupiedSlots >= schedule.slots,
+    disabled: schedule.occupiedSlots >= schedule.slots || IsTimeInPast(schedule.startAt),
   }));
 });
 
