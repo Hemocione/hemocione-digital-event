@@ -3,7 +3,7 @@
     <ElButton type="default" size="large" @click="goToCalendar"
       >Adicionar ao Calendário
       <el-icon class="el-icon--right" size="30"
-        ><NuxtImg src="/images/icons/google_calendar_icon.svg" /></el-icon
+        ><NuxtImg src="/images/icons/google_calendar_icon.svg" height="30" /></el-icon
     ></ElButton>
     <ElButton type="primary" size="large" @click="shareEvent">
       Compartilhar evento
