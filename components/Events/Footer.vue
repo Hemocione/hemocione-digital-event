@@ -75,11 +75,26 @@ const registerDonationDateLimitIsOver = computed(() => {
   return now > registerDonationDateLimit;
 });
 
+const lastSubscriptionSchedule = computed(() => {
+  if (!eventConfig.subscription?.enabled) return null;
+  const schedules = eventConfig.subscription.schedules;
+  return schedules[schedules.length - 1];
+});
+
+const hasLastSubscriptionSchedulePassed = computed(() => {
+  if (!lastSubscriptionSchedule.value) return false;
+
+  const lastScheduleDate = new Date(lastSubscriptionSchedule.value.startAt);
+  const now = new Date();
+  return now > lastScheduleDate;
+});
+
 const buttons = computed((): Button[] => {
   const isLogged = Boolean(user);
   const hasSubscription = Boolean(subscription);
   const alreadyStarted = isEventTodayAndAlreadyStarted.value;
   const isSchedulesEnabled = eventConfig.subscription?.enabled;
+  const subscriptionsAvailable = !hasLastSubscriptionSchedulePassed.value;
 
   const computedButtons = [
     {
@@ -95,21 +110,20 @@ const buttons = computed((): Button[] => {
     {
       label: "Agendar horário",
       type: "primary",
-      visible: isSchedulesEnabled && !alreadyStarted && !hasSubscription,
+      visible: isSchedulesEnabled && subscriptionsAvailable && !hasSubscription,
       action: goToSchedule,
     },
     {
       label: "Acessar ingresso",
       type: "primary",
-      visible: isSchedulesEnabled && (hasSubscription || (alreadyStarted && !isLogged)),
+      visible: isSchedulesEnabled && (hasSubscription || (!subscriptionsAvailable && !isLogged)),
       action: goToTicket,
     },
     {
       label: "Inscrições encerradas",
       type: "primary",
       disabled: true,
-      visible:
-        isSchedulesEnabled && alreadyStarted && isLogged && !hasSubscription,
+      visible: isSchedulesEnabled && !subscriptionsAvailable && isLogged && !hasSubscription,
     },
   ];
   return computedButtons.filter((button) => button.visible) as Button[];
