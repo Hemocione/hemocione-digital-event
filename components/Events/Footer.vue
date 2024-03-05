@@ -95,11 +95,10 @@ const buttons = computed((): Button[] => {
   const alreadyStarted = isEventTodayAndAlreadyStarted.value;
   const isSchedulesEnabled = eventConfig.subscription?.enabled;
   const subscriptionsAvailable = !hasLastSubscriptionSchedulePassed.value;
-
   const computedButtons = [
     {
       label: "Registrar doação",
-      visible: alreadyStarted && props.registerDonationUrl && !registerDonationDateLimitIsOver,
+      visible: alreadyStarted && props.registerDonationUrl && !registerDonationDateLimitIsOver.value,
       action: goToRegisterDonation,
     },
     {
