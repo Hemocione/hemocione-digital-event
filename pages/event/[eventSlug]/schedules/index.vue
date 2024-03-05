@@ -41,20 +41,12 @@ const userStore = useUserStore();
 const eventSlug = route.params.eventSlug as string;
 const eventConfig = await eventStore.getEvent(eventSlug);
 const subscription = await userStore.getSubscription(eventSlug);
-const isEventTodayAndAlreadyStarted = computed(() => {
-  if (!eventConfig.startAt) return false;
-
-  return isTodayAndPast(eventConfig.startAt);
-});
 
 
 if (!eventConfig) {
   navigateTo("/404");
 }
 
-if (isEventTodayAndAlreadyStarted.value) {
-  navigateTo(`/event/${eventSlug}`);
-}
 
 if (subscription) {
   navigateTo(`/event/${eventSlug}/ticket`);
