@@ -147,7 +147,6 @@ const buttons = computed((): Button[] => {
       visible: isSchedulesEnabled && !subscriptionsAvailable && isLogged && !hasSubscription,
     },
   ];
-  console.log(computedButtons);
   return computedButtons.filter((button) => button.visible) as Button[];
 });
 
