@@ -59,12 +59,28 @@ const eventDateObj = computed(() => {
   return readableSlimDate(eventConfig.startAt);
 });
 
-const isEventFinished = computed(() => {
-  if (!eventConfig.endAt) return false;
+const participants = computed(() => {
+  if (!eventConfig.subscription?.enabled) return null;
 
-  const endAtDate = new Date(eventConfig.endAt);
-  const now = new Date();
-  return isTodayAndPast(eventConfig.endAt) || now > endAtDate;
+  return eventConfig.subscription.schedules.reduce(
+    (acc, schedule) => acc + schedule.occupiedSlots,
+    0,
+  );
+});
+
+const slots = computed(() => {
+  if (!eventConfig.subscription?.enabled) return null;
+
+  return eventConfig.subscription.schedules.reduce(
+    (acc, schedule) => acc + schedule.slots,
+    0,
+  );
+});
+
+const isFull = computed(() => {
+  if (!eventConfig.subscription?.enabled || !slots.value) return false;
+
+  return (participants.value || 0) >= slots.value;
 });
 
 const registerDonationDateLimitIsOver = computed(() => {
@@ -103,20 +119,26 @@ const buttons = computed((): Button[] => {
     },
     {
       label: `Registre sua doação no dia ${eventDateObj.value?.day}, a partir das ${eventDateObj.value?.hour}`,
-      visible: !alreadyStarted && props.registerDonationUrl,
+      visible: !alreadyStarted && Boolean(props.registerDonationUrl),
       disabled: true,
     },
     {
       label: "Agendar horário",
       type: "primary",
-      visible: isSchedulesEnabled && subscriptionsAvailable && !hasSubscription,
+      visible: isSchedulesEnabled && subscriptionsAvailable && !hasSubscription && !isFull.value,
       action: goToSchedule,
     },
     {
       label: "Acessar ingresso",
       type: "primary",
-      visible: isSchedulesEnabled && (hasSubscription || (!subscriptionsAvailable && !isLogged)),
+      visible: isSchedulesEnabled && (hasSubscription || (!subscriptionsAvailable && !isLogged) || (isFull.value && !isLogged)),
       action: goToTicket,
+    },
+    {
+      label: "Vagas esgotadas",
+      type: "primary",
+      disabled: true,
+      visible: isSchedulesEnabled && isFull.value && !hasSubscription && subscriptionsAvailable && isLogged,
     },
     {
       label: "Inscrições encerradas",
@@ -125,6 +147,7 @@ const buttons = computed((): Button[] => {
       visible: isSchedulesEnabled && !subscriptionsAvailable && isLogged && !hasSubscription,
     },
   ];
+  console.log(computedButtons);
   return computedButtons.filter((button) => button.visible) as Button[];
 });
 
