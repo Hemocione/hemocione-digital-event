@@ -77,12 +77,24 @@ const IsTimeInPast = (time: string) => {
   return now > timeDate;
 };
 
+const subscriptionSchedulesInBetweenEventStartAndEnd = eventConfig.subscription?.schedules.filter(
+  (schedule) => {
+    if (!schedule.startAt || !schedule.endAt || !eventConfig.startAt || !eventConfig.endAt) return true;
+
+    const startAt = new Date(schedule.startAt);
+    const endAt = new Date(schedule.endAt);
+    const eventStartAt = new Date(eventConfig.startAt);
+    const eventEndAt = new Date(eventConfig.endAt);
+    return startAt >= eventStartAt && endAt <= eventEndAt;
+  },
+);
+
 const schedules = computed(() => {
   const subscription = eventConfig.subscription;
 
   if (!subscription?.enabled) return [];
 
-  return subscription.schedules.map<Schedule>((schedule) => ({
+  return subscriptionSchedulesInBetweenEventStartAndEnd?.map<Schedule>((schedule) => ({
     id: String(schedule._id),
     slots: schedule.slots,
     occupiedSlots: schedule.occupiedSlots,
