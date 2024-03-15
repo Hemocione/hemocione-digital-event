@@ -147,7 +147,7 @@
         </div>
       </div>
       <div
-        style="display: flex; flex-direction: column; gap: 1rem; width: 100%"
+        style="display: flex; flex-direction: column; gap: 0.5rem; width: 100%"
       >
         <div
           v-if="timeText"
@@ -162,7 +162,7 @@
             "
             src="/images/icons/calendar.svg"
           />
-          <span style="font-size: 1.7rem">
+          <span style="font-size: 1.3rem">
             {{ timeText }}
           </span>
         </div>
@@ -179,36 +179,10 @@
             "
             src="/images/icons/map-marker.svg"
           />
-          <span style="font-size: 1.7rem">
+          <span style="font-size: 1.3rem">
             {{ addressText }}
           </span>
         </div>
-      </div>
-      <div
-        style="
-          width: 100%;
-          display: flex;
-          align-items: center;
-          justify-content: center;
-          gap: 0.5rem;
-        "
-      >
-        <span
-          style="
-            margin: 0;
-            font-size: 1.5rem;
-            margin-right: 0.5rem;
-            font-weight: bold;
-          "
-        >
-          Doe sangue e ajude a salvar até 4 vidas!
-        </span>
-        <img
-          v-for="i in 4"
-          :key="i"
-          style="width: 3rem; height: 3rem; max-width: 3rem; color: #bb0a08"
-          src="/images/icons/pulsating-heart.svg"
-        />
       </div>
     </div>
   </div>
