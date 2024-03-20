@@ -16,7 +16,7 @@ const config = useRuntimeConfig();
 
 const currentUser = user;
 const currentUserPhoneWithoutCountryCode = currentUser?.phone
-  ? currentUser.phone.slice(2)
+  ? currentUser.phone.replace('+', '')?.slice(2)
   : "";
 const initialPhone = eventRef ? String(eventRef) : currentUserPhoneWithoutCountryCode ?? "";
 const initialName = currentUser?.givenName
