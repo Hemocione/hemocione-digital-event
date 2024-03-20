@@ -1,5 +1,4 @@
 const getSiteUrl = () => {
-  console.log("VERCEL_ENV", process.env.VERCEL_ENV);
   if (process.env.VERCEL_ENV === "preview") {
     return `https://${process.env.VERCEL_URL}`;
   }
@@ -60,6 +59,7 @@ export default defineNuxtConfig({
     "nuxt-vercel-analytics",
     "@nuxtseo/module",
     "@pinia/nuxt",
+    "nuxt-bugsnag",
   ],
   nitro: {
     preset: "vercel",
@@ -76,6 +76,12 @@ export default defineNuxtConfig({
     families: {
       Roboto: true,
     },
+  },
+  bugsnag: {
+    apiKey: process.env.BUGSNAG_API_KEY,
+    enabledReleaseStages: ["dev", "prod"],
+    baseUrl: siteUrl,
+    releaseStage: currentEnv,
   },
   app: {
     pageTransition: {
