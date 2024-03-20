@@ -78,10 +78,14 @@ export default defineNuxtConfig({
     },
   },
   bugsnag: {
-    apiKey: process.env.BUGSNAG_API_KEY,
-    enabledReleaseStages: ["production", "preview"],
+    publishRelease: true,
+    disableLog: false, // might activate later
     baseUrl: siteUrl,
-    releaseStage: process.env.VERCEL_ENV,
+    config: {
+      apiKey: process.env.BUGSNAG_API_KEY,
+      enabledReleaseStages: ["prod", "dev"],
+      releaseStage: currentEnv,
+    },
   },
   app: {
     pageTransition: {
