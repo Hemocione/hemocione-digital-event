@@ -83,9 +83,9 @@ export default defineNuxtConfig({
     baseUrl: siteUrl,
     config: {
       apiKey: process.env.BUGSNAG_API_KEY,
-      enabledReleaseStages: ["production", "preview"],
-      releaseStage: process.env.VERCEL_ENV,
-      appVersion: `${process.env.VERCEL_ENV}-${process.env.VERCEL_GIT_COMMIT_SHA}`,
+      enabledReleaseStages: ["prod", "dev"],
+      releaseStage: currentEnv,
+      appVersion: `${currentEnv}-${process.env.VERCEL_GIT_COMMIT_SHA}`,
     },
   },
   app: {
