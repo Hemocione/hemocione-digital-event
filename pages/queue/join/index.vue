@@ -15,8 +15,10 @@ const config = useRuntimeConfig();
 // TODO: whatsapp or push notification instead of SMS
 
 const currentUser = user;
-const initialPhone = eventRef ? String(eventRef) : currentUser?.phone ?? "";
-
+const currentUserPhoneWithoutCountryCode = currentUser?.phone
+  ? currentUser.phone.slice(2)
+  : "";
+const initialPhone = eventRef ? String(eventRef) : currentUserPhoneWithoutCountryCode ?? "";
 const initialName = currentUser?.givenName
   ? `${currentUser?.givenName} ${currentUser?.surName}`.trim()
   : "";
