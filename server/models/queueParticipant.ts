@@ -11,10 +11,6 @@ const QueueParticipantSchema = new Schema(
         phone: {
           type: String,
           required: true,
-          validate: {
-            validator: (v: string) => v.length === 14,
-            message: "Invalid phone.",
-          },
         },
         name: {
           type: String,
