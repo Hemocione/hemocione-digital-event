@@ -1,6 +1,7 @@
 import type { InferSchemaType } from "mongoose";
 import { Schema, Types, model } from "mongoose";
 import { getRandomString } from "~/utils/getRandomString";
+import { completePhone } from "~/utils/completePhone";
 
 const SubscriptionSchema = new Schema(
   {
