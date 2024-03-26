@@ -3,6 +3,7 @@ export function completePhone(phone: string) {
 
   phone = phone.replace(/\D/g, "");
   if (phone.length === 11) phone = `+55${phone}`;
+  if (phone.length === 13) phone = `+${phone}`;
 
   return phone;
 }
