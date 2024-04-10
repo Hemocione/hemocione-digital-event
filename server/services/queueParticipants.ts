@@ -118,15 +118,18 @@ export async function callQueueParticipants(
     },
   );
 
-  // REMOVE SMS NOTITFICATIONS FOR NOW
-  // await inngest.send({
-  //   name: "event/participants.called",
-  //   data: {
-  //     participantIds,
-  //     queueId,
-  //     eventSlug,
-  //   },
-  // });
+  try {
+    await inngest.send({
+      name: "event/participants.called",
+      data: {
+        participantIds,
+        queueId,
+        eventSlug,
+      },
+    });
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 interface CreateQueueParticipant {
