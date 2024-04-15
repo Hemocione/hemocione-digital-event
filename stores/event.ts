@@ -21,11 +21,12 @@ interface Event {
       endAt: string;
     }[];
   } | null;
+  private?: boolean;
 }
 
 export const useEventStore = defineStore("event", {
   state: () => ({
-    loadedEvents: new Map<string, Event>()
+    loadedEvents: new Map<string, Event>(),
   }),
   actions: {
     async getEvent(slug: string): Promise<Event> {
@@ -43,21 +44,25 @@ export const useEventStore = defineStore("event", {
 
       return event.value;
     },
-    incrementSlot(eventSlug: string, scheduleId: string, increment: number = 1) {
+    incrementSlot(
+      eventSlug: string,
+      scheduleId: string,
+      increment: number = 1,
+    ) {
       const event = this.loadedEvents.get(eventSlug);
       if (!event) {
         return;
       }
 
       const schedule = event.subscription?.schedules.find(
-        (s) => s._id === scheduleId
+        (s) => s._id === scheduleId,
       );
-      
+
       if (!schedule) {
         return;
       }
 
-      schedule.occupiedSlots += increment; 
-    }
+      schedule.occupiedSlots += increment;
+    },
   },
 });

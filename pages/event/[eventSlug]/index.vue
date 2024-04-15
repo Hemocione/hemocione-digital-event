@@ -1,7 +1,11 @@
 <template>
   <div class="event-page">
     <section class="event-details">
-      <ElIcon class="arrow-left" @click="goToEventListPage">
+      <ElIcon
+        v-show="!eventConfig.private"
+        class="arrow-left"
+        @click="goToEventListPage"
+      >
         <ElIconArrowLeftBold />
       </ElIcon>
       <NuxtImg
