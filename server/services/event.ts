@@ -2,6 +2,7 @@ import slugify from "slugify";
 import { Event } from "../models/event";
 import { getTimeBlocks } from "~/utils/getTimeBlocks";
 import { getCacheKeyFromParams } from "~/utils/getCacheKeyFromParams";
+import { getRandomString } from "~/utils/getRandomString";
 
 export interface CreateEventDTO {
   name: string;
@@ -20,6 +21,7 @@ export interface CreateEventDTO {
   };
   registerDonationUrl?: string;
   registerDonationDateLimit?: string;
+  private?: boolean;
 }
 
 export interface UpdateEventDTO {
@@ -42,7 +44,8 @@ export interface UpdateEventDTO {
     enabled?: boolean;
   };
   registerDonationUrl?: string;
-  registerDonationDateLimit?: string
+  registerDonationDateLimit?: string;
+  private?: boolean;
 }
 
 export async function incrementEventScheduleOccupiedSlots(
@@ -216,7 +219,9 @@ export async function updateEventBySlug(
 }
 
 export async function createEvent(data: CreateEventDTO) {
-  const slug = slugify(data.name, {
+  const randomSuffix = getRandomString(4);
+  const nameWithSuffix = `${data.name}-${randomSuffix}`;
+  const slug = slugify(nameWithSuffix, {
     lower: true,
     strict: true,
     locale: "pt",
@@ -287,9 +292,13 @@ export async function getEvents(oldEvents: boolean = false) {
     return cached.data;
   }
 
-  const filter = oldEvents
-    ? { endAt: { $lte: new Date() } }
-    : { endAt: { $gte: new Date() } };
+  // private events are not returned in any listing
+  const filter = {
+    private: { $ne: true },
+    ...(oldEvents
+      ? { endAt: { $lte: new Date() } }
+      : { endAt: { $gte: new Date() } }),
+  };
 
   const events = await getEventsFromDBPromise(filter);
 

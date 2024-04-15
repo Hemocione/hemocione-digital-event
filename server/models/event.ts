@@ -23,6 +23,10 @@ const EventSchema = new Schema(
       required: false,
       default: null,
     },
+    private: {
+      type: Boolean,
+      default: false,
+    },
     queue: {
       _id: {
         type: Types.ObjectId,
@@ -123,7 +127,7 @@ const EventSchema = new Schema(
   },
 );
 
-EventSchema.index({ startAt: 1, endAt: 1, _id: 1 });
+EventSchema.index({ active: 1, private: 1, startAt: 1, endAt: 1, _id: 1 });
 
 export type EventSchema = InferSchemaType<typeof EventSchema>;
 
