@@ -6,7 +6,7 @@
         <span class="ticket-code">#{{ subscription.code }}</span>
         <span>{{ subscription.name }}</span>
         <section class="schedule-time">
-          <span>Seu horário para doação é: {{ ticketStartAt }}</span>
+          <span>Horário previsto para doação: <strong>{{ ticketStartAt }}</strong></span>
         </section>
         <ElButton
           v-if="isAllowedToCancel"
@@ -16,6 +16,7 @@
           Cancelar agendamento
         </ElButton>
       </CommonCard>
+      <EventsDisclaimer />
       <section class="event-info-container">
         <span>Informações do evento</span>
         <span>
@@ -140,7 +141,7 @@ article {
   width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1rem;
   padding: 1rem;
 }
 
