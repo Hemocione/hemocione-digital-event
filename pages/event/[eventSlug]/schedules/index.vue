@@ -3,6 +3,7 @@
     <CommonEventHeader :event-name="eventConfig.name" @back="goBack" />
     <article>
       <h3>Selecione um horário para a doação:</h3>
+      <EventsDisclaimer />
       <div class="schedules">
         <CommonCard
           v-for="schedule in schedules"
@@ -147,12 +148,16 @@ function goBack() {
 
 article {
   padding: 0 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
   margin-bottom: 1rem;
   width: 100%;
 }
 
 h3 {
   font-weight: 500;
+  margin-bottom: 0;
 }
 
 .schedules {

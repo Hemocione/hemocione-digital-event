@@ -123,7 +123,7 @@ const buttons = computed((): Button[] => {
       disabled: true,
     },
     {
-      label: "Agendar horário",
+      label: "Inscrever-se",
       type: "primary",
       visible: isSchedulesEnabled && subscriptionsAvailable && !hasSubscription && !isFull.value,
       action: goToSchedule,

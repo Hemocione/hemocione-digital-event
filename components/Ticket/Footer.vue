@@ -63,7 +63,7 @@ function shareEvent() {
       title: `Hemocione - ${props.eventName}`,
       text: "Estou participando de um evento Hemocione! Venha comigo!",
       url,
-    });
+    }).catch(() => {});
 
     return;
   }
