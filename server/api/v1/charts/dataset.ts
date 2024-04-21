@@ -1,4 +1,4 @@
-import { getCandlestickDataset } from "~/server/services/charts";
+import { getDatasets, type DatasetTypes } from "~/server/services/charts";
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event)
@@ -6,11 +6,12 @@ export default defineEventHandler(async (event) => {
   const startedAt = new Date(query.startedAt as string).toISOString()
   const endedAt = new Date(query.endedAt as string).toISOString()
   const intervalMin = Number(query.intervalMin)
+  const selectedDatasets = (query.datasets as string).split(',') as DatasetTypes[]
 
   if (!queueIds) {
     throw new Error("queueIds is required");
   }
 
-  const movingAverageData = await getCandlestickDataset(queueIds, startedAt, endedAt, intervalMin);
-  return movingAverageData
+  const datasets = await getDatasets(queueIds, selectedDatasets, { startedAt, endedAt, intervalMin });
+  return datasets
 });

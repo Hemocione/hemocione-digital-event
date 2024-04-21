@@ -3,10 +3,26 @@ import isBetween from 'dayjs/plugin/isBetween'
 dayjs.extend(isBetween)
 import { getCalledQueueParticipants } from "./queueParticipants";
 
-export async function getCandlestickDataset(queuesId: string[], startedAt: string, endedAt: string, intervalMin: number) {
+export type DatasetTypes = "line" | "candlestick"
+type CandlestickSet = {
+  timestamp: string,
+  open: number,
+  high: number,
+  low: number,
+  close: number
+}
+type LineSet = {
+  x: string,
+  y: number
+}
+
+export async function getDatasets(queuesId: string[], datasets: DatasetTypes[], params: { startedAt: string, endedAt: string, intervalMin: number }) {
+  const dataset: Record<any, any> = {}
+
   const queueParticipantsPromises = queuesId.map((queueId) => getCalledQueueParticipants(queueId));
   const queueParticipants = (await Promise.all(queueParticipantsPromises)).flat();
 
+  const { startedAt, endedAt, intervalMin } = params
   const intervals: string[][] = []
   let endInterval = dayjs(startedAt);
   while (endInterval < dayjs(endedAt)) {
@@ -37,39 +53,35 @@ export async function getCandlestickDataset(queuesId: string[], startedAt: strin
     return acc
   }, donationIntervals)
 
-  const lineDateset = Object.entries(donationIntervals).map(([x, y]) => {
-    return { x, y }
-  })
-
-  const candlestickDateset: {
-    timestamp: string,
-    open: number,
-    high: number,
-    low: number,
-    close: number
-  }[] = [{
-    timestamp: startedAt,
-    open: 0,
-    high: 0,
-    low: 0,
-    close: 0
-  }]
-
-  Object.entries(donationsByInterval).reduce((acc, [timestamp, donationsCount], currentIndex) => {
-    const previousCandlestick = acc[currentIndex]
-
-    acc.push({
-      timestamp,
-      open: previousCandlestick.close,
-      high: Math.max(previousCandlestick.close, donationsCount),
-      low: Math.min(previousCandlestick.close, donationsCount),
-      close: donationsCount,
+  if (datasets.includes('line')) {
+    const lineDataset: LineSet[] = Object.entries(donationIntervals).map(([x, y]) => {
+      return { x, y }
     })
-    return acc
-  }, candlestickDateset)
-
-  return {
-    lineDateset,
-    candlestickDateset
+    dataset['line'] = lineDataset
   }
+
+  if (datasets.includes('candlestick')) {
+    const candlestickDataset = [{
+      timestamp: startedAt,
+      open: 0,
+      high: 0,
+      low: 0,
+      close: 0
+    }]
+
+    Object.entries(donationsByInterval).reduce((acc, [timestamp, donationsCount], currentIndex) => {
+      const previousCandlestick = acc[currentIndex]
+
+      acc.push({
+        timestamp,
+        open: previousCandlestick.close,
+        high: Math.max(previousCandlestick.close, donationsCount),
+        low: Math.min(previousCandlestick.close, donationsCount),
+        close: donationsCount,
+      })
+      return acc
+    }, candlestickDataset)
+    dataset['candlestick'] = candlestickDataset
+  }
+  return dataset
 }
