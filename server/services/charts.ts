@@ -4,14 +4,14 @@ dayjs.extend(isBetween)
 import { getCalledQueueParticipants } from "./queueParticipants";
 
 export type DatasetTypes = "line" | "candlestick"
-type CandlestickSet = {
+interface CandlestickSet {
   timestamp: string,
   open: number,
   high: number,
   low: number,
   close: number
 }
-type LineSet = {
+interface LineSet {
   x: string,
   y: number
 }
@@ -60,7 +60,7 @@ export async function getDatasets(queuesId: string[], datasets: DatasetTypes[], 
   }
 
   if (datasets.includes('candlestick')) {
-    const candlestickDataset = [{
+    const candlestickDataset: CandlestickSet[] = [{
       timestamp: startedAt,
       open: 0,
       high: 0,
