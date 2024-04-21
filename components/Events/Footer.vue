@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { isTodayAndPast } from '~/helpers/todayAndPast';
+import { isTodayAndPast } from "~/helpers/todayAndPast";
 
 interface Button {
   label: string;
@@ -43,7 +43,7 @@ const props = defineProps({
 
 const eventStore = useEventStore();
 const userStore = useUserStore();
-const { user } = userStore
+const { user } = userStore;
 const subscription = await userStore.getSubscription(props.eventSlug);
 const eventConfig = await eventStore.getEvent(props.eventSlug);
 
@@ -86,7 +86,9 @@ const isFull = computed(() => {
 const registerDonationDateLimitIsOver = computed(() => {
   if (!eventConfig.registerDonationDateLimit) return false;
 
-  const registerDonationDateLimit = new Date(eventConfig.registerDonationDateLimit);
+  const registerDonationDateLimit = new Date(
+    eventConfig.registerDonationDateLimit,
+  );
   const now = new Date();
   return now > registerDonationDateLimit;
 });
@@ -114,7 +116,10 @@ const buttons = computed((): Button[] => {
   const computedButtons = [
     {
       label: "Registrar doação",
-      visible: alreadyStarted && props.registerDonationUrl && !registerDonationDateLimitIsOver.value,
+      visible:
+        alreadyStarted &&
+        props.registerDonationUrl &&
+        !registerDonationDateLimitIsOver.value,
       action: goToRegisterDonation,
     },
     {
@@ -125,26 +130,43 @@ const buttons = computed((): Button[] => {
     {
       label: "Inscrever-se",
       type: "primary",
-      visible: isSchedulesEnabled && subscriptionsAvailable && !hasSubscription && !isFull.value,
+      visible:
+        isSchedulesEnabled &&
+        subscriptionsAvailable &&
+        !hasSubscription &&
+        !isFull.value,
       action: goToSchedule,
     },
     {
       label: "Acessar ingresso",
       type: "primary",
-      visible: isSchedulesEnabled && (hasSubscription || (!subscriptionsAvailable && !isLogged) || (isFull.value && !isLogged)),
+      visible:
+        isSchedulesEnabled &&
+        (hasSubscription ||
+          (!subscriptionsAvailable && !isLogged) ||
+          (isFull.value && !isLogged)),
       action: goToTicket,
     },
     {
       label: "Vagas esgotadas",
       type: "primary",
       disabled: true,
-      visible: isSchedulesEnabled && isFull.value && !hasSubscription && subscriptionsAvailable && isLogged,
+      visible:
+        isSchedulesEnabled &&
+        isFull.value &&
+        !hasSubscription &&
+        subscriptionsAvailable &&
+        isLogged,
     },
     {
       label: "Inscrições encerradas",
       type: "primary",
       disabled: true,
-      visible: isSchedulesEnabled && !subscriptionsAvailable && isLogged && !hasSubscription,
+      visible:
+        isSchedulesEnabled &&
+        !subscriptionsAvailable &&
+        isLogged &&
+        !hasSubscription,
     },
   ];
   return computedButtons.filter((button) => button.visible) as Button[];

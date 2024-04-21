@@ -7,15 +7,26 @@
           src="/images/icons/google_calendar_icon.svg"
           height="30" /></el-icon
     ></ElButton>
-    <ElButton
-      type="primary"
-      size="large"
-      :loading="sharing"
-      @click="shareEvent"
-    >
+    <ElButton type="primary" size="large" @click="toggleShareDrawer">
       Compartilhar evento
     </ElButton>
   </CommonCoolFooter>
+  <ElDrawer
+    v-model="shareDrawerVisible"
+    direction="btt"
+    title="Compartilhar evento"
+    size="100%"
+    class="share-drawer"
+  >
+    <div class="share-wrapper">
+      <img
+        :src="instagramImageUrl"
+        alt="Instagram Share Image"
+        class="instagram-image"
+      />
+      <div class="medias"></div>
+    </div>
+  </ElDrawer>
 </template>
 
 <script setup lang="ts">
@@ -62,39 +73,48 @@ function goToCalendar() {
   });
 }
 
-async function shareEvent() {
-  sharing.value = true;
-  console.log("shareEvent");
+const shareDrawerVisible = ref(false);
+
+function toggleShareDrawer() {
+  shareDrawerVisible.value = !shareDrawerVisible.value;
+}
+
+const baseUrl = window.location.origin;
+const url = `${baseUrl}/event/${props.eventSlug}`;
+const instagramImageUrl = `${url}/share/instagram/__og_image__/og.png`;
+
+async function shareEvent(withImage: boolean = false) {
   try {
     const baseUrl = window.location.origin;
     const url = `${baseUrl}/event/${props.eventSlug}`;
-    const data = {
+    const data: {
+      title: string;
+      text: string;
+      url: string;
+      files?: File[];
+    } = {
       title: `Hemocione - ${props.eventName}`,
       text: "Estou participando de um evento Hemocione! Venha comigo!",
       url,
     };
-    const instagramImageUrl = `${url}/share/instagram/__og_image__/og.png`;
-    console.log({ data, instagramImageUrl });
-    const instagramImageFileBlob = await fetch(instagramImageUrl).then((res) =>
-      res.blob(),
-    );
-    console.log({ instagramImageFileBlob });
-    const instagramImageFile = new File(
-      [instagramImageFileBlob],
-      "instagram.png",
-      {
-        type: "image/png",
-      },
-    );
-    const dataWithImage = {
-      ...data,
-      files: [instagramImageFile],
-    };
+
+    if (withImage) {
+      const instagramImageFileBlob = await fetch(instagramImageUrl).then(
+        (res) => res.blob(),
+      );
+      const instagramImageFile = new File(
+        [instagramImageFileBlob],
+        "instagram.png",
+        {
+          type: "image/png",
+        },
+      );
+      data.files = [instagramImageFile];
+    }
+
     const navigatorShareable = Boolean(navigator.canShare);
 
-    if (navigatorShareable && navigator.canShare(dataWithImage)) {
-      await navigator.share(dataWithImage);
-    } else if (navigatorShareable && navigator.canShare(data)) {
+    if (navigatorShareable && navigator.canShare(data)) {
       await navigator.share(data);
     } else {
       navigator.clipboard.writeText(url);
@@ -117,5 +137,27 @@ async function shareEvent() {
 <style scoped>
 button {
   height: 48px;
+}
+
+.share-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 0 1rem 1rem 1rem;
+  gap: 2rem;
+  width: 100%;
+  height: 100%;
+}
+
+.instagram-image {
+  width: 80%;
+  object-fit: contain;
+  border-radius: 1rem;
+}
+
+.medias {
+  width: 80%;
+  display: flex;
+  gap: 1rem;
 }
 </style>
