@@ -36,7 +36,7 @@ export async function evaluateCurrentLogin(query?: LocationQuery) {
       },
       onResponseError: (_error) => {
         tokenIsValid = false;
-      }
+      },
     });
   } catch (error) {
     tokenIsValid = false;
