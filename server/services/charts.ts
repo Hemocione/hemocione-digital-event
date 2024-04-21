@@ -37,6 +37,10 @@ export async function getCandlestickDataset(queuesId: string[], startedAt: strin
     return acc
   }, donationIntervals)
 
+  const lineDateset = Object.entries(donationIntervals).map(([x, y]) => {
+    return { x, y }
+  })
+
   const candlestickDateset: {
     timestamp: string,
     open: number,
@@ -64,5 +68,8 @@ export async function getCandlestickDataset(queuesId: string[], startedAt: strin
     return acc
   }, candlestickDateset)
 
-  return candlestickDateset
+  return {
+    lineDateset,
+    candlestickDateset
+  }
 }
