@@ -81,7 +81,7 @@ export async function getWaitingQueueParticipants(queueId: string) {
     .lean();
 }
 
-export async function getCalledQueueParticipants(queueId: string) {
+export async function getCalledQueueParticipantsByQueueId(queueId: string) {
   return await QueueParticipant.find({
     queueId,
     calledAt: {

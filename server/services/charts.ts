@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import isBetween from 'dayjs/plugin/isBetween'
 dayjs.extend(isBetween)
-import { getCalledQueueParticipants } from "./queueParticipants";
+import { getCalledQueueParticipantsByQueueId } from "./queueParticipants";
 
 export type DatasetTypes = "line" | "candlestick"
 type CandlestickSet = {
@@ -19,7 +19,7 @@ type LineSet = {
 export async function getDatasets(queuesId: string[], datasets: DatasetTypes[], params: { startedAt: string, endedAt: string, intervalMin: number }) {
   const dataset: Record<any, any> = {}
 
-  const queueParticipantsPromises = queuesId.map((queueId) => getCalledQueueParticipants(queueId));
+  const queueParticipantsPromises = queuesId.map((queueId) => getCalledQueueParticipantsByQueueId(queueId));
   const queueParticipants = (await Promise.all(queueParticipantsPromises)).flat();
 
   const { startedAt, endedAt, intervalMin } = params
