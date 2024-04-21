@@ -6,6 +6,6 @@ export default defineEventHandler(async (event) => {
     eventSlugs: string[];
   };
 
-  const events = await getEventsBySlugs(eventSlugs);
+  const events = await getEventsBySlugs(eventSlugs ?? []);
   return events;
 });
