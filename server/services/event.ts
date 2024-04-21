@@ -339,3 +339,9 @@ export async function getAllActiveEvents() {
   cached.data = events;
   return events;
 }
+
+export async function getEventsBySlugs(eventSlugs: string[]) {
+  const events = await getEventsFromDBPromise({ slug: { $in: eventSlugs } });
+
+  return events;
+}
