@@ -147,8 +147,8 @@ const lineChartSeries = computed(() => {
 const REFRESH_INTERVAL = 60000;
 
 onMounted(() => {
-  setInterval(() => {
-    refreshData();
+  setInterval(async () => {
+    await refreshData();
   }, REFRESH_INTERVAL);
 });
 </script>
