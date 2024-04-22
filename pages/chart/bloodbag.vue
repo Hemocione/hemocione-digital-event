@@ -1,12 +1,26 @@
 <template>
   <div class="bloodbag-page">
     <div class="logos">
-      <NuxtImg format="webp" src="/images/logo-vertical-principal.png" alt="hemocione-logo" />
-      <NuxtImg v-if="eventConfig?.logo" format="webp" :src="eventConfig?.logo" alt="event-logo" class="event-logo" />
+      <NuxtImg
+        format="webp"
+        src="/images/logo-vertical-principal.png"
+        alt="hemocione-logo"
+      />
+      <NuxtImg
+        v-if="eventConfig?.logo"
+        format="webp"
+        :src="eventConfig?.logo"
+        alt="event-logo"
+        class="event-logo"
+      />
     </div>
     <div class="social-media">
       <div class="social-network">
-        <NuxtImg format="webp" src="/images/social/instagram.png" alt="instagram" />
+        <NuxtImg
+          format="webp"
+          src="/images/social/instagram.png"
+          alt="instagram"
+        />
         <span>@hemocione</span>
       </div>
       <div class="social-network">
@@ -34,7 +48,10 @@
       <div class="know-more shadow">
         <div class="wrapper-qrcode">
           <!-- TODO: make QRCode receive parameter -->
-          <HemoQrCode content="https://www.instagram.com/hemocione/" :size="350" />
+          <HemoQrCode
+            content="https://www.instagram.com/hemocione/"
+            :size="350"
+          />
         </div>
         <p class="know-more-text">Conheça mais sobre o Hemocione!</p>
       </div>
@@ -55,6 +72,7 @@ const eventSlugs = eventsParams.split(",");
 const { data: eventsConfig } = await useFetch(`/api/v1/event/search`, {
   params: { eventSlugs: _.castArray(eventSlugs) },
 });
+const eventConfig = eventsConfig.value?.[0];
 
 const queuesIds = eventsConfig.value
   ?.map((eventConfig) => eventConfig?.queue?._id)
@@ -64,34 +82,34 @@ const { data: calledParticipants, refresh } = await useFetch(
   `/api/v1/queue/search`,
   {
     params: { queueParticipationIds: _.castArray(queuesIds) },
-  }
+  },
 );
 
 const maxParticipants =
   eventsConfig.value?.reduce(
     (acc, curr) => curr?.queue?.participantsMax ?? 120,
-    0
+    0,
   ) ?? 1;
 
 const numberOfCalledParticipants = computed(
-  () => calledParticipants?.value?.length || 0
+  () => calledParticipants?.value?.length || 0,
 );
 
 const donationPercentage = computed(() =>
-  Math.min((numberOfCalledParticipants.value / maxParticipants) * 100, 100)
+  Math.min((numberOfCalledParticipants.value / maxParticipants) * 100, 100),
 );
 
 const totalDonations = computed(() => {
   return calledParticipants.value?.length
     ? calledParticipants.value?.length
-    : 0
-})
+    : 0;
+});
 
 const savedLifes = computed(() => {
   return calledParticipants.value?.length
     ? calledParticipants.value?.length * 4
-    : 0
-})
+    : 0;
+});
 
 onMounted(() => {
   setInterval(() => {
@@ -149,11 +167,6 @@ onMounted(() => {
   height: 100%;
 }
 
-.latest-donators {
-  width: 30% !important;
-  height: 100%;
-}
-
 .bloodbag-page {
   height: 100dvh;
   width: 100%;
@@ -173,6 +186,7 @@ onMounted(() => {
   grid-template-areas:
     "donations lifes"
     "qrcode qrcode";
+  width: 35%;
 }
 
 .wrapper-saved-lifes {
@@ -181,6 +195,10 @@ onMounted(() => {
   padding: 2rem;
   width: 100%;
   text-align: center;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: space-between;
 }
 
 .saved-lifes {
@@ -191,7 +209,7 @@ onMounted(() => {
 }
 
 .saved-lifes.count {
-  font-size: 3rem;
+  font-size: 5rem;
   color: var(--hemo-color-primary);
   font-weight: 800;
   margin: 0;
@@ -207,7 +225,6 @@ onMounted(() => {
   border-radius: 32px;
   grid-area: qrcode;
 }
-
 
 .know-more-text {
   color: var(--hemo-color-text-secondary);

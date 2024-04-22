@@ -1,6 +1,6 @@
 <template>
   <article class="wrapper-qrcode">
-    <Qrcode :value="content" level="H" :size="size"/>
+    <Qrcode :value="content" level="H" :size="size" />
     <figure class="wrappper-logo">
       <NuxtImg class="logo" src="/images/logo.svg" alt="logo" />
     </figure>
@@ -8,12 +8,12 @@
 </template>
 
 <script setup lang="ts">
-import Qrcode from 'qrcode.vue';
+import Qrcode from "qrcode.vue";
 
 defineProps<{
-  content: string
-  size: number
-}>()
+  content: string;
+  size: number;
+}>();
 </script>
 
 <style scoped>
