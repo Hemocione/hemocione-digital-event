@@ -34,7 +34,7 @@
       <div class="know-more shadow">
         <div class="wrapper-qrcode">
           <!-- TODO: make QRCode receive parameter -->
-          <HemoQrCode content="value" :size="350" />
+          <HemoQrCode content="https://www.instagram.com/hemocione/" :size="350" />
         </div>
         <p class="know-more-text">Conheça mais sobre o Hemocione!</p>
       </div>
