@@ -18,13 +18,25 @@
       <div ref="lineChart" class="card line-chart">
         <h3>Doações de sangue nas últimas 3 horas</h3>
         <ClientOnly>
-          <Chart class="chart" :height="370" />
+          <Chart
+            v-if="lineChartSeries"
+            class="chart"
+            type="line"
+            :height="370"
+            :series="lineChartSeries"
+          />
         </ClientOnly>
       </div>
       <div ref="lineChart" class="card candle-chart">
         <h3>Doações de sangue nas últimas 3 horas</h3>
         <ClientOnly>
-          <Chart class="chart" :height="370" />
+          <Chart
+            v-if="candleStickSeries"
+            class="chart"
+            type="candlestick"
+            :height="370"
+            :series="candleStickSeries"
+          />
         </ClientOnly>
       </div>
     </div>
@@ -51,13 +63,58 @@ const queueIds = eventsConfig.value
   ?.map((eventConfig) => eventConfig?.queue?._id)
   .filter((id) => id);
 
-const a = await useFetch("/api/v1/charts/dataset", {
-  query: {
-    queueIds,
+const sortedStartAt = eventsConfig.value
+  ?.map((eventConfig) => eventConfig.startAt)
+  .filter(Boolean)
+  .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+
+if (!sortedStartAt) {
+  throw new Error("No events found");
+}
+
+const { data: datasets, refresh: refreshDataSet } = await useFetch(
+  "/api/v1/charts/dataset",
+  {
+    query: {
+      queueIds,
+      startedAt: sortedStartAt[0],
+      endedAt: new Date().toISOString(),
+      intervalMin: 60,
+      datasets: "line,candlestick",
+    },
   },
+);
+
+const candleStickSeries = computed(() => {
+  if (!datasets?.value?.candlestick) {
+    return null;
+  }
+
+  const data = datasets.value.candlestick.map((data) => ({
+    x: new Date(data.timestamp),
+    y: [data.open, data.high, data.low, data.close],
+  }));
+
+  return [
+    {
+      name: "Candlestick",
+      data,
+    },
+  ];
 });
 
-console.log(a);
+const lineChartSeries = computed(() => {
+  if (!datasets?.value?.line) {
+    return null;
+  }
+
+  return [
+    {
+      name: "Line",
+      data: datasets.value.line,
+    },
+  ];
+});
 
 // const queuesIds = eventsConfig.value
 //   ?.map((eventConfig) => eventConfig?.queue?._id)

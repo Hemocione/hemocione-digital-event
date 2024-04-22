@@ -1,7 +1,7 @@
 <template>
   <VueApexCharts
     class="charts"
-    type="line"
+    :type="type"
     :height="height"
     :options="options"
     :series="series"
@@ -14,6 +14,8 @@ import VueApexCharts from "vue3-apexcharts";
 
 defineProps<{
   height: number;
+  type: "line" | "candlestick";
+  series: { name: string; data: Record<string, unknown>[] }[];
 }>();
 
 const options: ApexOptions = {
@@ -38,9 +40,6 @@ const options: ApexOptions = {
     enabled: false,
   },
 };
-const series = [
-  { name: "series-1", data: [30, 40, 35, 50, 49, 60, 70, 91, 125] },
-];
 </script>
 
 <style scoped>
