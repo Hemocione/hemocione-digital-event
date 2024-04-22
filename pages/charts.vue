@@ -47,7 +47,17 @@ const { data: eventsConfig } = await useFetch(`/api/v1/event/search`, {
   params: { eventSlugs: _.castArray(eventSlugs) },
 });
 
-console.log(eventsConfig.value);
+const queueIds = eventsConfig.value
+  ?.map((eventConfig) => eventConfig?.queue?._id)
+  .filter((id) => id);
+
+const a = await useFetch("/api/v1/charts/dataset", {
+  query: {
+    queueIds,
+  },
+});
+
+console.log(a);
 
 // const queuesIds = eventsConfig.value
 //   ?.map((eventConfig) => eventConfig?.queue?._id)
