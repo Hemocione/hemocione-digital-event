@@ -112,8 +112,8 @@ const savedLifes = computed(() => {
 });
 
 onMounted(() => {
-  setInterval(() => {
-    refresh();
+  setInterval(async () => {
+    await refresh();
   }, 10000);
 });
 </script>

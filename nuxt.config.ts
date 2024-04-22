@@ -145,6 +145,9 @@ export default defineNuxtConfig({
     "/queue/:queueId/participant/:participantId": {
       ssr: false,
     },
+    "/chart/line-and-candlestick": {
+      ssr: false,
+    },
     "/**": { cors: true },
   },
   experimental: {
