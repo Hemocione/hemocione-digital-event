@@ -12,15 +12,59 @@
 import type { ApexOptions } from "apexcharts";
 import VueApexCharts from "vue3-apexcharts";
 
-defineProps<{
+const supportedTypes = ["line", "candlestick", "area"] as const;
+type SupportedType = (typeof supportedTypes)[number];
+
+const props = defineProps<{
   height: number;
-  type: "line" | "candlestick";
+  type: SupportedType;
   series: { name: string; data: Record<string, unknown>[] }[];
 }>();
 
-const { data: locale } = await useFetch(
-  "https://cdn.jsdelivr.net/npm/apexcharts/dist/locales/pt.json",
-);
+const exclusiveOptions: Record<SupportedType, ApexOptions> = {
+  line: {
+    stroke: {
+      curve: "smooth",
+    },
+  },
+  candlestick: {
+    plotOptions: {
+      candlestick: {
+        colors: {
+          upward: "#2ac769",
+          downward: "#ff6262",
+        },
+      },
+    },
+  },
+  area: {
+    stroke: {
+      curve: "smooth",
+    },
+    fill: {
+      type: "gradient",
+      gradient: {
+        shadeIntensity: 1,
+        opacityFrom: 0.7,
+        opacityTo: 0.9,
+        stops: [0, 100],
+      },
+    },
+    plotOptions: {
+      candlestick: {
+        colors: {
+          upward: "#2ac769",
+          downward: "#ff6262",
+        },
+      },
+      area: {
+        fillTo: "origin",
+      },
+    },
+  },
+};
+
+const exclusiveOption = exclusiveOptions[props.type];
 
 const options: ApexOptions = {
   colors: ["#E93C3C"],
@@ -32,15 +76,11 @@ const options: ApexOptions = {
       show: false,
     },
     labels: {
-      formatter(value, _timestamp, _opts) {
-        const date = new Date(value)
-          .toLocaleTimeString("pt-BR", {
-            day: "2-digit",
-            month: "2-digit",
-            hour: "2-digit",
-            minute: "2-digit",
-          })
-          .replace(", ", " - ");
+      formatter(value: string, _timestamp: unknown, _opts: unknown) {
+        const date = new Date(value).toLocaleTimeString("pt-BR", {
+          hour: "2-digit",
+          minute: "2-digit",
+        });
         return date;
       },
     },
@@ -52,12 +92,11 @@ const options: ApexOptions = {
     toolbar: {
       show: false,
     },
-    locales: [locale.value as ApexLocale],
-    defaultLocale: "pt",
   },
   tooltip: {
     enabled: false,
   },
+  ...exclusiveOption,
 };
 </script>
 

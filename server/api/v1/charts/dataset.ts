@@ -1,14 +1,15 @@
-import { getDatasets, type DatasetTypes } from "~/server/services/charts";
+import _ from "lodash";
+import { getDatasets, type DatasetType } from "~/server/services/charts";
 
 export default defineEventHandler(async (event) => {
   const query = getQuery(event);
-  const queueIds = (query.queueIds as string).split(",");
+  const queueIds = _.castArray(query.queueIds);
   const startedAt = new Date(query.startedAt as string).toISOString();
   const endedAt = new Date(query.endedAt as string).toISOString();
   const intervalMin = Number(query.intervalMin);
   const selectedDatasets = (query.datasets as string).split(
     ",",
-  ) as DatasetTypes[];
+  ) as DatasetType[];
 
   if (!queueIds) {
     throw new Error("queueIds is required");

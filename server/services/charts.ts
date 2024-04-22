@@ -34,7 +34,7 @@ export async function getDatasets(
   const { startedAt, endedAt, intervalMin } = params;
   const intervals: string[][] = [];
   let endInterval = dayjs(startedAt);
-  while (endInterval < dayjs(endedAt)) {
+  while (endInterval <= dayjs(endedAt)) {
     const startInterval = endInterval;
     endInterval = dayjs(endInterval).add(intervalMin, "m");
     intervals.push([startInterval.toISOString(), endInterval.toISOString()]);

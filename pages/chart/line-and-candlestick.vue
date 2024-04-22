@@ -15,22 +15,28 @@
         />
         <span> Conheça mais sobre o Hemocione! </span>
       </div>
+      <img
+        v-if="eventConfig?.logo"
+        :src="eventConfig?.logo"
+        alt="event-logo"
+        class="event-logo"
+      />
     </div>
     <div class="charts">
       <div ref="lineChart" class="card line-chart">
-        <h3>Doações de sangue nas últimas 3 horas</h3>
+        <h3>Doações de Sangue ao Longo do tempo</h3>
         <ClientOnly>
           <Chart
             v-if="lineChartSeries"
             class="chart"
-            type="line"
+            type="area"
             :height="370"
             :series="lineChartSeries"
           />
         </ClientOnly>
       </div>
-      <div ref="lineChart" class="card candle-chart">
-        <h3>Doações de sangue nas últimas 3 horas</h3>
+      <div ref="candleChart" class="card candle-chart">
+        <h3>Tendências de doação de sangue</h3>
         <ClientOnly>
           <Chart
             v-if="candleStickSeries"
@@ -46,7 +52,6 @@
 </template>
 
 <script lang="ts" setup>
-import QrcodeVue from "qrcode.vue";
 import _ from "lodash";
 
 definePageMeta({
@@ -61,6 +66,8 @@ const { data: eventsConfig } = await useFetch(`/api/v1/event/search`, {
   params: { eventSlugs: _.castArray(eventSlugs) },
 });
 
+const eventConfig = eventsConfig.value?.[0];
+
 const queueIds = eventsConfig.value
   ?.map((eventConfig) => eventConfig?.queue?._id)
   .filter((id) => id);
@@ -70,22 +77,41 @@ const sortedStartAt = eventsConfig.value
   .filter(Boolean)
   .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
 
-if (!sortedStartAt) {
-  throw new Error("No events found");
+const sortedEndAt = eventsConfig.value
+  ?.map((eventConfig) => eventConfig.endAt)
+  .filter(Boolean)
+  .sort((a, b) => new Date(a).getTime() - new Date(b).getTime());
+
+const firstStartedAt = sortedStartAt?.[0];
+const lastEndedAt = sortedEndAt?.[sortedEndAt.length - 1];
+
+if (!firstStartedAt || !lastEndedAt) {
+  throw new Error("No valid events found");
 }
 
-const { data: datasets, refresh: refreshDataSet } = await useFetch(
-  "/api/v1/charts/dataset",
-  {
-    query: {
-      queueIds,
-      startedAt: sortedStartAt[0],
-      endedAt: new Date().toISOString(),
-      intervalMin: 60,
-      datasets: "line,candlestick",
-    },
+const getChartEndDate = () => {
+  const lastEventEndDate = new Date(lastEndedAt);
+  const now = new Date();
+
+  return lastEventEndDate > now ? now : lastEventEndDate;
+};
+
+const chartEndDate = ref(getChartEndDate());
+
+const { data: datasets, refresh } = await useFetch("/api/v1/charts/dataset", {
+  query: {
+    queueIds,
+    startedAt: sortedStartAt[0].toString(),
+    endedAt: chartEndDate.value.toISOString(),
+    intervalMin: 20,
+    datasets: "line,candlestick",
   },
-);
+});
+
+function refreshData() {
+  chartEndDate.value = getChartEndDate();
+  refresh();
+}
 
 const candleStickSeries = computed(() => {
   if (!datasets?.value?.candlestick) {
@@ -118,21 +144,13 @@ const lineChartSeries = computed(() => {
   ];
 });
 
-// const queuesIds = eventsConfig.value
-//   ?.map((eventConfig) => eventConfig?.queue?._id)
-//   .filter((id) => id);
+const REFRESH_INTERVAL = 60000;
 
-// console.log(queuesIds);
-
-// onMounted(() => {
-//   fetchLineChart();
-// });
-
-// async function fetchLineChart() {
-//   const { data } = await useFetch("/api/v1/charts/dataset");
-
-//   console.log(data);
-// }
+onMounted(() => {
+  setInterval(() => {
+    refreshData();
+  }, REFRESH_INTERVAL);
+});
 </script>
 
 <style scoped>
@@ -153,6 +171,7 @@ const lineChartSeries = computed(() => {
   display: flex;
   flex-direction: column;
   gap: 24px;
+  align-items: center;
 }
 
 .charts {
@@ -205,5 +224,18 @@ const lineChartSeries = computed(() => {
 
 .candle-chart {
   grid-area: Candle;
+}
+
+.card h3 {
+  color: var(--hemo-color-text-secondary);
+  font-size: 1.5rem;
+  font-weight: 900;
+  text-align: center;
+}
+
+.event-logo {
+  width: 250px;
+  aspect-ratio: 1;
+  border-radius: 24px;
 }
 </style>
