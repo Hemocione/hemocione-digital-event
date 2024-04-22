@@ -309,3 +309,25 @@ export async function getCalledAndCloseToCallParticipants(
     closeToCallParticipants,
   };
 }
+
+export async function getQueueParticipationsByIds(
+  queueParticipationIds: string[],
+) {
+  const participants = await QueueParticipant.find({
+    queueId: { $in: queueParticipationIds },
+    calledAt: {
+      $ne: null,
+    },
+  })
+    .select({
+      _id: 1,
+      participant: 1,
+      createdAt: 1,
+    })
+    .sort({
+      createdAt: 1,
+    })
+    .lean();
+
+  return participants;
+}
