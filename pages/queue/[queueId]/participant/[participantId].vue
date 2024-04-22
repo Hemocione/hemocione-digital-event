@@ -1,18 +1,16 @@
 <template>
   <div class="main-container">
-    <div class="image-container">
-      <NuxtImg
-        v-if="eventInfo?.banner"
-        class="main-image"
-        style="aspect-ratio: 3/1; object-fit: cover"
-        :src="eventInfo?.banner"
-      />
-      <NuxtImg
-        v-else
-        class="main-image"
-        src="/images/illustrations/rafiki-blood-donation.svg"
-      />
-    </div>
+    <NuxtImg
+      v-if="eventInfo?.banner"
+      class="main-image"
+      :src="eventInfo?.banner"
+    />
+    <NuxtImg
+      v-else
+      class="main-image"
+      src="/images/illustrations/rafiki-blood-donation.svg"
+      style="object-fit: contain; width: 100%"
+    />
 
     <div class="content">
       <div class="event-title-container">
@@ -161,19 +159,11 @@ onMounted(async () => {
   height: 18px;
 }
 
-.image-container {
-  align-self: stretch;
-  display: flex;
-  justify-content: center;
-  align-items: center;
+.main-image {
+  width: 100%;
+  aspect-ratio: 2/1;
   object-fit: cover;
   margin-bottom: 16px;
-  width: calc(100% + 32px);
-}
-
-.main-image {
-  align-self: stretch;
-  width: calc(100% + 32px);
 }
 
 .content {
@@ -203,7 +193,6 @@ onMounted(async () => {
   flex-grow: 1;
   color: #25282b;
   font-size: 26px;
-  font-family: Lato;
   font-weight: 700;
 }
 
@@ -223,7 +212,6 @@ onMounted(async () => {
   text-align: center;
   color: #bb0a08;
   font-size: 12px;
-  font-family: Lato;
   font-weight: 400;
   line-height: 14px;
 }
@@ -232,7 +220,6 @@ onMounted(async () => {
   text-align: center;
   color: #bb0a08;
   font-size: 18px;
-  font-family: Lato;
   font-weight: 500;
 }
 
@@ -259,7 +246,6 @@ onMounted(async () => {
   align-self: stretch;
   color: white;
   font-size: 21px;
-  font-family: Lato;
   font-weight: 400;
   display: flex;
   flex-direction: column;
@@ -277,7 +263,6 @@ onMounted(async () => {
   align-items: center;
   color: white;
   font-size: 80px;
-  font-family: Lato;
   font-weight: 700;
   position: relative;
   z-index: 100;
@@ -307,14 +292,12 @@ onMounted(async () => {
 .title {
   color: #25282b;
   font-size: 22px;
-  font-family: Lato;
   font-weight: 600;
 }
 
 .description {
   color: #52575c;
   font-size: 16px;
-  font-family: Lato;
   font-weight: 400;
   line-height: 20px;
 }
@@ -322,7 +305,6 @@ onMounted(async () => {
 .more-info {
   color: #bb0a08;
   font-size: 16px;
-  font-family: Lato;
   font-weight: 400;
   line-height: 20px;
 }
@@ -338,7 +320,6 @@ onMounted(async () => {
 .location-title {
   color: #25282b;
   font-size: 22px;
-  font-family: Lato;
   font-weight: 600;
 }
 
@@ -362,7 +343,6 @@ onMounted(async () => {
 .school-address {
   color: #52575c;
   font-size: 16px;
-  font-family: Lato;
   font-weight: 400;
   line-height: 20px;
 }
@@ -400,7 +380,6 @@ onMounted(async () => {
   text-align: center;
   margin-top: 20px;
   font-size: 16px;
-  font-family: Lato;
   font-weight: 400;
 }
 
