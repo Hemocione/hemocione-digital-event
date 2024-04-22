@@ -1,7 +1,7 @@
 <template>
   <article class="wrapper-qrcode">
     <Qrcode :value="content" level="H" :size="size" />
-    <figure class="wrappper-logo">
+    <figure class="wrapper-logo">
       <NuxtImg class="logo" src="/images/logo.svg" alt="logo" />
     </figure>
   </article>
@@ -21,24 +21,25 @@ defineProps<{
   position: relative;
 }
 
-.wrappper-logo {
-  position: absolute;
-  left: 34.5%;
-  top: 32.5%;
-  width: 20%;
-  height: 20%;
-  aspect-ratio: 1 / 1;
-  background-color: white;
-  border-radius: 12.5%;
-  box-shadow: 1px 1px 4px var(--hemo-color-text-secondary);
+.wrapper-logo {
   margin: 0;
-  padding: 4%;
-  box-sizing: content-box;
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 }
 
 .logo {
+  width: 20%;
+  aspect-ratio: 1;
   object-fit: contain;
-  width: 100%;
-  height: 100%;
+  background-color: white;
+  border-radius: 12.5%;
+  box-shadow: 1px 1px 4px var(--hemo-color-text-secondary);
+  padding: 16px;
 }
 </style>

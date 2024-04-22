@@ -18,6 +18,10 @@ defineProps<{
   series: { name: string; data: Record<string, unknown>[] }[];
 }>();
 
+const { data: locale } = await useFetch(
+  "https://cdn.jsdelivr.net/npm/apexcharts/dist/locales/pt.json",
+);
+
 const options: ApexOptions = {
   colors: ["#E93C3C"],
   xaxis: {
@@ -27,6 +31,19 @@ const options: ApexOptions = {
     axisTicks: {
       show: false,
     },
+    labels: {
+      formatter(value, _timestamp, _opts) {
+        const date = new Date(value)
+          .toLocaleTimeString("pt-BR", {
+            day: "2-digit",
+            month: "2-digit",
+            hour: "2-digit",
+            minute: "2-digit",
+          })
+          .replace(", ", " - ");
+        return date;
+      },
+    },
   },
   grid: {
     show: false,
@@ -35,6 +52,8 @@ const options: ApexOptions = {
     toolbar: {
       show: false,
     },
+    locales: [locale.value as ApexLocale],
+    defaultLocale: "pt",
   },
   tooltip: {
     enabled: false,

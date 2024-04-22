@@ -3,15 +3,17 @@
     <div class="info">
       <div class="card logo">
         <NuxtImg
-          format="webp"
-          src="/images/logo-vertical-principal.png"
+          src="/images/hemocione-logo-horizontal.svg"
           alt="hemocione-logo"
           class="logo"
         />
       </div>
       <div class="card qrcode">
-        <h3>Código</h3>
-        <qrcode-vue class="qrcode" value="Oi oi oi" :size="300" level="H" />
+        <HemoQrCode
+          content="https://www.instagram.com/hemocione/"
+          :size="350"
+        />
+        <span> Conheça mais sobre o Hemocione! </span>
       </div>
     </div>
     <div class="charts">
@@ -182,15 +184,19 @@ const lineChartSeries = computed(() => {
   grid-area: Logo;
   object-fit: contain;
   height: fit-content;
-}
-
-.logo img {
-  width: 100px;
-  height: 100px;
+  width: 100%;
 }
 
 .qrcode {
   grid-area: QrCode;
+}
+
+.qrcode span {
+  font-size: 1.5rem;
+  font-weight: 800;
+  text-align: center;
+  width: 100%;
+  color: var(--hemo-color-text-secondary);
 }
 
 .line-chart {
