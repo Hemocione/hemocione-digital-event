@@ -339,3 +339,23 @@ export async function getAllActiveEvents() {
   cached.data = events;
   return events;
 }
+
+export async function getEventsBySlugs(eventSlugs: string[]) {
+  return Event.find({
+    active: true,
+    slug: { $in: eventSlugs },
+  })
+    .select({
+      _id: 1,
+      name: 1,
+      slug: 1,
+      logo: 1,
+      banner: 1,
+      startAt: 1,
+      endAt: 1,
+      location: 1,
+      queue: 1,
+    })
+    .sort({ startAt: 1, endAt: 1, _id: 1 })
+    .lean();
+}

@@ -4,7 +4,16 @@ const getSiteUrl = () => {
   }
 
   if (process.env.VERCEL_ENV === undefined) {
-    return "http://localhost:3000";
+    const nuxtDevConfig = process.env.__NUXT_DEV__;
+    let networkAddress;
+    if (nuxtDevConfig) {
+      const parsedConfig = JSON.parse(nuxtDevConfig);
+      networkAddress = parsedConfig?.proxy?.urls?.find(
+        (addr: any) => addr.type === "network",
+      )?.url;
+    }
+
+    return networkAddress || "http://localhost:3000/";
   }
 
   return "https://eventos.hemocione.com.br";
@@ -33,7 +42,7 @@ export default defineNuxtConfig({
         process.env.NUXT_HEMOCIONE_ID_API_URL ||
         "https://hemocione-id-dev.cpt.hemocione.com.br",
       hemocioneIdUrl:
-        process.env.HEMOCIONE_ID_URL ?? "https://id.hemocione.com.br",
+        process.env.HEMOCIONE_ID_URL ?? "https://id.d.hemocione.com.br",
     },
     cdn: {
       bucket: process.env.CDN_BUCKET ?? "hemocione-assets",
