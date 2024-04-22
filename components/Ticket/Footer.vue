@@ -20,11 +20,25 @@
   >
     <div class="share-wrapper">
       <img
-        :src="instagramImageUrl"
+        v-if="instagramImageLocalUrl"
+        :src="instagramImageLocalUrl"
         alt="Instagram Share Image"
         class="instagram-image"
       />
-      <div class="medias"></div>
+      <div class="medias">
+        <div class="media-wrapper" @click="() => shareEvent(true)">
+          <img src="/images/social/instagram.svg" alt="Instagram" />
+          <span>Stories</span>
+        </div>
+        <div class="media-wrapper" @click="shareEvent">
+          <img src="/images/social/zap.svg" alt="Whatsapp" />
+          <span>WhatsApp</span>
+        </div>
+        <div class="media-wrapper" @click="shareEvent">
+          <img src="/images/icons/more.svg" alt="Outro" />
+          <span>Outro</span>
+        </div>
+      </div>
     </div>
   </ElDrawer>
 </template>
@@ -83,6 +97,18 @@ const baseUrl = window.location.origin;
 const url = `${baseUrl}/event/${props.eventSlug}`;
 const instagramImageUrl = `${url}/share/instagram/__og_image__/og.png`;
 
+const instagramImageBlob = ref<Blob | null>(null);
+const instagramImageLocalUrl = ref<string | null>(null);
+
+onMounted(async () => {
+  instagramImageBlob.value = await fetch(instagramImageUrl).then((res) =>
+    res.blob(),
+  );
+  if (!instagramImageBlob.value) return;
+
+  instagramImageLocalUrl.value = URL.createObjectURL(instagramImageBlob.value);
+});
+
 async function shareEvent(withImage: boolean = false) {
   try {
     const baseUrl = window.location.origin;
@@ -123,6 +149,7 @@ async function shareEvent(withImage: boolean = false) {
         type: "success",
       });
     }
+    shareDrawerVisible.value = false;
   } catch (error) {
     ElMessage({
       message: "Não foi possível compartilhar o evento.",
@@ -150,14 +177,31 @@ button {
 }
 
 .instagram-image {
-  width: 80%;
+  max-width: 80%;
   object-fit: contain;
   border-radius: 1rem;
+  box-shadow: 0 0 1rem rgba(0, 0, 0, 0.1);
+  max-height: 80%;
 }
 
 .medias {
-  width: 80%;
   display: flex;
-  gap: 1rem;
+  justify-content: center;
+  align-items: center;
+  gap: 2rem;
+}
+
+.medias img {
+  height: 3rem;
+}
+
+.media-wrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+  flex-grow: 1;
+  font-size: 0.8rem;
+  justify-content: space-between;
 }
 </style>
