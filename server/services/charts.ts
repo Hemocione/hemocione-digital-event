@@ -1,7 +1,5 @@
 import dayjs from "dayjs";
-import isBetween from "dayjs/plugin/isBetween";
 import { getCalledQueueParticipants } from "./queueParticipants";
-dayjs.extend(isBetween);
 
 const datasetTypes = ["line", "candlestick"] as const;
 export type DatasetType = (typeof datasetTypes)[number];
@@ -51,9 +49,15 @@ export async function getDatasets(
 
   const donationsByInterval = queueParticipants.reduce(
     (acc: Record<string, any>, queueParticipant) => {
-      const { calledAt } = queueParticipant;
+      const { calledAt } = queueParticipant as { calledAt: Date };
       const intervalBetween = intervals.find((interval) => {
-        const isBetween = dayjs(calledAt).isBetween(interval[0], interval[1]);
+        const start = Date.parse(interval[0]);
+        const end = Date.parse(interval[1]);
+        const calledAtDate = new Date(calledAt);
+
+        const isBetween =
+          calledAtDate.valueOf() >= start.valueOf() &&
+          calledAtDate.valueOf() <= end.valueOf();
         if (isBetween) {
           return interval;
         }
