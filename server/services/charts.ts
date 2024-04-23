@@ -108,7 +108,7 @@ export async function getDatasets(
       },
       candlestickDataset,
     );
-    dataset.candlestick = candlestickDataset;
+    dataset.candlestick = candlestickDataset.slice(1); // remove the first element (0, 0, 0, 0);
   }
   return dataset;
 }
