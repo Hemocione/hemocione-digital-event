@@ -68,6 +68,9 @@ const exclusiveOption = exclusiveOptions[props.type];
 
 const options: ApexOptions = {
   colors: ["#E93C3C"],
+  dataLabels: {
+    enabled: false,
+  },
   xaxis: {
     axisBorder: {
       show: false,
@@ -80,13 +83,15 @@ const options: ApexOptions = {
         const date = new Date(value).toLocaleTimeString("pt-BR", {
           hour: "2-digit",
           minute: "2-digit",
+          day: "2-digit",
+          month: "2-digit",
         });
         return date;
       },
     },
   },
   grid: {
-    show: false,
+    show: true,
   },
   chart: {
     toolbar: {

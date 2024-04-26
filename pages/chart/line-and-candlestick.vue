@@ -98,12 +98,21 @@ const getChartEndDate = () => {
 
 const chartEndDate = ref(getChartEndDate());
 
+const BASE_INTERVAL_MIN = 30;
+const alreadyStartedEvents = sortedStartAt.filter(
+  (startAt) => new Date(startAt) < new Date(),
+);
+const numberOfUniqueStartTimeEvents = new Set(alreadyStartedEvents).size;
+// more events, more data - make graph less detailed for more events that start at different times
+const intervalMin =
+  BASE_INTERVAL_MIN * 2 ** Math.max(numberOfUniqueStartTimeEvents - 1, 0);
+
 const { data: datasets, refresh } = await useFetch("/api/v1/charts/dataset", {
   query: {
     queueIds,
     startedAt: sortedStartAt[0].toString(),
     endedAt: chartEndDate.value.toISOString(),
-    intervalMin: 20,
+    intervalMin,
     datasets: "line,candlestick",
   },
 });
