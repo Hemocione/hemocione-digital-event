@@ -102,10 +102,13 @@ const BASE_INTERVAL_MIN = 30;
 const alreadyStartedEvents = sortedStartAt.filter(
   (startAt) => new Date(startAt) < new Date(),
 );
-const numberOfUniqueStartTimeEvents = new Set(alreadyStartedEvents).size;
+const lastStartedEvent = alreadyStartedEvents[alreadyStartedEvents.length - 1];
+const daysDiff = Math.ceil(
+  (new Date(lastStartedEvent).getTime() - new Date(firstStartedAt).getTime()) /
+    (1000 * 60 * 60 * 24),
+);
 // more events, more data - make graph less detailed for more events that start at different times
-const intervalMin =
-  BASE_INTERVAL_MIN * 2 ** Math.max(numberOfUniqueStartTimeEvents - 1, 0);
+const intervalMin = BASE_INTERVAL_MIN * 2 ** Math.max(daysDiff, 0);
 
 const { data: datasets, refresh } = await useFetch("/api/v1/charts/dataset", {
   query: {
