@@ -137,19 +137,18 @@ export async function callQueueParticipants(
     },
   );
 
-  // TMP: REMOVE SMS NOTITFICATIONS FOR NOW
-  // try {
-  //   await inngest.send({
-  //     name: "event/participants.called",
-  //     data: {
-  //       participantIds,
-  //       queueId,
-  //       eventSlug,
-  //     },
-  //   });
-  // } catch (e) {
-  //   console.error(e);
-  // }
+  try {
+    await inngest.send({
+      name: "event/participants.called",
+      data: {
+        participantIds,
+        queueId,
+        eventSlug,
+      },
+    });
+  } catch (e) {
+    console.error(e);
+  }
 }
 
 interface CreateQueueParticipant {
@@ -202,16 +201,6 @@ export async function createQueueParticipant(data: CreateQueueParticipant) {
       newParticipant.initialPosition = newParticipantPosition;
       await newParticipant.save();
     }
-    // REMOVE SMS NOTITFICATIONS FOR NOW
-    // await inngest.send({
-    //   name: "notify/participant.new",
-    //   data: {
-    //     _id: String(newParticipant._id),
-    //     phone: newParticipant.participant.phone,
-    //     name: newParticipant.participant.name,
-    //     position: newParticipantPosition,
-    //   },
-    // });
     if (participant.leadId && (participant.fbc || participant.fbp)) {
       const payload = {
         ...(participant.fbc ? { fbc: participant.fbc } : {}),

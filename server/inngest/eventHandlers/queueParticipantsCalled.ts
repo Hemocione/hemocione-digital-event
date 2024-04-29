@@ -25,7 +25,11 @@ export default inngest.createFunction(
     const { calledParticipants, closeToCallParticipants } =
       await getCalledAndCloseToCallParticipants(participantIds, queueId);
 
-    const calledParticipantsJobs = calledParticipants.map((p) =>
+    // Only send notifications to participants who have not been notified yet
+    const calledParticipantsNotYetNotified = calledParticipants.filter(
+      (participant) => !participant.notifiedCloseToCallAt,
+    );
+    const calledParticipantsJobs = calledParticipantsNotYetNotified.map((p) =>
       inngest.send({
         name: "notify/participant.called",
         data: {
