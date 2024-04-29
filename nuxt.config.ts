@@ -111,7 +111,7 @@ export default defineNuxtConfig({
   sitemap: {
     cacheMaxAgeSeconds: 2160, // 6 hours
     sources: ["/api/__sitemap__/eventUrls"],
-    exclude: ["/queue/**"],
+    exclude: ["/queue/**", "/chart/**"],
   },
   site: {
     url: siteUrl,
