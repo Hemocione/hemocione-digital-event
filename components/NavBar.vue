@@ -25,7 +25,7 @@ onMounted(() => {
   width: 100%;
   display: flex;
   z-index: 1000;
-  padding: 1rem;
+  padding: 0.5rem;
   position: sticky;
   align-items: center;
   background-color: var(--hemo-color-primary);
@@ -38,11 +38,10 @@ onMounted(() => {
   visibility: hidden;
 }
 .logo-wrapper {
-  width: 50%;
-  max-width: 250px;
+  height: 100%;
 }
 
 .logo {
-  width: 100%;
+  height: 100%;
 }
 </style>
