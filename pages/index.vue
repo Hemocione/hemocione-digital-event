@@ -27,8 +27,8 @@
       <div class="no-events-content">
         <NuxtImg
           class="no-events-image"
-          src="/images/illustrations/rafiki-time-management.svg"
-          alt="Ilustração de uma pessoa com um relógio aguardando um próximo evento do Hemocione"
+          src="/images/illustrations/HemoLogo-triste.svg"
+          alt="Ilustração da logo do Hemocione triste"
         />
         <div class="subtitle">
           <span class="no-events-text big-boy">(╯°□°)╯︵ ┻━┻</span>
@@ -101,8 +101,8 @@ definePageMeta({
   width: 100%;
   max-width: 300px;
   margin-bottom: 1rem;
-  --el-input-bg-color: var(--hemo-color-primary-dark);
-  --el-border-color: var(--hemo-color-primary-dark);
+  --el-input-bg-color: var( --hemo-color-gray);
+  --el-border-color: var(--hemo-color-black-10);
   --el-input-text-color: var(--hemo-color-text-primary);
   --el-input-icon-color: var(--hemo-color-text-primary);
   border: none;
@@ -120,6 +120,7 @@ definePageMeta({
   font-size: 2rem;
   font-weight: bold;
   letter-spacing: 0.15rem;
+  color: var(--hemo-color-black-100);
 }
 /* this will be a grid */
 .events-wrapper {

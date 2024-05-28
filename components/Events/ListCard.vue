@@ -61,6 +61,7 @@ const addressText = computed(() => {
 
 .arrow-icon {
   font-size: 2rem;
+  color: var(--hemo-color-primary);
 }
 
 .icon {
@@ -98,8 +99,8 @@ const addressText = computed(() => {
   justify-content: center;
   align-items: center;
   gap: 0.25rem;
-  background-color: var(--hemo-color-secondary);
-  color: var(--hemo-color-primary-dark);
+  background-color: var(--hemo-color-primary);
+  color: var(--hemo-color-white);
   padding: 0.5rem;
   border-radius: 1rem;
   width: 3.5rem;
@@ -118,9 +119,10 @@ const addressText = computed(() => {
 
 .event-card {
   border-radius: 1.5rem;
-  background-color: var(--hemo-color-primary-dark);
-  color: var(--hemo-color-secondary);
-  border: 1px solid var(--hemo-color-primary-dark);
+  background-color: var(--hemo-color-white);
+  color: var(--hemo-color-black-100);
+  border: 1px solid var(--hemo-color-black-10);
+  box-shadow: 0 0 1rem rgba(33, 33, 33, 0.4);
   padding: 1rem;
   display: flex;
   flex-direction: column;
