@@ -2,8 +2,6 @@
 
 Eventos Digitais do Hemocione.
 
-Uma colaboração [Hemocione](https://hemocione.com.br) e [Layers](https://layers.education)
-
 Este projeto utiliza [Nuxt 3](https://v3.nuxtjs.org).
 
 ## Setup

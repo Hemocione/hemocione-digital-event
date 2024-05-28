@@ -54,10 +54,10 @@ const day = computed(() => validDate.value.getDate());
 
 .date-wrap-dark {
   background-color: var(--hemo-color-secondary);
-  color: var(--hemo-color-primary-dark);
+  color: var(--hemo-color-primary);
 }
 .date-wrap-light {
-  background-color: var(--hemo-color-primary-dark);
+  background-color: var(--hemo-color-primary);
   color: var(--hemo-color-secondary);
 }
 
