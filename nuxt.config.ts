@@ -13,7 +13,7 @@ const getSiteUrl = () => {
       )?.url;
     }
 
-    return networkAddress || "http://localhost:3000/";
+    return networkAddress || "http://localhost:3000";
   }
 
   return "https://eventos.hemocione.com.br";
