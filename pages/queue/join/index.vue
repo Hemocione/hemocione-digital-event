@@ -225,7 +225,6 @@ onMounted(() => {
         Ao entrar na fila de doação, você concorda com os <a href="https://cdn.hemocione.com.br/legal/termos_de_uso.pdf" target="_blank" rel="noopener noreferrer">Termos de Uso</a> e a <a href="https://cdn.hemocione.com.br/legal/politica_de_privacidade.pdf" target="_blank" rel="noopener noreferrer">Política de Privacidade</a> do Hemocione.
       </span>
     </el-form>
-    <NuxtImg src="/images/logo-white.svg" class="logo" />
   </div>
 </template>
 
@@ -245,8 +244,8 @@ onMounted(() => {
   display: flex;
   align-items: center;
   flex-direction: column;
-  justify-content: space-between;
-  gap: 1rem;
+  justify-content: center;
+  gap: 2rem;
   height: 100%;
 }
 
@@ -256,6 +255,7 @@ onMounted(() => {
   align-items: center;
   gap: 1rem;
   width: 100%;
+  color: var(--hemo-color-black-100);
 }
 
 .event-logo {
@@ -274,7 +274,7 @@ h1 {
 }
 
 .form-wrapper {
-  background-color: var(--hemo-color-secondary);
+  background-color: var(--hemo-color-white);
   padding: 1rem;
   border-radius: 1rem;
   width: 100%;

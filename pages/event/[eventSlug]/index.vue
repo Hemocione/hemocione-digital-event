@@ -298,5 +298,9 @@ defineOgImage(ogImageOptions);
   .event-banner {
     border-radius: 1rem 1rem 0 0;
   }
+
+  .event-page{
+    padding-top: 1rem;
+  }
 }
 </style>
