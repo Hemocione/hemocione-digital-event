@@ -63,7 +63,7 @@
 
 html,
 body {
-  background-color: var(--hemo-color-white);
+  background-color: var(--hemo-color-black-10);
   color: var(--hemo-color-secondary);
   margin: 0;
   padding: 0;
