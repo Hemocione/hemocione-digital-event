@@ -40,6 +40,10 @@
   margin: 0 !important;
 }
 
+.el-input__prefix-inner {
+  padding-left: 14px;
+}
+
 @font-face {
   font-family:
     "Roboto",

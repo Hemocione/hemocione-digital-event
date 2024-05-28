@@ -122,7 +122,7 @@ const addressText = computed(() => {
   background-color: var(--hemo-color-white);
   color: var(--hemo-color-black-100);
   border: 1px solid var(--hemo-color-black-10);
-  box-shadow: 0 0 1rem rgba(33, 33, 33, 0.4);
+  box-shadow: 0 0 1rem rgba(33, 33, 33, 0.1);
   padding: 1rem;
   display: flex;
   flex-direction: column;
@@ -130,7 +130,7 @@ const addressText = computed(() => {
 }
 
 .event-card:hover {
-  box-shadow: 0 0 1rem rgba(33, 33, 33, 0.2);
+  box-shadow: 0 0 1rem rgba(33, 33, 33, 0.3);
   cursor: pointer;
 }
 </style>
