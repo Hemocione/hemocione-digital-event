@@ -29,7 +29,7 @@
   --el-color-info: var(--hemo-color-primary) !important;
   --el-color-text-primary: var(--hemo-color-text-primary) !important;
   --el-color-text-secondary: var(--hemo-color-text-secondary) !important;
-  --el-border-color-light: var(--hemo-color-primary-dark) !important;
+  --el-border-color-light: (transparent) !important;
   --el-disabled-border-color: #d4d7de !important;
   --el-bg-color: var(--hemo-color-secondary) !important;
   --el-border-radius-base: 8px !important;
@@ -120,4 +120,22 @@ a:visited {
 
 * {
   -webkit-tap-highlight-color: transparent;
+}
+
+.el-tabs__item:hover {
+  color: var(--hemo-color-black-100);
+  cursor: pointer;
+}
+
+.el-tabs__item.is-active {
+  color: var(--hemo-color-black-100);
+}
+
+.el-tabs__item {
+  color: var(--hemo-color-black-80);
+}
+
+.el-tabs__active-bar {
+  background-color: var(--hemo-color-primary);
+  height: 4px;
 }

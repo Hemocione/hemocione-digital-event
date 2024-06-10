@@ -7,19 +7,21 @@
       :class="banner ? 'card-header-image' : 'card-header-image-default'"
       :alt="`Banner - ${name}`"
     />
-    <h2 class="event-name">
-      {{ name }}
-    </h2>
-    <div v-if="addressText" class="address">
-      <el-icon class="icon">
-        <ElIconLocationFilled />
-      </el-icon>
-      <span>
-        {{ addressText }}
-      </span>
-    </div>
-    <div class="bottom-wrapper">
+    <div class="header-wrapper">
       <MicroDateBox :date="eventDate" />
+      <div class="event-details">
+        <h2 class="event-name">
+          {{ name }}
+        </h2>
+        <div v-if="addressText" class="address">
+          <el-icon class="icon">
+            <ElIconLocationFilled />
+          </el-icon>
+          <span>
+            {{ addressText }}
+          </span>
+        </div>
+      </div>
       <el-icon class="arrow-icon">
         <ElIconArrowRightBold />
       </el-icon>
@@ -72,16 +74,28 @@ const addressText = computed(() => {
 
 .event-name {
   margin: 0;
-  padding-top: 1rem;
   font-size: 1.1rem;
 }
 
 .address {
-  padding-top: 1rem;
+  padding-top: 0.5rem;
   font-size: 0.9rem;
   display: flex;
   align-items: center;
   gap: 0.3rem;
+}
+
+.header-wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-top: 1rem;
+}
+
+.event-details {
+  display: flex;
+  flex-direction: column;
+  margin-left: 1rem;
 }
 
 .bottom-wrapper {
