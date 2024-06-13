@@ -129,10 +129,14 @@ const EventSchema = new Schema(
 
 EventSchema.index({ active: 1, private: 1, startAt: 1, endAt: 1, _id: 1 });
 
-// Indexes for queue
+// Indexes for sync
 EventSchema.index(
   { "queue._id": 1 },
-  { partialFilterExpression: { active: true } },
+  { partialFilterExpression: { active: true, registerDonationUrl: null } },
+);
+EventSchema.index(
+  { slug: 1 },
+  { partialFilterExpression: { active: true, registerDonationUrl: null } },
 );
 
 export type EventSchema = InferSchemaType<typeof EventSchema>;

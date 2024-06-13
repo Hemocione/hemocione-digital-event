@@ -63,6 +63,7 @@ export function getEventsForSync(data: {
         slug: { $in: eventSlugs },
       },
     ],
+    registerDonationUrl: null, // only events that don't have a registerDonationUrl. This means that the event delegates the donation registration to other system
     active: true,
   })
     .select({
@@ -75,8 +76,6 @@ export function getEventsForSync(data: {
     .sort({ startAt: 1, endAt: 1, _id: 1 })
     .lean();
 }
-
-export type SyncEventos = Awaited<ReturnType<typeof getEventsForSync>>;
 
 export async function incrementEventScheduleOccupiedSlots(
   eventSlug: string,
