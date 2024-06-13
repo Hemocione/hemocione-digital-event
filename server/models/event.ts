@@ -129,6 +129,12 @@ const EventSchema = new Schema(
 
 EventSchema.index({ active: 1, private: 1, startAt: 1, endAt: 1, _id: 1 });
 
+// Indexes for queue
+EventSchema.index(
+  { "queue._id": 1 },
+  { partialFilterExpression: { active: true } },
+);
+
 export type EventSchema = InferSchemaType<typeof EventSchema>;
 
 export const Event = model<EventSchema>("Event", EventSchema);

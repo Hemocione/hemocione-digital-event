@@ -3,6 +3,26 @@ import type { HemocioneUserAuthTokenData } from "./auth";
 import { getEventBySlug, incrementEventScheduleOccupiedSlots } from "./event";
 import { getCleanFullName } from "~/utils/getCleanFullName";
 
+export async function getUserSubscriptions(hemocioneId: string) {
+  return await Subscription.find({
+    hemocioneId,
+    deletedAt: null,
+  })
+    .select({
+      eventSlug: 1,
+      name: 1,
+      email: 1,
+      phone: 1,
+      document: 1,
+      schedule: 1,
+    })
+    .lean();
+}
+
+export type UserSubscriptions = Awaited<
+  ReturnType<typeof getUserSubscriptions>
+>;
+
 export async function getUserEventSubscription(
   eventSlug: string,
   hemocioneId: string,

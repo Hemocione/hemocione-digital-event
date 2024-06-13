@@ -1,0 +1,24 @@
+meta {
+  name: Sync Donations
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{api_url}}/v1/integration/sync/user-donations
+  body: json
+  auth: none
+}
+
+headers {
+  x-hemocione-integration-secret: secret
+}
+
+body:json {
+  {
+    "hemocioneId": "0c489557-0000-4286-91b8-bf780627f847",
+    "phone": "+5521984426717",
+    "email": "guima@hemocione.com.br",
+    "document": "15273840716"
+  }
+}

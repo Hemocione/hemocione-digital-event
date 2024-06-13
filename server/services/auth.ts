@@ -46,10 +46,30 @@ export function useHemocioneUserAuth(event: H3Event) {
       verifyAndReturnData<HemocioneUserAuthTokenData>(token);
     return hemocioneUser;
   } catch (error) {
-    console.error(error);
     throw createError({
       statusCode: 401,
       statusMessage: "Unauthorized - Invalid Token",
     });
+  }
+}
+
+export function assertHemocioneIdIntegrationSecret(event: H3Event) {
+  const headers = event.headers;
+  const secret = headers.get("x-hemocione-integration-secret");
+  if (secret !== config.hemocioneIdIntegrationSecret) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: "Unauthorized",
+    });
+  }
+}
+
+export function useHemocioneUserAuthOrHemocioneIdIntegrationSecret(
+  event: H3Event,
+) {
+  try {
+    return useHemocioneUserAuth(event);
+  } catch (e) {
+    assertHemocioneIdIntegrationSecret(event);
   }
 }

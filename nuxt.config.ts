@@ -51,6 +51,8 @@ export default defineNuxtConfig({
     },
     hemocioneIdJwtSecretKey:
       process.env.HEMOCIONE_ID_JWT_SECRET_KEY ?? "secret",
+    hemocioneIdIntegrationSecret:
+      process.env.HEMOCIONE_ID_INTEGRATION_SECRET ?? "secret",
     secret: process.env.API_SECRET ?? "secret",
     mongodbUri:
       process.env.MONGODB_URI ?? "mongodb://admin:password@localhost:27017",

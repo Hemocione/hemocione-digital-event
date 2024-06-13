@@ -79,6 +79,12 @@ SubscriptionSchema.pre("validate", function (next) {
   next();
 });
 
+// sync indexes
+SubscriptionSchema.index(
+  { hemocioneId: 1 },
+  { partialFilterExpression: { deletedAt: null } },
+);
+
 export type SubscriptionSchema = InferSchemaType<typeof SubscriptionSchema>;
 
 export const Subscription = model<SubscriptionSchema>(

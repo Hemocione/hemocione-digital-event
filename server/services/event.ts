@@ -1,4 +1,5 @@
 import slugify from "slugify";
+import type { Types } from "mongoose";
 import { Event } from "../models/event";
 import { getTimeBlocks } from "~/utils/getTimeBlocks";
 import { getCacheKeyFromParams } from "~/utils/getCacheKeyFromParams";
@@ -47,6 +48,35 @@ export interface UpdateEventDTO {
   registerDonationDateLimit?: string;
   private?: boolean;
 }
+
+export function getEventsForSync(data: {
+  queueIds: (string | Types.ObjectId)[];
+  eventSlugs: string[];
+}) {
+  const { queueIds, eventSlugs } = data;
+  return Event.find({
+    $or: [
+      {
+        "queue._id": { $in: queueIds },
+      },
+      {
+        slug: { $in: eventSlugs },
+      },
+    ],
+    active: true,
+  })
+    .select({
+      _id: 1,
+      name: 1,
+      slug: 1,
+      startAt: 1,
+      endAt: 1,
+    })
+    .sort({ startAt: 1, endAt: 1, _id: 1 })
+    .lean();
+}
+
+export type SyncEventos = Awaited<ReturnType<typeof getEventsForSync>>;
 
 export async function incrementEventScheduleOccupiedSlots(
   eventSlug: string,

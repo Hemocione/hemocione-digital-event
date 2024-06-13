@@ -4,6 +4,37 @@ import { QueueParticipant } from "../models/queueParticipant";
 import { upsertFBDataOnLead } from "./digitalStand";
 import { completePhone } from "~/utils/completePhone";
 
+export const getUserQueueParticipations = async (data: {
+  phone: string;
+  hemocioneId: string;
+}) => {
+  const { phone, hemocioneId } = data;
+
+  const queueParticipations = await QueueParticipant.find({
+    $or: [
+      { "participant.hemocioneId": hemocioneId },
+      {
+        "participant.hemocioneId": null,
+        "participant.phone": completePhone(phone),
+      },
+    ],
+  })
+    .select({
+      _id: 1,
+      queueId: 1,
+      participant: 1,
+      createdAt: 1,
+      calledAt: 1,
+    })
+    .lean();
+
+  return queueParticipations;
+};
+
+export type UserQueueParticipations = Awaited<
+  ReturnType<typeof getUserQueueParticipations>
+>;
+
 const getFullQueueParticipantsPromise = (queueId: string) =>
   QueueParticipant.find({
     queueId,
