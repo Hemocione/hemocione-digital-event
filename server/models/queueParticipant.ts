@@ -65,6 +65,13 @@ QueueParticipantSchema.index(
   { unique: true },
 );
 
+// indexes for the sync process
+QueueParticipantSchema.index(
+  { "participant.phone": 1 },
+  { partialFilterExpression: { "participant.hemocioneId": null } },
+);
+QueueParticipantSchema.index({ "participant.hemocioneId": 1 });
+
 QueueParticipantSchema.pre("validate", function (next) {
   this.participant.phone = completePhone(this.participant.phone);
   next();
