@@ -30,7 +30,7 @@ const SubscriptionSchema = new Schema(
     },
     document: {
       type: String,
-      required: false
+      required: false,
     },
     code: {
       type: String,
@@ -69,6 +69,10 @@ SubscriptionSchema.index(
   { unique: true, partialFilterExpression: { deletedAt: null } },
 );
 SubscriptionSchema.index({ code: 1, eventSlug: 1 }, { unique: true });
+SubscriptionSchema.index(
+  { hemocioneId: 1, "schedule.endAt": 1 },
+  { partialFilterExpression: { deletedAt: null } },
+);
 
 SubscriptionSchema.pre("validate", function (next) {
   this.phone = completePhone(this.phone);
