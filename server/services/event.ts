@@ -256,7 +256,10 @@ export async function setEventDefaultSchedule(
   return hemoEvent.toObject();
 }
 
-const getEventsFromDBPromise = (filter: Record<string, unknown>) => {
+const getEventsFromDBPromise = (
+  filter: Record<string, unknown>,
+  sort: Record<string, unknown>,
+) => {
   return Event.find({
     active: true,
     ...filter,
@@ -271,7 +274,7 @@ const getEventsFromDBPromise = (filter: Record<string, unknown>) => {
       endAt: 1,
       location: 1,
     })
-    .sort({ startAt: 1, endAt: 1, _id: 1 })
+    .sort(sort as any)
     .lean();
 };
 
@@ -300,7 +303,11 @@ export async function getEvents(oldEvents: boolean = false) {
       : { endAt: { $gte: new Date() } }),
   };
 
-  const events = await getEventsFromDBPromise(filter);
+  const sort = oldEvents
+    ? { startAt: -1, endAt: -1, _id: -1 }
+    : { startAt: 1, endAt: 1, _id: 1 };
+
+  const events = await getEventsFromDBPromise(filter, sort);
 
   // update cache
   getEventsCache.set(oldEvents, {
@@ -340,7 +347,7 @@ export async function getAllActiveEvents() {
   return events;
 }
 
-export async function getEventsBySlugs(eventSlugs: string[]) {
+export function getEventsBySlugs(eventSlugs: string[]) {
   return Event.find({
     active: true,
     slug: { $in: eventSlugs },
