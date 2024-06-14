@@ -3,8 +3,8 @@
     <header class="events-header">
       <h1 class="events-title">Eventos</h1>
     </header>
-    <el-tabs v-model="activeTab" @tab-click="handleTabClick">
-      <el-tab-pane label="Em andamento" name="ongoing">
+    <el-tabs v-model="activeTab" @tab-change="handleTabChange">
+      <el-tab-pane label="Disponíveis" name="ongoing">
         <ElInput
           v-model="searchOngoing"
           placeholder="Buscar eventos"
@@ -45,7 +45,48 @@
         </div>
       </el-tab-pane>
       <el-tab-pane label="Encerrados" name="ended">
-        <div> Eventos encerrados</div>
+        <ElInput
+          v-model="searchEnded"
+          placeholder="Buscar eventos"
+          clearable
+          size="large"
+          :prefix-icon="ElIconSearch"
+          class="search-input"
+        />
+        <div v-if="!loadedOldEvents">
+          <el-button type="primary" 
+    icon="el-icon-loading" 
+    loading 
+    class="loading"></el-button>
+        </div>
+        <template v-else>
+          <div v-if="loadedOldEvents" class="events-wrapper">
+            <EventsListCard
+              v-for="event in oldEvents"
+              :key="event._id"
+              :name="event.name"
+              :event-date="event.startAt"
+              :location="event.location"
+              :banner="event.banner"
+              :slug="event.slug"
+            />
+          </div>
+          <div v-else class="no-events-wrapper">
+            <div class="no-events-content">
+              <NuxtImg
+                class="no-events-image"
+                src="/images/illustrations/HemoLogo-triste.svg"
+                alt="Ilustração da logo do Hemocione triste"
+              />
+              <div class="subtitle">
+                <span class="no-events-text big-boy">(╯°□°)╯︵ ┻━┻</span>
+                <span class="no-events-text">
+                  Não há eventos encerrados no momento.
+                </span>
+              </div>
+            </div>
+          </div>
+        </template>
       </el-tab-pane>
     </el-tabs>
   </div>
@@ -69,9 +110,25 @@ watch(searchOngoing, (newSearch) => {
   }
 });
 
-const { data: currentEvents, refresh } = await useAsyncData('events', () =>
-  fetch('/api/v1/event').then(res => res.json())
-);
+const { data: currentEvents, refresh } = await useFetch('/api/v1/event');
+
+const oldEvents = ref<OldEvent[]>([]);
+const loadedOldEvents = ref<boolean>(false);
+
+const fetchOldEvents = () => $fetch('/api/v1/event?old=true');
+
+type OldEvents = Awaited<ReturnType< typeof fetchOldEvents>>
+type OldEvent = OldEvents[number]
+
+const getOldEvents = async () => {
+  if (loadedOldEvents.value) return;
+  try {
+    oldEvents.value = await fetchOldEvents();
+  } catch (error) {
+    console.error("Failed to load old events:", error);
+  }
+  loadedOldEvents.value = true;
+};
 
 const now = new Date();
 
@@ -103,16 +160,15 @@ const noOngoingEventsText = computed(() => {
   return "Estamos sem eventos disponíveis no momento.";
 });
 
-const handleTabClick = (tab) => {
-  setActiveTab(tab.name);
-};
-
-const setActiveTab = (tab: string) => {
+const handleTabChange = (tab) => {
+  console.log(tab);
   activeTab.value = tab;
   if (tab === 'ongoing') {
     searchOngoing.value = route.query.search as string || "";
   }
-  refresh();
+  else if (tab === 'ended'){
+    getOldEvents();
+  }
 };
 
 definePageMeta({
@@ -219,6 +275,15 @@ definePageMeta({
   font-size: 2rem;
 }
 
+.loading {
+  color: var(--hemo-color-primary);
+  background-color: var(--hemo-color-black-20);
+  border-color: var(--hemo-color-black-20);
+  font-size: 7rem;
+  padding: 80px;
+  height: 200px;
+}
+
 @media (min-width: 768px) {
   .events-wrapper {
     grid-template-columns: 1fr 1fr;
@@ -240,4 +305,3 @@ definePageMeta({
   }
 }
 </style>
-
