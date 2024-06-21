@@ -35,7 +35,8 @@ export default inngest.createFunction(
     const { data } = event;
     const { slug } = data;
     const foundEvent = await getEventBySlug(slug);
-    if (!foundEvent) {
+    if (!foundEvent || foundEvent.donationsSentAt) {
+      // if the event does not exist or donations have already been sent, early return
       return;
     }
     type QueueParticipants = Awaited<ReturnType<typeof getQueueParticipants>>;
