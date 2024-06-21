@@ -62,6 +62,7 @@ export default defineNuxtConfig({
       process.env.DIGITAL_STAND_API_URL ??
       "https://us-east1-estande-digital.cloudfunctions.net/api",
     digitalStandApiSecret: process.env.DIGITAL_STAND_API_SECRET ?? "",
+    donationsQueueUrl: process.env.DONATIONS_QUEUE_URL ?? "secret-queue-url",
   },
   modules: [
     "@element-plus/nuxt",

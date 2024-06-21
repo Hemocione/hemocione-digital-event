@@ -19,6 +19,23 @@ export async function getUserSubscriptions(hemocioneId: string) {
     .lean();
 }
 
+export function getEventSubscriptions(eventSlug: string) {
+  return Subscription.find({
+    eventSlug,
+    deletedAt: null,
+  })
+    .select({
+      hemocioneId: 1,
+      eventSlug: 1,
+      name: 1,
+      email: 1,
+      phone: 1,
+      document: 1,
+      schedule: 1,
+    })
+    .lean();
+}
+
 export type UserSubscriptions = Awaited<
   ReturnType<typeof getUserSubscriptions>
 >;

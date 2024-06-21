@@ -22,11 +22,17 @@ import type {
 } from "./notifyNewParticipant";
 import notifyNewParticipant from "./notifyNewParticipant";
 
+import type {
+  ComputeEventDonations,
+  eventName as computeEventDonationsEventName,
+} from "./computeEventDonations";
+
 export interface Events {
   [queueParticipantsCalledEventName]: QueueParticipantsCalledEvent;
   [notifyEventName]: NotifyCalledParticipant;
   [notifyCloseToCallEventName]: NotifyCloseToCallParticipant;
   [notifyNewEventName]: NotifyNewParticipant;
+  [computeEventDonationsEventName]: ComputeEventDonations;
 }
 
 const eventHandlers = [

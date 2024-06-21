@@ -77,6 +77,22 @@ export function getEventsForSync(data: {
     .lean();
 }
 
+export function getEventsToSendDonations() {
+  const now = new Date();
+  const nowMinus60Minutes = new Date(now.getTime() - 1000 * 60 * 60);
+  return Event.find({
+    registerDonationUrl: { $ne: null },
+    donationsSentAt: null,
+    endAt: { $lte: nowMinus60Minutes }, // only events that have ended at least 60 minutes ago
+    active: true,
+  })
+    .select({
+      _id: 1,
+      slug: 1,
+    })
+    .lean();
+}
+
 export async function incrementEventScheduleOccupiedSlots(
   eventSlug: string,
   scheduleId: string,
@@ -394,4 +410,18 @@ export function getEventsBySlugs(eventSlugs: string[]) {
     })
     .sort({ startAt: 1, endAt: 1, _id: 1 })
     .lean();
+}
+
+export async function markDonationsAsSent(eventSlug: string) {
+  return await Event.findOneAndUpdate(
+    {
+      slug: eventSlug,
+    },
+    {
+      donationsSentAt: new Date(),
+    },
+    {
+      lean: true,
+    },
+  );
 }

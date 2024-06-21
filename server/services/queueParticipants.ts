@@ -112,6 +112,19 @@ export async function getWaitingQueueParticipants(queueId: string) {
     .lean();
 }
 
+export async function getQueueParticipants(queueId: string) {
+  return await QueueParticipant.find({
+    queueId,
+  })
+    .select({
+      _id: 1,
+      participant: 1,
+      createdAt: 1,
+      calledAt: 1,
+    })
+    .lean();
+}
+
 export async function getCalledQueueParticipantsByQueueId(queueId: string) {
   return await QueueParticipant.find({
     queueId,
