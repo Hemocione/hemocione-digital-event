@@ -26,6 +26,7 @@ import type {
   ComputeEventDonations,
   eventName as computeEventDonationsEventName,
 } from "./computeEventDonations";
+import computeEventDonations from "./computeEventDonations";
 
 export interface Events {
   [queueParticipantsCalledEventName]: QueueParticipantsCalledEvent;
@@ -40,6 +41,7 @@ const eventHandlers = [
   notifyCalledParticipant,
   notifyCloseToCallParticipant,
   notifyNewParticipant,
+  computeEventDonations
 ];
 
 export default eventHandlers;
