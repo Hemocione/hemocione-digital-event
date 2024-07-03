@@ -39,10 +39,14 @@ async function sendMessageBatch(messages: DonationQueueMessage[]) {
   const now = new Date().getTime();
   const command = new SendMessageBatchCommand({
     QueueUrl: queueUrl,
-    Entries: messages.map((message, index) => ({
-      Id: `${message.donation.donationProviderDonationId}-${now}-${index}`,
-      MessageBody: JSON.stringify(message),
-    })),
+    Entries: messages.map((message, index) => {
+      const entryId = `${message.donation.donationProviderDonationId}-${index}-${now}`;
+      const entryIdOnlyAllowedChars = entryId.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80); // SQS entryId has a limit of 80 characters and only allows alphanumeric characters, hyphens, and underscores
+      return {
+        Id: entryIdOnlyAllowedChars,
+        MessageBody: JSON.stringify(message),
+      }
+    }),
   });
 
   await sqsClient.send(command);
