@@ -81,7 +81,7 @@ export function getEventsToSendDonations() {
   const now = new Date();
   const nowMinus60Minutes = new Date(now.getTime() - 1000 * 60 * 60);
   return Event.find({
-    registerDonationUrl: { $ne: null },
+    registerDonationUrl: null,
     donationsSentAt: null,
     endAt: { $lte: nowMinus60Minutes }, // only events that have ended at least 60 minutes ago
     active: true,
@@ -214,8 +214,8 @@ export async function getEventBySlug(
   options: {
     lean?: boolean;
   } = {
-    lean: true,
-  },
+      lean: true,
+    },
 ) {
   const cacheKey = `${eventSlug}:${getCacheKeyFromParams({
     eventSlug,
@@ -364,13 +364,13 @@ export async function getEvents(oldEvents: boolean = false) {
 
 const allActiveEventsCache:
   | {
-      generatedAt: Date;
-      data: EventsFromDb;
-    }
+    generatedAt: Date;
+    data: EventsFromDb;
+  }
   | {
-      generatedAt: null;
-      data: null;
-    } = {
+    generatedAt: null;
+    data: null;
+  } = {
   generatedAt: null,
   data: null,
 };
