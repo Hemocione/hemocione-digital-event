@@ -41,7 +41,7 @@
     "mongoose": "^8.0.1",
     "multer": "^1.4.5-lts.1",
     "multer-s3": "^3.0.1",
-    "nuxt": "^3.7.4",
+    "nuxt": "^3.12.3",
     "nuxt-bugsnag": "^7.2.3",
     "nuxt-vercel-analytics": "^0.2.2",
     "pinia": "^2.1.7",
