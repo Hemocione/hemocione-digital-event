@@ -41,11 +41,13 @@ async function sendMessageBatch(messages: DonationQueueMessage[]) {
     QueueUrl: queueUrl,
     Entries: messages.map((message, index) => {
       const entryId = `${message.donation.donationProviderDonationId}-${index}-${now}`;
-      const entryIdOnlyAllowedChars = entryId.replace(/[^a-zA-Z0-9_-]/g, "").slice(0, 80); // SQS entryId has a limit of 80 characters and only allows alphanumeric characters, hyphens, and underscores
+      const entryIdOnlyAllowedChars = entryId
+        .replace(/[^a-zA-Z0-9_-]/g, "")
+        .slice(0, 80); // SQS entryId has a limit of 80 characters and only allows alphanumeric characters, hyphens, and underscores
       return {
         Id: entryIdOnlyAllowedChars,
         MessageBody: JSON.stringify(message),
-      }
+      };
     }),
   });
 

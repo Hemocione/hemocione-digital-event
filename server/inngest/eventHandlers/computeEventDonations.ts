@@ -78,7 +78,7 @@ export default inngest.createFunction(
           },
           donation: {
             donationProviderDonationId: `${subscription.eventSlug}|${subscription.hemocioneId}`,
-            label: subscription.name,
+            label: foundEvent.name,
             needsReview: true,
             donationDate: subscription.schedule.endAt,
             metadata: {},
