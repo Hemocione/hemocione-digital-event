@@ -2,7 +2,7 @@ import type { UserQueueParticipations } from "./queueParticipants";
 import type { UserSubscriptions } from "./subscription";
 import { getEventsForSync } from "./event";
 
-interface Donation {
+export interface Donation {
   donationProviderDonationId: string;
   label: string;
   needsReview: Boolean; // indicates if the donation needs to be reviewed by Hemocione

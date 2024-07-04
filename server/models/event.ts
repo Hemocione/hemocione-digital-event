@@ -121,6 +121,11 @@ const EventSchema = new Schema(
         default: [],
       },
     },
+    donationsSentAt: {
+      type: Date,
+      required: false,
+      default: null,
+    },
   },
   {
     timestamps: true,
@@ -136,6 +141,10 @@ EventSchema.index(
 );
 EventSchema.index(
   { slug: 1 },
+  { partialFilterExpression: { active: true, registerDonationUrl: null } },
+);
+EventSchema.index(
+  { donationsSentAt: 1, endAt: 1 },
   { partialFilterExpression: { active: true, registerDonationUrl: null } },
 );
 
