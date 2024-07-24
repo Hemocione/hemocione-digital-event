@@ -182,14 +182,15 @@ export async function callQueueParticipants(
   );
 
   try {
-    await inngest.send({
-      name: "event/participants.called",
-      data: {
-        participantIds,
-        queueId,
-        eventSlug,
-      },
-    });
+    // TMP: remove SMS for now
+    // await inngest.send({
+    //   name: "event/participants.called",
+    //   data: {
+    //     participantIds,
+    //     queueId,
+    //     eventSlug,
+    //   },
+    // });
   } catch (e) {
     console.error(e);
   }
