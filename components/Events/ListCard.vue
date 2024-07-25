@@ -1,5 +1,6 @@
 <template>
-  <NuxtLink class="event-card" :to="`/event/${slug}`">
+  <NuxtLink :class="{'event-card': true,old:oldEvent
+  }" :to="`/event/${slug}`">
     <NuxtImg
       :format="banner ? 'webp' : undefined"
       fit="cover"
@@ -40,6 +41,7 @@ const props = defineProps<{
   };
   eventDate: string;
   slug: string;
+  oldEvent?: boolean;
 }>();
 
 const addressText = computed(() => {
@@ -59,6 +61,10 @@ const addressText = computed(() => {
 
 .card-header-image-default {
   background-color: var(--hemo-color-secondary);
+}
+
+.old{
+  opacity: 0.8;
 }
 
 .arrow-icon {

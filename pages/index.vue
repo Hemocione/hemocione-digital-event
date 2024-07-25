@@ -126,6 +126,7 @@
               :location="event.location"
               :banner="event.banner"
               :slug="event.slug"
+              old-event
             />
           </div>
           <div v-else class="no-events-wrapper">
