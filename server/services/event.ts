@@ -48,6 +48,23 @@ export interface UpdateEventDTO {
   private?: boolean;
 }
 
+export async function incrementEventExternalVolunteersOccupiedSlots(
+  eventSlug: string,
+  increment: number,
+) {
+  const event = await Event.findOneAndUpdate(
+    {
+      slug: eventSlug,
+    },
+    {
+      $inc: { "externalVolunteers.occupiedSlots": increment },
+    },
+    {
+      lean: true,
+    },
+  );
+  }
+
 export async function incrementEventScheduleOccupiedSlots(
   eventSlug: string,
   scheduleId: string,

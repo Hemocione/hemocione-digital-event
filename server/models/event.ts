@@ -3,6 +3,28 @@ import { Schema, Types, model } from "mongoose";
 
 const EventSchema = new Schema(
   {
+    externalVolunteers: {
+      enabled: {
+        type: Boolean,
+        default: false
+      },
+      groupUrl: {
+        type: String,
+        default: null
+      },
+      slots: {
+        type: Number,
+        default: 0,
+      },
+      occupiedSlots: {
+        type: Number,
+        default: 0,
+      },
+      htmlExplanationText: {
+        type: String,
+        default: null,
+      },
+    },
     name: {
       type: String,
       required: true,
@@ -37,6 +59,9 @@ const EventSchema = new Schema(
         type: Number,
         required: false,
         default: 140,
+      },
+      disabled: {
+        type: Boolean,
       },
     },
     active: {
