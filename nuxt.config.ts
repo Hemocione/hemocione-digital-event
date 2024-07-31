@@ -15,7 +15,6 @@ const getSiteUrl = () => {
 
     return networkAddress || "http://localhost:3000";
   }
-
   return "https://eventos.hemocione.com.br";
 };
 const getCurrentEnv = () => {
@@ -140,6 +139,9 @@ export default defineNuxtConfig({
       ssr: false,
     },
     "/event/:eventSlug/schedules": {
+      ssr: false,
+    },
+    "/event/:eventSlug/instructions/zap": {
       ssr: false,
     },
     "/queue/join": {

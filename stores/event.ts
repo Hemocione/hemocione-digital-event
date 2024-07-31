@@ -22,6 +22,14 @@ interface Event {
     }[];
   } | null;
   private?: boolean;
+  externalVolunteers?: {
+    enabled: boolean;
+    groupUrl: string;
+    slots: number;
+    occupiedSlots: number;
+    htmlExplanationText?: string;
+  }
+
 }
 
 export const useEventStore = defineStore("event", {

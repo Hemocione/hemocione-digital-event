@@ -1,13 +1,7 @@
 <template>
   <CommonCoolFooter v-if="buttons.length && !loading" height="fit-content">
-    <ElButton
-      v-for="button in buttons"
-      :key="button.label"
-      :type="button.type"
-      :disabled="button.disabled"
-      size="large"
-      @click="button.action"
-    >
+    <ElButton v-for="button in buttons" :key="button.label" :type="button.type" :disabled="button.disabled" size="large"
+      @click="button.action">
       {{ button.label }}
     </ElButton>
   </CommonCoolFooter>
@@ -52,6 +46,22 @@ const isEventTodayAndAlreadyStarted = computed(() => {
 
   return isTodayAndPast(eventConfig.startAt);
 });
+
+const isEventTwoDaysFromNow = computed(() => {
+  if (!eventConfig.startAt) return false;
+
+  const startAt = new Date(eventConfig.startAt);
+  const today = new Date();
+
+  const twoDaysBeforeStart = new Date(startAt);
+  twoDaysBeforeStart.setDate(startAt.getDate() - 2);
+  const isTwoDaysBefore = twoDaysBeforeStart.getDate() === today.getDate() &&
+    twoDaysBeforeStart.getMonth() === today.getMonth() &&
+    twoDaysBeforeStart.getFullYear() === today.getFullYear();
+
+  return isTwoDaysBefore;
+});
+
 
 const eventDateObj = computed(() => {
   if (!eventConfig.startAt) return null;
@@ -111,6 +121,7 @@ const buttons = computed((): Button[] => {
   const isLogged = Boolean(user);
   const hasSubscription = Boolean(subscription);
   const alreadyStarted = isEventTodayAndAlreadyStarted.value;
+  const twoDaysBefore = isEventTwoDaysFromNow.value;
   const isSchedulesEnabled = eventConfig.subscription?.enabled;
   const subscriptionsAvailable = !hasLastSubscriptionSchedulePassed.value;
   const computedButtons = [
@@ -126,6 +137,13 @@ const buttons = computed((): Button[] => {
       label: `Registre sua doação no dia ${eventDateObj.value?.day}, a partir das ${eventDateObj.value?.hour}`,
       visible: !alreadyStarted && Boolean(props.registerDonationUrl),
       disabled: true,
+    },
+    {
+      label: "Ajude na organização do evento",
+      type: "secondary",
+      visible: eventConfig.externalVolunteers?.enabled &&
+        !twoDaysBefore,
+      action: goToExternalVolunteerSubscription,
     },
     {
       label: "Inscrever-se",
@@ -183,6 +201,11 @@ function goToTicket() {
 function goToRegisterDonation() {
   navigateTo(props.registerDonationUrl, { external: true });
 }
+
+function goToExternalVolunteerSubscription() {
+  navigateTo(`/event/${props.eventSlug}/instructions`)
+}
+
 </script>
 
 <style scoped>
