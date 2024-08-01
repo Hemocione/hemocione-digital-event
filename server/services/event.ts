@@ -48,10 +48,7 @@ export interface UpdateEventDTO {
   private?: boolean;
 }
 
-export async function incrementEventExternalVolunteersOccupiedSlots(
-  eventSlug: string,
-  increment: number,
-) {
+export async function incrementEventExternalVolunteersOccupiedSlots(eventSlug, increment) {
   const event = await Event.findOneAndUpdate(
     {
       slug: eventSlug,
@@ -60,10 +57,17 @@ export async function incrementEventExternalVolunteersOccupiedSlots(
       $inc: { "externalVolunteers.occupiedSlots": increment },
     },
     {
-      lean: true,
-    },
+      new: true, // Retorna o documento atualizado
+      lean: true, // Retorna um documento plain JavaScript
+    }
   );
+
+  if (!event) {
+    throw new Error('Event not found');
   }
+
+  return event;
+}
 
 export async function incrementEventScheduleOccupiedSlots(
   eventSlug: string,

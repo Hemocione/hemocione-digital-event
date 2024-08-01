@@ -15,6 +15,7 @@
   
 <script setup lang="ts">
 import { computed, reactive } from "vue";
+// import {deleteExternalVolunteer} from "~/server/services/externalVolunteer";
 
 definePageMeta({
   middleware: ["auth"],
@@ -35,8 +36,13 @@ interface Button {
 }
 
 const buttons = computed((): Button[] => {
-//   const alreadyStarted = isEventTodayAndAlreadyStarted.value;
   const computedButtons = [
+    {
+      label: "Desistir",
+      type: "secondary",
+      visible: true,
+      action: deleteExternalVolunteerFront,
+    },
     {
       label: "Acessar Zap",
       type: "primary",
@@ -63,6 +69,12 @@ function goToGrupoZap() {
     alert("O link do grupo do Zap não está disponível.");
   }
 }
+
+function deleteExternalVolunteerFront() {
+  navigateTo(`/event/${eventSlug}`);
+  // Completar
+}
+
 </script>
 
   

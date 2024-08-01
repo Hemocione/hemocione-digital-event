@@ -3,14 +3,28 @@ import { Schema, Types, model } from "mongoose";
 
 const EventSchema = new Schema(
   {
+    canceledAt: {
+      type: Date,
+    },
+    canceledReasons: {
+      type: String,
+      enum:["lotou vagas","já faltou muitos eventos"]
+    },
+    canceldReasonDetails: {
+      type: String,
+      required: false,
+    },
+    canceledBy: {
+      type: String,
+    },
     externalVolunteers: {
       enabled: {
         type: Boolean,
-        default: false
+        default: false,
       },
       groupUrl: {
         type: String,
-        default: null
+        default: null,
       },
       slots: {
         type: Number,

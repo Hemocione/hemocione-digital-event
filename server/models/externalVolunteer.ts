@@ -36,6 +36,11 @@ const ExternalVolunteerSchema = new Schema(
             type: String,
             required: true,
         },
+        deletedAt:{
+            type: Date,
+            required: false,
+            default: null,
+        },
         groupUrl: {
             type: {
                 clickCount: {

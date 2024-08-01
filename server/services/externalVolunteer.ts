@@ -29,6 +29,18 @@ export async function createExternalVolunteer(
   eventSlug: string,
   user: HemocioneUserAuthTokenData,
 ) {
+  // Verifica se o voluntário já existe
+  const existingVolunteer = await ExternalVolunteer.findOne({
+    eventSlug,
+    hemocioneId: user.id,
+    deletedAt: null,
+  });
+
+  if (existingVolunteer) {
+    // Se o voluntário já existe, retorne-o ou lance um erro
+    throw new Error(`Voluntário com hemocioneId "${user.id}" já está registrado para o evento "${eventSlug}".`);
+  }
+
   const externalVolunteer = new ExternalVolunteer({
     eventSlug,
     hemocioneId: user.id,
@@ -38,13 +50,8 @@ export async function createExternalVolunteer(
     document: user.document,
   });
 
-  // todo: wrap in transaction
   await externalVolunteer.save();
-  await incrementEventExternalVolunteersOccupiedSlots(
-    eventSlug,
-    externalVolunteer._id.toString(),
-    1,
-  );
+  await incrementEventExternalVolunteersOccupiedSlots(eventSlug, 1);
 
   return externalVolunteer.toObject();
 }
@@ -61,13 +68,8 @@ export async function deleteSubscription(
   if (!externalVolunteer) return null;
   externalVolunteer.deletedAt = new Date();
 
-  // todo: wrap in transaction
   await externalVolunteer.save();
-  await incrementEventExternalVolunteersOccupiedSlots(
-    eventSlug,
-    externalVolunteer._id.toString(),
-    -1,
-  );
+  await incrementEventExternalVolunteersOccupiedSlots(eventSlug, -1);
 
   return externalVolunteer.toObject();
 }
@@ -85,13 +87,8 @@ export async function deleteExternalVolunteer(
   if (!externalVolunteer) return null;
   externalVolunteer.deletedAt = new Date();
 
-  // todo: wrap in transaction
   await externalVolunteer.save();
-  await incrementEventExternalVolunteersOccupiedSlots(
-    eventSlug,
-    externalVolunteer._id.toString(),
-    -1,
-  );
+  await incrementEventExternalVolunteersOccupiedSlots(eventSlug, -1);
 
   return externalVolunteer.toObject();
 }
