@@ -1,6 +1,6 @@
 import { ExternalVolunteer } from "../models/externalVolunteer";
 import type { HemocioneUserAuthTokenData } from "./auth";
-import { incrementEventExternalVolunteersOccupiedSlots } from "./event";
+import { incrementEventExternalVolunteersOccupiedSlots, incrementEventScheduleOccupiedSlots } from "./event";
 import { getCleanFullName } from "~/utils/getCleanFullName";
 
 // Função para obter um voluntário externo com base no slug do evento e no ID do usuário
@@ -13,7 +13,7 @@ export async function getExternalVolunteer(eventSlug: string, hemocioneId: strin
   return externalVolunteer;
 }
 
-export async function getUserEventSubscription(
+export async function getUserEventVolunteering(
   eventSlug: string,
   hemocioneId: string,
 ) {
@@ -29,6 +29,18 @@ export async function createExternalVolunteer(
   eventSlug: string,
   user: HemocioneUserAuthTokenData,
 ) {
+  // Verifica se o voluntário já existe
+  const existingVolunteer = await ExternalVolunteer.findOne({
+    eventSlug,
+    hemocioneId: user.id,
+    deletedAt: null,
+  });
+
+  if (existingVolunteer) {
+    // Se o voluntário já existe, retorne-o ou lance um erro
+    throw new Error(`Voluntário com hemocioneId "${user.id}" já está registrado para o evento "${eventSlug}".`);
+  }
+
   const externalVolunteer = new ExternalVolunteer({
     eventSlug,
     hemocioneId: user.id,
@@ -38,36 +50,8 @@ export async function createExternalVolunteer(
     document: user.document,
   });
 
-  // todo: wrap in transaction
   await externalVolunteer.save();
-  await incrementEventExternalVolunteersOccupiedSlots(
-    eventSlug,
-    externalVolunteer._id.toString(),
-    1,
-  );
-
-  return externalVolunteer.toObject();
-}
-
-export async function deleteSubscription(
-  eventSlug: string,
-  hemocioneId: string,
-) {
-  const externalVolunteer = await ExternalVolunteer.findOne({
-    eventSlug,
-    hemocioneId,
-    deletedAt: null,
-  });
-  if (!externalVolunteer) return null;
-  externalVolunteer.deletedAt = new Date();
-
-  // todo: wrap in transaction
-  await externalVolunteer.save();
-  await incrementEventExternalVolunteersOccupiedSlots(
-    eventSlug,
-    externalVolunteer._id.toString(),
-    -1,
-  );
+  await incrementEventExternalVolunteersOccupiedSlots(eventSlug, 1);
 
   return externalVolunteer.toObject();
 }
@@ -82,16 +66,9 @@ export async function deleteExternalVolunteer(
     hemocioneId,
     deletedAt: null,
   });
-  if (!externalVolunteer) return null;
+  if (!externalVolunteer) return;
   externalVolunteer.deletedAt = new Date();
 
-  // todo: wrap in transaction
   await externalVolunteer.save();
-  await incrementEventExternalVolunteersOccupiedSlots(
-    eventSlug,
-    externalVolunteer._id.toString(),
-    -1,
-  );
-
-  return externalVolunteer.toObject();
+  await incrementEventExternalVolunteersOccupiedSlots(eventSlug, -1);
 }

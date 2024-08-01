@@ -92,11 +92,9 @@ export function getEventsToSendDonations() {
     })
     .lean();
 }
-export async function incrementEventExternalVolunteersOccupiedSlots(
-  eventSlug: string,
-  increment: number,
-) {
-  await Event.findOneAndUpdate(
+
+export async function incrementEventExternalVolunteersOccupiedSlots(eventSlug: string, increment: number) {
+  const event = await Event.findOneAndUpdate(
     {
       slug: eventSlug,
     },
@@ -104,9 +102,13 @@ export async function incrementEventExternalVolunteersOccupiedSlots(
       $inc: { "externalVolunteers.occupiedSlots": increment },
     },
     {
-      lean: true,
-    },
+      new: true, // Retorna o documento atualizado
+      lean: true, // Retorna um documento plain JavaScript
+    }
   );
+
+  removeEventFromCache(eventSlug);
+  return event;
 }
 
 export async function incrementEventScheduleOccupiedSlots(
