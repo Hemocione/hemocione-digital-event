@@ -152,7 +152,7 @@ export default defineNuxtConfig({
     "/event/:eventSlug/schedules": {
       ssr: false,
     },
-    "/event/:eventSlug/instructions/zap": {
+    "/event/:eventSlug/volunteer/mine": {
       ssr: false,
     },
     "/queue/join": {

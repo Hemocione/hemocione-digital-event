@@ -42,11 +42,12 @@ footer {
   max-width: var(--hemo-page-max-width);
   margin-top: auto;
 }
+
 .wrapper {
   position: relative;
   padding: 1em;
   display: flex;
-  gap: 1em;
+  gap: 0.5em;
   width: 100%;
   height: 100%;
   flex-direction: column;
@@ -60,6 +61,7 @@ footer {
   background-color: white;
   width: 100%;
 }
+
 .toggler {
   position: absolute;
   top: -1.5em;

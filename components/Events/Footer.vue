@@ -1,9 +1,23 @@
 <template>
   <CommonCoolFooter v-if="buttons.length && !loading" height="fit-content">
+    <!-- <template v-if="buttons.length <= 2"> -->
     <ElButton v-for="button in buttons" :key="button.label" :type="button.type" :disabled="button.disabled" size="large"
       @click="button.action">
       {{ button.label }}
     </ElButton>
+    <!-- </template> -->
+    <!-- <template v-else> -->
+    <!-- <div class="button-group-wrapper">
+        <ElButton v-for="button in groupedButtonsByType.default" :key="button.label" :type="button.type"
+          :disabled="button.disabled" size="large" @click="button.action">
+          {{ button.label }}
+        </ElButton>
+      </div>
+      <ElButton v-for="button in groupedButtonsByType.primary" :key="button.label" :type="button.type"
+        :disabled="button.disabled" size="large" @click="button.action">
+        {{ button.label }}
+      </ElButton>
+    </template> -->
   </CommonCoolFooter>
 </template>
 
@@ -12,7 +26,7 @@ import { isTodayAndPast } from "~/helpers/todayAndPast";
 
 interface Button {
   label: string;
-  type?: "primary";
+  type: "primary" | "default";
   disabled?: boolean;
   visible: boolean;
   action?: () => void;
@@ -127,6 +141,7 @@ const buttons = computed((): Button[] => {
   const computedButtons = [
     {
       label: "Registrar doação",
+      type: "primary",
       visible:
         alreadyStarted &&
         props.registerDonationUrl &&
@@ -137,10 +152,11 @@ const buttons = computed((): Button[] => {
       label: `Registre sua doação no dia ${eventDateObj.value?.day}, a partir das ${eventDateObj.value?.hour}`,
       visible: !alreadyStarted && Boolean(props.registerDonationUrl),
       disabled: true,
+      type: "default",
     },
     {
       label: "Ajude na organização do evento",
-      type: "secondary",
+      type: "default",
       visible: eventConfig.externalVolunteers?.enabled &&
         !twoDaysBefore,
       action: goToExternalVolunteerSubscription,
@@ -190,6 +206,17 @@ const buttons = computed((): Button[] => {
   return computedButtons.filter((button) => button.visible) as Button[];
 });
 
+const groupedButtonsByType = computed((): Record<'default' | 'primary', Button[]> => {
+  const groupedButtons = buttons.value.reduce((acc, button) => {
+    if (!acc[button.type]) {
+      acc[button.type] = [];
+    }
+    acc[button.type].push(button);
+    return acc;
+  }, {} as Record<string, Button[]>);
+  return groupedButtons;
+});
+
 function goToSchedule() {
   navigateTo(`/event/${props.eventSlug}/schedules`);
 }
@@ -203,14 +230,27 @@ function goToRegisterDonation() {
 }
 
 function goToExternalVolunteerSubscription() {
-  navigateTo(`/event/${props.eventSlug}/instructions`)
+  navigateTo(`/event/${props.eventSlug}/volunteer`)
 }
 
 </script>
 
 <style scoped>
 button {
-  height: 48px;
+  height: 45px;
   margin: 0;
+  text-align: center;
+}
+
+.button-group-wrapper {
+  width: 100%;
+  display: flex;
+  gap: 1em;
+  justify-content: center;
+  align-items: center;
+}
+
+.button-group-wrapper>* {
+  flex: 1;
 }
 </style>

@@ -11,7 +11,7 @@
   --hemo-color-link: #005fed;
   --hemo-color-white: #FFFFFF;
   --hemo-color-gray: #F3F2F1;
-  --hemo-color-black-10: #E8E8E8; 
+  --hemo-color-black-10: #E8E8E8;
   --hemo-color-black-20: #DBDDE0;
   --hemo-color-black-80: #52575c;
   --hemo-color-black-100: #25282b;
@@ -36,8 +36,15 @@
   --hemo-page-max-width: 1080px;
 }
 
-.el-button + .el-button {
+.el-button+.el-button {
   margin: 0 !important;
+}
+
+.el-button.is-disabled,
+.el-button.is-disabled:hover {
+  background-color: var(--hemo-color-black-10) !important;
+  color: var(--hemo-color-black-80) !important;
+  border-color: #d4d7de !important;
 }
 
 .el-input__prefix-inner {
