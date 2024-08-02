@@ -155,6 +155,9 @@ export default defineNuxtConfig({
     "/event/:eventSlug/volunteer/mine": {
       ssr: false,
     },
+    "/event/:eventSlug/volunteer": {
+      ssr: false,
+    },
     "/queue/join": {
       ssr: false,
     },

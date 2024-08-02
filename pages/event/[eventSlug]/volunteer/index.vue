@@ -21,7 +21,7 @@ const eventStore = useEventStore();
 const userStore = useUserStore();
 const eventSlug = route.params.eventSlug as string;
 const eventConfig = await eventStore.getEvent(eventSlug);
-const subscription = await userStore.getSubscription(eventSlug);
+const isVolunteer = await userStore.userIsVolunteer(eventSlug);
 
 interface Button {
   label: string;
@@ -36,15 +36,24 @@ const availableSlots = computed(() => {
   return eventConfig.externalVolunteers.slots - eventConfig.externalVolunteers.occupiedSlots;
 });
 
+const buttonText = computed(() => {
+  if (isVolunteer) {
+    return "Continuar";
+  } else if (!availableSlots.value) {
+    return "Não há mais vagas no momento, esperamos você em um próximo evento ;)";
+  }
+  return "Quero ajudar!";
+});
+
 const buttons = computed((): Button[] => {
-  //   const alreadyStarted = isEventTodayAndAlreadyStarted.value;
+
   const computedButtons = [
     {
-      label: availableSlots.value ? "Quero ajudar!" : "Vagas para voluntariado indisponíveis neste evento",
+      label: buttonText.value,
       type: "primary",
       visible: true,
       action: goTovolunteerParaGrupoZap,
-      disabled: !Boolean(availableSlots.value),
+      disabled: !isVolunteer && !Boolean(availableSlots.value),
     },
   ];
   return computedButtons.filter((button) => button.visible) as Button[];

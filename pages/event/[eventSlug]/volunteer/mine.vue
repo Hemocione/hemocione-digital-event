@@ -26,6 +26,17 @@ const eventStore = useEventStore();
 const userStore = useUserStore();
 const eventSlug = route.params.eventSlug as string;
 const eventConfig = await eventStore.getEvent(eventSlug);
+const isVolunteer = await userStore.userIsVolunteer(eventSlug);
+
+try {
+    if (!isVolunteer){
+    await userStore.createExternalVolunteer(eventSlug); 
+  }
+}
+catch(e){
+  navigateTo(`/event/${eventSlug}`);
+}
+
 
 interface Button {
   label: string;
@@ -38,7 +49,7 @@ interface Button {
 const buttons = computed((): Button[] => {
   const computedButtons = [
     {
-      label: "Desistir",
+      label: "Cancelar participação como voluntário",
       type: "default",
       visible: true,
       action: deleteExternalVolunteerFront,
@@ -70,9 +81,9 @@ function goToGrupoZap() {
   }
 }
 
-function deleteExternalVolunteerFront() {
+async function deleteExternalVolunteerFront() {
+  await userStore.deleteExternalVolunteer(eventSlug);
   navigateTo(`/event/${eventSlug}`);
-  // Completar
 }
 
 </script>

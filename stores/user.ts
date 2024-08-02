@@ -96,6 +96,31 @@ export const useUserStore = defineStore("user", {
       );
       this.volunteering.set(eventSlug, false);
     },
+
+    async userIsVolunteer(eventSlug: string){
+      if (!this.user){
+        return false; 
+      }
+      
+      if (this.isVolunteerInEvent(eventSlug)){
+        return true; 
+      };
+
+      try {
+        await fetchWithAuth(
+          `/api/v1/event/${eventSlug}/external-volunteer/mine`,
+          {
+            method: "GET",
+          },
+        )
+        this.volunteering.set(eventSlug, true);
+        return true; 
+      }
+      catch(e){
+        return false; 
+      }
+
+    },
   },
 });
 

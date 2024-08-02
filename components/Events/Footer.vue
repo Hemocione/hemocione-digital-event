@@ -1,42 +1,14 @@
 <template>
   <CommonCoolFooter v-if="buttons.length && !loading" height="fit-content">
-    <!-- <template v-if="buttons.length <= 2"> -->
     <ElButton v-for="button in buttons" :key="button.label" :type="button.type" :disabled="button.disabled" size="large"
       @click="button.action">
       {{ button.label }}
     </ElButton>
-    <!-- </template> -->
-    <!-- <template v-else> -->
-    <!-- <div class="button-group-wrapper">
-        <ElButton v-for="button in groupedButtonsByType.default" :key="button.label" :type="button.type"
-          :disabled="button.disabled" size="large" @click="button.action">
-          {{ button.label }}
-        </ElButton>
-      </div>
-      <ElButton v-for="button in groupedButtonsByType.primary" :key="button.label" :type="button.type"
-        :disabled="button.disabled" size="large" @click="button.action">
-        {{ button.label }}
-      </ElButton>
-    </template> -->
   </CommonCoolFooter>
 </template>
 
 <script setup lang="ts">
 import { isTodayAndPast } from "~/helpers/todayAndPast";
-
-interface Button {
-  label: string;
-  type: "primary" | "default";
-  disabled?: boolean;
-  visible: boolean;
-  action?: () => void;
-}
-
-const loading = ref(true);
-
-onMounted(() => {
-  loading.value = false;
-});
 
 const props = defineProps({
   eventSlug: {
@@ -55,25 +27,40 @@ const { user } = userStore;
 const subscription = await userStore.getSubscription(props.eventSlug);
 const eventConfig = await eventStore.getEvent(props.eventSlug);
 
+interface Button {
+  label: string;
+  type: "primary" | "default";
+  disabled?: boolean;
+  visible: boolean;
+  action?: () => void;
+}
+
+const loading = ref(true);
+
+const isVolunteer = ref(false);
+
+onMounted(async () => {
+  loading.value = false;
+  isVolunteer.value = await userStore.userIsVolunteer(props.eventSlug);
+});
+
 const isEventTodayAndAlreadyStarted = computed(() => {
   if (!eventConfig.startAt) return false;
 
   return isTodayAndPast(eventConfig.startAt);
 });
 
-const isEventTwoDaysFromNow = computed(() => {
+const TWO_DAYS_MS = 2 * 24 * 60 * 60 * 1000;
+
+const isEventTwoDaysFromNowOrMore = computed(() => {
   if (!eventConfig.startAt) return false;
 
-  const startAt = new Date(eventConfig.startAt);
-  const today = new Date();
+  const startAt = new Date(eventConfig.startAt).getTime();
+  const today = new Date().getTime();
 
-  const twoDaysBeforeStart = new Date(startAt);
-  twoDaysBeforeStart.setDate(startAt.getDate() - 2);
-  const isTwoDaysBefore = twoDaysBeforeStart.getDate() === today.getDate() &&
-    twoDaysBeforeStart.getMonth() === today.getMonth() &&
-    twoDaysBeforeStart.getFullYear() === today.getFullYear();
+  const dif = startAt - today;
 
-  return isTwoDaysBefore;
+  return dif < TWO_DAYS_MS;
 });
 
 
@@ -135,7 +122,6 @@ const buttons = computed((): Button[] => {
   const isLogged = Boolean(user);
   const hasSubscription = Boolean(subscription);
   const alreadyStarted = isEventTodayAndAlreadyStarted.value;
-  const twoDaysBefore = isEventTwoDaysFromNow.value;
   const isSchedulesEnabled = eventConfig.subscription?.enabled;
   const subscriptionsAvailable = !hasLastSubscriptionSchedulePassed.value;
   const computedButtons = [
@@ -155,10 +141,10 @@ const buttons = computed((): Button[] => {
       type: "default",
     },
     {
-      label: "Ajude na organização do evento",
+      label: isVolunteer.value ? "Acessar instruções de voluntariado":"Ajude na organização do evento",
       type: "default",
-      visible: eventConfig.externalVolunteers?.enabled &&
-        !twoDaysBefore,
+      visible: isVolunteer.value || (eventConfig.externalVolunteers?.enabled &&
+      !isEventTwoDaysFromNowOrMore.value),
       action: goToExternalVolunteerSubscription,
     },
     {
