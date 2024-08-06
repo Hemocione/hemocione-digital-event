@@ -17,6 +17,7 @@
         :key="button.label"
         :type="button.type"
         :disabled="button.disabled"
+        :loading="button.loading"
         size="large"
         @click="button.action"
       >
@@ -85,14 +86,17 @@ interface Button {
   disabled?: boolean;
   visible: boolean;
   action?: () => void;
+  loading?: boolean;
 }
+
+const userSubscription = await userStore.getSubscription(eventSlug);
 
 const buttons = computed((): Button[] => {
   const computedButtons = [
     {
       label: "Quero me inscrever para doar sangue",
       type: "default",
-      visible: !eventStore.hasAvailableSlots && !isVolunteer,
+      visible: eventStore.hasAvailableSlots && !userSubscription,
       action: goToSchedule,
     },
     {
@@ -100,6 +104,8 @@ const buttons = computed((): Button[] => {
       type: "default",
       visible: true,
       action: () => (dialogVisible.value = true),
+      loading: canceling.value,
+      disabled: canceling.value,
     },
     {
       label: "Acessar Zap",
@@ -132,9 +138,19 @@ function goToSchedule() {
   navigateTo(`/event/${eventSlug}/schedules`);
 }
 
+const canceling = ref(false);
+
 async function deleteExternalVolunteerFront() {
-  await userStore.deleteExternalVolunteer(eventSlug);
-  navigateTo(`/event/${eventSlug}`);
+  canceling.value = true;
+  dialogVisible.value = false;
+  try {
+    await new Promise((r) => setTimeout(r, 2000));
+    await userStore.deleteExternalVolunteer(eventSlug);
+    navigateTo(`/event/${eventSlug}`);
+  } catch (e) {
+    ElMessage.error("Ocorreu algum erro ao cancelar a sua participação.");
+  }
+  canceling.value = false;
 }
 </script>
 
