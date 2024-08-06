@@ -2,7 +2,7 @@
   <main v-if="eventConfig" class="schedules-page">
     <CommonEventHeader :event-name="eventConfig.name" @back="goBack" />
     <!-- <img :src="eventConfig.banner" alt="Event Banner" class="event-banner" /> -->
-    <div v-html="eventConfig.externalVolunteers.htmlExplanationText"></div>
+    <div v-html="htmlExplanationText" class="volunteer-text"></div>
     <CommonCoolFooter>
       <ElButton v-for="button in buttons" :key="button.label" :type="button.type" :disabled="button.disabled"
         size="large" @click="button.action">
@@ -11,7 +11,6 @@
     </CommonCoolFooter>
   </main>
 </template>
-
 
 <script setup lang="ts">
 import { computed, reactive } from "vue";
@@ -46,7 +45,6 @@ const buttonText = computed(() => {
 });
 
 const buttons = computed((): Button[] => {
-
   const computedButtons = [
     {
       label: buttonText.value,
@@ -57,6 +55,15 @@ const buttons = computed((): Button[] => {
     },
   ];
   return computedButtons.filter((button) => button.visible) as Button[];
+});
+
+const htmlExplanationText = computed(() => {
+  return eventConfig.externalVolunteers?.htmlExplanationText || 
+    `<h1>Fala, voluntário!</h1>
+    <p>Estamos muito felizes com o seu interesse em participar mais de perto de um evento do Hemocione. Antes de prosseguir, informamos que os eventos Hemocione costumam durar 5 horas, com um tempinho extra para organizarmos tudo antes e depois.</p>
+    <p>Precisamos da sua disponibilidade durante esse horário. Também será realizada uma reunião no dia anterior ao evento para explicarmos como ele funcionará.</p>
+    <p>Caso consiga participar, você poderá receber um certificado pelas suas horas de trabalho voluntário :)</p>
+    <p>No entanto, se não for possível no momento, esperamos poder te receber nesse ou em futuros eventos.</p>`;
 });
 
 if (!eventConfig) {
@@ -71,7 +78,6 @@ function goTovolunteerParaGrupoZap() {
   navigateTo(`/event/${eventSlug}/volunteer/mine`);
 }
 </script>
-
 
 <style scoped>
 .button {
@@ -100,7 +106,23 @@ article {
   margin-bottom: 1rem;
   width: 100%;
 }
+.volunteer-text {
+  font-family: Arial, sans-serif;
+  line-height: 1.5;
+  padding: 10px;
+  border-left: 4px solid var(--hemo-color-primary);
+}
 
+.volunteer-text h1 {
+  font-size: 24px;
+  color: var(--hemo-color-black-100);
+}
+
+.volunteer-text p {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 10px;
+}
 
 .event-banner {
   width: 100%;

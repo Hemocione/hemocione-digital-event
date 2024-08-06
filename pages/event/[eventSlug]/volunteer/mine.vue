@@ -2,20 +2,51 @@
   <main v-if="eventConfig" class="schedules-page">
     <CommonEventHeader :event-name="eventConfig.name" @back="goBack" />
     <!-- <img :src="eventConfig.banner" alt="Event Banner" class="event-banner" /> -->
-    <h1>vai pro grupo do zap</h1>
+    <div class="volunteer-text">
+      <h1>Bem vind@, {{ userStore.user.givenName }}!</h1>
+      <p>Estamos animados com a sua participação!</p>
+      <p>Entre no grupo do WhatsApp para receber mais informações.</p>
+      <p>
+        Nele você poderá estabelecer contato com a equipe do Hemocione
+        responsável e com os outros voluntários!
+      </p>
+    </div>
     <CommonCoolFooter>
-      <ElButton v-for="button in buttons" :key="button.label" :type="button.type" :disabled="button.disabled"
-        size="large" @click="button.action">
+      <ElButton
+        v-for="button in buttons"
+        :key="button.label"
+        :type="button.type"
+        :disabled="button.disabled"
+        size="large"
+        @click="button.action"
+      >
         {{ button.label }}
       </ElButton>
     </CommonCoolFooter>
+
+    <el-dialog
+      style="border-radius: 1rem"
+      v-model="dialogVisible"
+      width="400"
+      align-center
+    >
+      <span class="dialog-text">Deseja cancelar sua participação?</span>
+      <template #footer>
+        <div class="dialog-footer">
+          <el-button @click="dialogVisible = false">Mudei de ideia</el-button>
+          <el-button type="primary" @click="deleteExternalVolunteerFront">
+            Cancelar participação
+          </el-button>
+        </div>
+      </template>
+    </el-dialog>
   </main>
 </template>
 
-
 <script setup lang="ts">
 import { computed, reactive } from "vue";
-// import {deleteExternalVolunteer} from "~/server/services/externalVolunteer";
+import { ref } from "vue";
+import { ElMessageBox } from "element-plus";
 
 definePageMeta({
   middleware: ["auth"],
@@ -28,15 +59,25 @@ const eventSlug = route.params.eventSlug as string;
 const eventConfig = await eventStore.getEvent(eventSlug);
 const isVolunteer = await userStore.userIsVolunteer(eventSlug);
 
+const dialogVisible = ref(false);
+
+const handleClose = (done: () => void) => {
+  ElMessageBox.confirm("Are you sure to close this dialog?")
+    .then(() => {
+      done();
+    })
+    .catch(() => {
+      // catch error
+    });
+};
+
 try {
-    if (!isVolunteer){
-    await userStore.createExternalVolunteer(eventSlug); 
+  if (!isVolunteer) {
+    await userStore.createExternalVolunteer(eventSlug);
   }
-}
-catch(e){
+} catch (e) {
   navigateTo(`/event/${eventSlug}`);
 }
-
 
 interface Button {
   label: string;
@@ -49,16 +90,22 @@ interface Button {
 const buttons = computed((): Button[] => {
   const computedButtons = [
     {
+      label: "Quero me inscrever para doar sangue",
+      type: "default",
+      visible: !eventStore.hasAvailableSlots && !isVolunteer,
+      action: goToSchedule,
+    },
+    {
       label: "Cancelar participação como voluntário",
       type: "default",
       visible: true,
-      action: deleteExternalVolunteerFront,
+      action: () => (dialogVisible.value = true),
     },
     {
       label: "Acessar Zap",
       type: "primary",
       visible: true,
-      action: goToGrupoZap
+      action: goToGrupoZap,
     },
   ];
   return computedButtons.filter((button) => button.visible) as Button[];
@@ -81,13 +128,15 @@ function goToGrupoZap() {
   }
 }
 
+function goToSchedule() {
+  navigateTo(`/event/${eventSlug}/schedules`);
+}
+
 async function deleteExternalVolunteerFront() {
   await userStore.deleteExternalVolunteer(eventSlug);
   navigateTo(`/event/${eventSlug}`);
 }
-
 </script>
-
 
 <style scoped>
 .button {
@@ -117,11 +166,50 @@ article {
   width: 100%;
 }
 
+.dialog-text {
+  width: 100%;
+}
+
+.confirmation-dialog {
+  border-radius: 1rem !important;
+}
+
+footer :deep(.el-dialog__footer) {
+  padding: 0 !important;
+}
+
+.dialog-footer > * {
+  flex-grow: 1;
+  width: 100%;
+}
+.dialog-footer {
+  width: 100%;
+  display: flex;
+  gap: 0.5rem;
+}
 
 .event-banner {
   width: 100%;
   height: auto;
   margin-bottom: 1rem;
+}
+
+.volunteer-text {
+  font-family: Arial, sans-serif;
+  line-height: 1.5;
+  padding: 10px;
+  border-left: 4px solid var(--hemo-color-primary);
+}
+
+.volunteer-text h1 {
+  font-size: 24px;
+  color: var(--hemo-color-black-100);
+}
+
+.volunteer-text p {
+  font-size: 16px;
+  color: #333;
+  margin-bottom: 10px;
 }
 
 @media screen and (max-width: 768px) {

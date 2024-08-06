@@ -6,11 +6,7 @@ const EventSchema = new Schema(
     canceledAt: {
       type: Date,
     },
-    canceledReasons: {
-      type: String,
-      enum:["lotou vagas","já faltou muitos eventos"]
-    },
-    canceldReasonDetails: {
+    canceldReason: {
       type: String,
       required: false,
     },
@@ -36,7 +32,6 @@ const EventSchema = new Schema(
       },
       htmlExplanationText: {
         type: String,
-        default: null,
       },
     },
     name: {

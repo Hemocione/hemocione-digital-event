@@ -74,3 +74,14 @@ export const useEventStore = defineStore("event", {
     },
   },
 });
+
+
+
+export const hasAvailableSlots = (event: Event): boolean => {
+  if (event.subscription?.enabled) {
+    return event.subscription.schedules.some(schedule => 
+      schedule.slots > schedule.occupiedSlots
+    );
+  }
+  return false;
+};

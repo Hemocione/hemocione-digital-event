@@ -72,3 +72,4 @@ export async function deleteExternalVolunteer(
   await externalVolunteer.save();
   await incrementEventExternalVolunteersOccupiedSlots(eventSlug, -1);
 }
+
