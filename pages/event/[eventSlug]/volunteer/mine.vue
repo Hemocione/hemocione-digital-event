@@ -108,7 +108,7 @@ const buttons = computed((): Button[] => {
       disabled: canceling.value,
     },
     {
-      label: "Acessar Zap",
+      label: "Acessar Grupo do WhatsApp",
       type: "primary",
       visible: true,
       action: goToGrupoZap,
@@ -128,9 +128,7 @@ function goBack() {
 function goToGrupoZap() {
   const groupUrl = eventConfig.externalVolunteers?.groupUrl;
   if (groupUrl) {
-    window.location.href = groupUrl;
-  } else {
-    alert("O link do grupo do Zap não está disponível.");
+    navigateTo(groupUrl, { external: true });
   }
 }
 
