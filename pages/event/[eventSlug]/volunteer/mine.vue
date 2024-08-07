@@ -128,7 +128,13 @@ function goBack() {
 function goToGrupoZap() {
   const groupUrl = eventConfig.externalVolunteers?.groupUrl;
   if (groupUrl) {
-    navigateTo(groupUrl, { external: true });
+    navigateTo(groupUrl, { external: true, open: {
+      target: "_blank",
+      windowFeatures: {
+        noopener: true,
+        noreferrer: true,
+      }
+    }});
   }
 }
 
