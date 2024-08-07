@@ -144,7 +144,7 @@ async function deleteExternalVolunteerFront() {
   canceling.value = true;
   dialogVisible.value = false;
   try {
-    await new Promise((r) => setTimeout(r, 2000));
+    // await new Promise((r) => setTimeout(r, 2000));
     await userStore.deleteExternalVolunteer(eventSlug);
     navigateTo(`/event/${eventSlug}`);
   } catch (e) {
