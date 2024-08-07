@@ -15,7 +15,6 @@ const getSiteUrl = () => {
 
     return networkAddress || "http://localhost:3000";
   }
-
   return "https://eventos.hemocione.com.br";
 };
 const getCurrentEnv = () => {
@@ -55,7 +54,7 @@ export default defineNuxtConfig({
       process.env.HEMOCIONE_ID_INTEGRATION_SECRET ?? "secret",
     secret: process.env.API_SECRET ?? "secret",
     mongodbUri:
-      process.env.MONGODB_URI ?? "mongodb://admin:password@localhost:27017",
+      process.env.MONGODB_URI ?? "mongodb://localhost:27017/admin?authSource=admin&readPreference=primary&directConnection=true&ssl=false",
     dbName: process.env.DB_NAME ?? "hemo",
     inngestKey: process.env.INNGEST_EVENT_KEY ?? "mock-key",
     digitalStandApiUrl:
@@ -64,6 +63,7 @@ export default defineNuxtConfig({
     digitalStandApiSecret: process.env.DIGITAL_STAND_API_SECRET ?? "",
     donationsQueueUrl: process.env.DONATIONS_QUEUE_URL ?? "secret-queue-url",
   },
+
   modules: [
     "@element-plus/nuxt",
     "@nuxtjs/google-fonts",
@@ -73,22 +73,27 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "nuxt-bugsnag",
   ],
+
   nitro: {
     preset: "vercel",
     plugins: ["~/server/plugins/mongoose.ts"],
   },
+
   devtools: {
     enabled: true,
     timeline: {
       enabled: true,
     },
   },
+
   css: ["~/assets/css/global.css", "~/assets/css/transitions.css"],
+
   googleFonts: {
     families: {
       Roboto: true,
     },
   },
+
   bugsnag: {
     publishRelease: true,
     disableLog: false, // might activate later
@@ -100,6 +105,7 @@ export default defineNuxtConfig({
       appVersion: `${currentEnv}-${process.env.VERCEL_GIT_COMMIT_SHA}`,
     },
   },
+
   app: {
     pageTransition: {
       name: "slide-left",
@@ -111,11 +117,13 @@ export default defineNuxtConfig({
       mode: "out-in",
     },
   },
+
   sitemap: {
     cacheMaxAgeSeconds: 2160, // 6 hours
     sources: ["/api/__sitemap__/eventUrls"],
     exclude: ["/queue/**", "/chart/**"],
   },
+
   site: {
     url: siteUrl,
     name: "Hemocione Eventos",
@@ -129,17 +137,25 @@ export default defineNuxtConfig({
     facebook: "hemocione",
     instagram: "@hemocione",
   },
+
   image: {
     domains: ["cdn.hemocione.com.br"],
     alias: {
       cdn: "https://cdn.hemocione.com.br",
     },
   },
+
   routeRules: {
     "/event/:eventSlug/ticket": {
       ssr: false,
     },
     "/event/:eventSlug/schedules": {
+      ssr: false,
+    },
+    "/event/:eventSlug/volunteer/mine": {
+      ssr: false,
+    },
+    "/event/:eventSlug/volunteer": {
       ssr: false,
     },
     "/queue/join": {
@@ -153,7 +169,10 @@ export default defineNuxtConfig({
     },
     "/**": { cors: true },
   },
+
   experimental: {
     componentIslands: true,
   },
+
+  compatibilityDate: "2024-08-01"
 });

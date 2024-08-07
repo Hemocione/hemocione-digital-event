@@ -93,6 +93,24 @@ export function getEventsToSendDonations() {
     .lean();
 }
 
+export async function incrementEventExternalVolunteersOccupiedSlots(eventSlug: string, increment: number) {
+  const event = await Event.findOneAndUpdate(
+    {
+      slug: eventSlug,
+    },
+    {
+      $inc: { "externalVolunteers.occupiedSlots": increment },
+    },
+    {
+      new: true, // Retorna o documento atualizado
+      lean: true, // Retorna um documento plain JavaScript
+    }
+  );
+
+  removeEventFromCache(eventSlug);
+  return event;
+}
+
 export async function incrementEventScheduleOccupiedSlots(
   eventSlug: string,
   scheduleId: string,

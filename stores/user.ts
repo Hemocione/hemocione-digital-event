@@ -17,10 +17,13 @@ export const useUserStore = defineStore("user", {
     user: null as CurrentUserData | null,
     token: null as string | null,
     subscriptions: new Map<string, Subscription>(),
+    volunteering: new Map<string, Boolean>(),
   }),
   getters: {
     hasSubscriptionInEvent: (state) => (eventSlug: string) =>
       state.subscriptions.has(eventSlug),
+    isVolunteerInEvent: (state) => (eventSlug: string) =>
+      state.volunteering.get(eventSlug),
   },
   actions: {
     setUser(user: CurrentUserData | null) {
@@ -37,8 +40,8 @@ export const useUserStore = defineStore("user", {
           method: "POST",
           body: { scheduleId },
         },
-        );
-        
+      );
+
       this.subscriptions.set(eventSlug, subscription);
       const eventStore = useEventStore();
       eventStore.incrementSlot(eventSlug, scheduleId);
@@ -73,5 +76,54 @@ export const useUserStore = defineStore("user", {
       eventStore.incrementSlot(eventSlug, String(mySubscription.schedule._id), -1);
       this.subscriptions.delete(eventSlug);
     },
+
+    async createExternalVolunteer(eventSlug: string) {
+      await fetchWithAuth(
+        `/api/v1/event/${eventSlug}/external-volunteer`,
+        {
+          method: "POST",
+        },
+      );
+      this.volunteering.set(eventSlug, true);
+    },
+    
+    async deleteExternalVolunteer(eventSlug: string) {
+      await fetchWithAuth(
+        `/api/v1/event/${eventSlug}/external-volunteer/mine`,
+        {
+          method: "DELETE",
+        },
+      );
+      this.volunteering.set(eventSlug, false);
+    },
+
+    async userIsVolunteer(eventSlug: string){
+      if (!this.user){
+        return false; 
+      }
+      
+      if (this.isVolunteerInEvent(eventSlug)){
+        return true; 
+      };
+
+      try {
+        await fetchWithAuth(
+          `/api/v1/event/${eventSlug}/external-volunteer/mine`,
+          {
+            method: "GET",
+          },
+        )
+        this.volunteering.set(eventSlug, true);
+        return true; 
+      }
+      catch(e){
+        return false; 
+      }
+
+    },
   },
 });
+
+
+
+
