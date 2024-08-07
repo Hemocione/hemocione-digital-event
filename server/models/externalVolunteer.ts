@@ -26,7 +26,7 @@ const ExternalVolunteerSchema = new Schema(
         },
         document: {
             type: String,
-            required: true,
+            required: false,
         },
         email: {
             type: String,
@@ -36,7 +36,7 @@ const ExternalVolunteerSchema = new Schema(
             type: String,
             required: true,
         },
-        deletedAt:{
+        deletedAt: {
             type: Date,
             required: false,
             default: null,

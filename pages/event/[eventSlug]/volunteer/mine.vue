@@ -28,7 +28,7 @@
     <el-dialog
       style="border-radius: 1rem"
       v-model="dialogVisible"
-      width="400"
+      width="350"
       align-center
     >
       <span class="dialog-text">Deseja cancelar sua participação?</span>
