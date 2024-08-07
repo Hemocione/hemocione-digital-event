@@ -9,10 +9,10 @@
   --hemo-color-text-secondary-opaque: rgba(37, 40, 43, 0.2);
   --hemo-color-text-primary: #f2f2f2;
   --hemo-color-link: #005fed;
-  --hemo-color-white: #FFFFFF;
-  --hemo-color-gray: #F3F2F1;
-  --hemo-color-black-10: #E8E8E8; 
-  --hemo-color-black-20: #DBDDE0;
+  --hemo-color-white: #ffffff;
+  --hemo-color-gray: #f3f2f1;
+  --hemo-color-black-10: #e8e8e8;
+  --hemo-color-black-20: #dbdde0;
   --hemo-color-black-80: #52575c;
   --hemo-color-black-100: #25282b;
   --hemo-princess-ivory: #faead4;
@@ -38,6 +38,17 @@
 
 .el-button + .el-button {
   margin: 0 !important;
+}
+
+.el-dialog {
+  --el-dialog-padding-primary: 0px !important;
+}
+
+.el-button.is-disabled,
+.el-button.is-disabled:hover {
+  background-color: var(--hemo-color-black-10) !important;
+  color: var(--hemo-color-black-80) !important;
+  border-color: #d4d7de !important;
 }
 
 .el-input__prefix-inner {
