@@ -7,6 +7,9 @@
         class="logo"
       />
     </NuxtLink>
+    <ClientOnly>
+      <NavBarLogin />
+    </ClientOnly>
   </nav>
 </template>
 
@@ -25,10 +28,12 @@ onMounted(() => {
   width: 100%;
   display: flex;
   z-index: 1000;
-  padding: 0.5rem;
+  padding: 0.5rem 1rem 0.5rem 0.5rem;
   position: sticky;
   align-items: center;
-  background-color: var( --hemo-color-black-100);
+  justify-content: space-between;
+  gap: 0.5rem;
+  background-color: var(--hemo-color-black-100);
   top: 0;
   left: 0;
   height: 7dvh;
