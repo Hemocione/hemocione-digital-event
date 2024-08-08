@@ -24,7 +24,7 @@ export const useUserStore = defineStore("user", {
       state.subscriptions.has(eventSlug),
     isVolunteerInEvent: (state) => (eventSlug: string) =>
       state.volunteering.get(eventSlug),
-    loggedIn: (state) => !!state.user,
+    loggedIn: (state) => Boolean(state.user),
   },
   actions: {
     setUser(user: CurrentUserData | null) {
