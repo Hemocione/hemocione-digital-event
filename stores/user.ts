@@ -24,6 +24,7 @@ export const useUserStore = defineStore("user", {
       state.subscriptions.has(eventSlug),
     isVolunteerInEvent: (state) => (eventSlug: string) =>
       state.volunteering.get(eventSlug),
+    loggedIn: (state) => !!state.user,
   },
   actions: {
     setUser(user: CurrentUserData | null) {
@@ -32,6 +33,13 @@ export const useUserStore = defineStore("user", {
     },
     setToken(token: string | null) {
       this.token = token;
+    },
+    signOut() {
+      const config = useRuntimeConfig();
+      useCookie(config.public.authCookieKey, {
+        expires: new Date(0),
+      });
+      this.$reset();
     },
     async createSubscription(eventSlug: string, scheduleId: string) {
       const subscription = await fetchWithAuth(
@@ -73,20 +81,21 @@ export const useUserStore = defineStore("user", {
       if (!mySubscription) {
         return;
       }
-      eventStore.incrementSlot(eventSlug, String(mySubscription.schedule._id), -1);
+      eventStore.incrementSlot(
+        eventSlug,
+        String(mySubscription.schedule._id),
+        -1,
+      );
       this.subscriptions.delete(eventSlug);
     },
 
     async createExternalVolunteer(eventSlug: string) {
-      await fetchWithAuth(
-        `/api/v1/event/${eventSlug}/external-volunteer`,
-        {
-          method: "POST",
-        },
-      );
+      await fetchWithAuth(`/api/v1/event/${eventSlug}/external-volunteer`, {
+        method: "POST",
+      });
       this.volunteering.set(eventSlug, true);
     },
-    
+
     async deleteExternalVolunteer(eventSlug: string) {
       await fetchWithAuth(
         `/api/v1/event/${eventSlug}/external-volunteer/mine`,
@@ -97,14 +106,14 @@ export const useUserStore = defineStore("user", {
       this.volunteering.set(eventSlug, false);
     },
 
-    async userIsVolunteer(eventSlug: string){
-      if (!this.user){
-        return false; 
+    async userIsVolunteer(eventSlug: string) {
+      if (!this.user) {
+        return false;
       }
-      
-      if (this.isVolunteerInEvent(eventSlug)){
-        return true; 
-      };
+
+      if (this.isVolunteerInEvent(eventSlug)) {
+        return true;
+      }
 
       try {
         await fetchWithAuth(
@@ -112,18 +121,12 @@ export const useUserStore = defineStore("user", {
           {
             method: "GET",
           },
-        )
+        );
         this.volunteering.set(eventSlug, true);
-        return true; 
+        return true;
+      } catch (e) {
+        return false;
       }
-      catch(e){
-        return false; 
-      }
-
     },
   },
 });
-
-
-
-
