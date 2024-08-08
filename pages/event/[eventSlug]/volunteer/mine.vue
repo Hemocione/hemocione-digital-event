@@ -3,7 +3,7 @@
     <CommonEventHeader :event-name="eventConfig.name" @back="goBack" />
     <!-- <img :src="eventConfig.banner" alt="Event Banner" class="event-banner" /> -->
     <div class="volunteer-text">
-      <h1>Bem vind@, {{ userStore.user.givenName }}!</h1>
+      <h1>Bem vind@, {{ userStore.user?.givenName || "Doador" }}!</h1>
       <p>Estamos animados com a sua participação!</p>
       <p>Entre no grupo do WhatsApp para receber mais informações.</p>
       <p>
