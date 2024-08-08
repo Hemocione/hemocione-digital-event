@@ -46,7 +46,10 @@ const authUrl = computed(() => {
   const redirectUrl = new URL(currentPath, siteUrl);
   redirectUrl.searchParams.delete("token"); // ensure no token is passed
   const encodedRedirectUrl = encodeURI(redirectUrl.toString());
-  return `${hemocioneIdUrl}?redirect=${encodedRedirectUrl}`;
+  const baseAuthUrl = loggedIn.value
+    ? `${hemocioneIdUrl}/signout`
+    : `${hemocioneIdUrl}`;
+  return `${baseAuthUrl}?redirect=${encodedRedirectUrl}`;
 });
 
 const requestSignOut = () => {
@@ -54,8 +57,8 @@ const requestSignOut = () => {
 };
 
 const signOut = () => {
-  userStore.signOut();
   dialogVisible.value = false;
+  navigateTo(authUrl.value, { external: true });
 };
 
 const buttonText = computed(() => {

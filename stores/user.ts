@@ -34,12 +34,6 @@ export const useUserStore = defineStore("user", {
     setToken(token: string | null) {
       this.token = token;
     },
-    signOut() {
-      const config = useRuntimeConfig();
-      const cookieRef = useCookie(config.public.authCookieKey);
-      cookieRef.value = null; // DELETE COOKIE
-      this.$reset();
-    },
     async createSubscription(eventSlug: string, scheduleId: string) {
       const subscription = await fetchWithAuth(
         `/api/v1/event/${eventSlug}/subscription`,
