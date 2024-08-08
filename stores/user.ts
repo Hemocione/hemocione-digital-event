@@ -36,9 +36,8 @@ export const useUserStore = defineStore("user", {
     },
     signOut() {
       const config = useRuntimeConfig();
-      useCookie(config.public.authCookieKey, {
-        expires: new Date(0),
-      });
+      const cookieRef = useCookie(config.public.authCookieKey);
+      cookieRef.value = undefined; // remove cookie
       this.$reset();
     },
     async createSubscription(eventSlug: string, scheduleId: string) {

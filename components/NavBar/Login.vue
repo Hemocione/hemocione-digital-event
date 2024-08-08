@@ -18,15 +18,15 @@
     <template #footer>
       <ElButton
         size="large"
-        @click="dialogVisible = false"
         style="width: calc(50% - 0.25rem); margin-right: 0.5rem"
+        @click="dialogVisible = false"
         >Cancelar</ElButton
       >
       <ElButton
         size="large"
         type="primary"
-        @click="signOut"
         style="width: calc(50% - 0.25rem)"
+        @click="signOut"
         >Sair</ElButton
       >
     </template>
