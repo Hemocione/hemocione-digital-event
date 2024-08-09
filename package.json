@@ -28,6 +28,7 @@
     "@types/multer": "^1.4.8",
     "@types/multer-s3": "^3.0.1",
     "@typescript-eslint/parser": "^6.6.0",
+    "@vercel/functions": "^1.4.0",
     "apexcharts": "^3.48.0",
     "aws-sdk": "^2.1497.0",
     "dayjs": "^1.11.9",

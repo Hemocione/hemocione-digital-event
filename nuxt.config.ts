@@ -54,7 +54,8 @@ export default defineNuxtConfig({
       process.env.HEMOCIONE_ID_INTEGRATION_SECRET ?? "secret",
     secret: process.env.API_SECRET ?? "secret",
     mongodbUri:
-      process.env.MONGODB_URI ?? "mongodb://localhost:27017/admin?authSource=admin&readPreference=primary&directConnection=true&ssl=false",
+      process.env.MONGODB_URI ??
+      "mongodb://localhost:27017/admin?authSource=admin&readPreference=primary&directConnection=true&ssl=false",
     dbName: process.env.DB_NAME ?? "hemo",
     inngestKey: process.env.INNGEST_EVENT_KEY ?? "mock-key",
     digitalStandApiUrl:
@@ -62,6 +63,8 @@ export default defineNuxtConfig({
       "https://us-east1-estande-digital.cloudfunctions.net/api",
     digitalStandApiSecret: process.env.DIGITAL_STAND_API_SECRET ?? "",
     donationsQueueUrl: process.env.DONATIONS_QUEUE_URL ?? "secret-queue-url",
+    externalVolunteersSlackWebhook:
+      process.env.EXTERNAL_VOLUNTEERS_SLACK_WEBHOOK ?? "",
   },
 
   modules: [
@@ -174,5 +177,5 @@ export default defineNuxtConfig({
     componentIslands: true,
   },
 
-  compatibilityDate: "2024-08-01"
+  compatibilityDate: "2024-08-01",
 });
