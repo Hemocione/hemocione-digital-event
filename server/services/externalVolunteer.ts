@@ -1,10 +1,14 @@
 import { ExternalVolunteer } from "../models/externalVolunteer";
 import type { HemocioneUserAuthTokenData } from "./auth";
-import { incrementEventExternalVolunteersOccupiedSlots, incrementEventScheduleOccupiedSlots } from "./event";
+import { incrementEventExternalVolunteersOccupiedSlots } from "./event";
 import { getCleanFullName } from "~/utils/getCleanFullName";
+import { sendSlackMessage } from "~/server/services/slack";
 
 // Função para obter um voluntário externo com base no slug do evento e no ID do usuário
-export async function getExternalVolunteer(eventSlug: string, hemocioneId: string) {
+export async function getExternalVolunteer(
+  eventSlug: string,
+  hemocioneId: string,
+) {
   const externalVolunteer = await ExternalVolunteer.findOne({
     eventSlug,
     hemocioneId,
@@ -38,7 +42,9 @@ export async function createExternalVolunteer(
 
   if (existingVolunteer) {
     // Se o voluntário já existe, retorne-o ou lance um erro
-    throw new Error(`Voluntário com hemocioneId "${user.id}" já está registrado para o evento "${eventSlug}".`);
+    throw new Error(
+      `Voluntário com hemocioneId "${user.id}" já está registrado para o evento "${eventSlug}".`,
+    );
   }
 
   const externalVolunteer = new ExternalVolunteer({
@@ -52,8 +58,37 @@ export async function createExternalVolunteer(
 
   await externalVolunteer.save();
   await incrementEventExternalVolunteersOccupiedSlots(eventSlug, 1);
-
+  runAsync(
+    sendCreatedVolunteerSlackMessage({
+      eventSlug,
+      hemocioneId: user.id,
+      email: user.email,
+      phone: user.phone,
+      name: externalVolunteer.name,
+    }),
+  );
   return externalVolunteer.toObject();
+}
+
+async function sendCreatedVolunteerSlackMessage(payload: {
+  eventSlug: string;
+  hemocioneId: string;
+  email: string;
+  phone: string;
+  name: string;
+}) {
+  const config = useRuntimeConfig();
+  const webhook = config.externalVolunteersSlackWebhook;
+  if (!webhook) return;
+
+  const eventUrl = `${config.public.siteUrl}/event/${payload.eventSlug}`;
+  const message =
+    `🎉 Novo voluntário externo registrado para o evento ${eventUrl}\n\n` +
+    `👤 *Nome*: ${payload.name}\n` +
+    `📧 *E-mail*: ${payload.email}\n` +
+    `📱 *Telefone*: ${payload.phone}`;
+
+  await sendSlackMessage(message, webhook);
 }
 
 // Função para deletar um voluntário externo com base no slug do evento e no ID do usuário
@@ -72,4 +107,3 @@ export async function deleteExternalVolunteer(
   await externalVolunteer.save();
   await incrementEventExternalVolunteersOccupiedSlots(eventSlug, -1);
 }
-
