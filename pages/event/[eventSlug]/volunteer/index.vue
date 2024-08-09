@@ -4,8 +4,14 @@
     <!-- <img :src="eventConfig.banner" alt="Event Banner" class="event-banner" /> -->
     <div v-html="htmlExplanationText" class="volunteer-text"></div>
     <CommonCoolFooter>
-      <ElButton v-for="button in buttons" :key="button.label" :type="button.type" :disabled="button.disabled"
-        size="large" @click="button.action">
+      <ElButton
+        v-for="button in buttons"
+        :key="button.label"
+        :type="button.type"
+        :disabled="button.disabled"
+        size="large"
+        @click="button.action"
+      >
         {{ button.label }}
       </ElButton>
     </CommonCoolFooter>
@@ -32,7 +38,10 @@ interface Button {
 
 const availableSlots = computed(() => {
   if (!eventConfig.externalVolunteers) return 0;
-  return eventConfig.externalVolunteers.slots - eventConfig.externalVolunteers.occupiedSlots;
+  return (
+    eventConfig.externalVolunteers.slots -
+    eventConfig.externalVolunteers.occupiedSlots
+  );
 });
 
 const buttonText = computed(() => {
@@ -58,12 +67,14 @@ const buttons = computed((): Button[] => {
 });
 
 const htmlExplanationText = computed(() => {
-  return eventConfig.externalVolunteers?.htmlExplanationText || 
+  return (
+    eventConfig.externalVolunteers?.htmlExplanationText ||
     `<h1>Fala, voluntário!</h1>
     <p>Estamos muito felizes com o seu interesse em participar mais de perto de um evento do Hemocione. Antes de prosseguir, informamos que os eventos Hemocione costumam durar 5 horas, com um tempinho extra para organizarmos tudo antes e depois.</p>
-    <p>Precisamos da sua disponibilidade durante esse horário. Também será realizada uma reunião no dia anterior ao evento para explicarmos como ele funcionará.</p>
+    <p>Precisamos da sua disponibilidade durante esse horário. Também será realizada uma capacitação no dia anterior ao evento para explicarmos como ele funcionará.</p>
     <p>Caso consiga participar, você poderá receber um certificado pelas suas horas de trabalho voluntário :)</p>
-    <p>No entanto, se não for possível no momento, esperamos poder te receber nesse ou em futuros eventos.</p>`;
+    <p>No entanto, se não for possível no momento, esperamos poder te receber nesse ou em futuros eventos.</p>`
+  );
 });
 
 if (!eventConfig) {
