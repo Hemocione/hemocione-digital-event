@@ -75,6 +75,7 @@ export default defineNuxtConfig({
     "@nuxtseo/module",
     "@pinia/nuxt",
     "nuxt-bugsnag",
+    "nuxt-posthog",
   ],
 
   nitro: {
@@ -175,6 +176,12 @@ export default defineNuxtConfig({
 
   experimental: {
     componentIslands: true,
+  },
+
+  posthog: {
+    clientOptions: {
+      person_profiles: "always",
+    },
   },
 
   compatibilityDate: "2024-08-01",

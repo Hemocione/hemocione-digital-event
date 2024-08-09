@@ -28,8 +28,18 @@ export const useUserStore = defineStore("user", {
   },
   actions: {
     setUser(user: CurrentUserData | null) {
+      const { $clientPosthog } = useNuxtApp();
       this.user = user;
       this.subscriptions.clear();
+
+      if (!user) {
+        $clientPosthog.reset(); // Clear user data if user is not logged in anymore
+      } else {
+        $clientPosthog.identify(user.id, {
+          email: user.email,
+          name: getCleanFullName(user.givenName, user.surName),
+        });
+      }
     },
     setToken(token: string | null) {
       this.token = token;
