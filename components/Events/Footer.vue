@@ -56,7 +56,7 @@ const isEventTodayAndAlreadyStarted = computed(() => {
   return isTodayAndPast(eventConfig.startAt);
 });
 
-const TWO_DAYS_MS = 2 * 24 * 60 * 60 * 1000;
+const ONE_DAYS_MS = 24 * 60 * 60 * 1000;
 
 const isEventTwoDaysFromNowOrMore = computed(() => {
   if (!eventConfig.startAt) return false;
@@ -66,7 +66,7 @@ const isEventTwoDaysFromNowOrMore = computed(() => {
 
   const dif = startAt - today;
 
-  return dif < TWO_DAYS_MS;
+  return dif < ONE_DAYS_MS;
 });
 
 const eventDateObj = computed(() => {
@@ -129,6 +129,10 @@ const buttons = computed((): Button[] => {
   const alreadyStarted = isEventTodayAndAlreadyStarted.value;
   const isSchedulesEnabled = eventConfig.subscription?.enabled;
   const subscriptionsAvailable = !hasLastSubscriptionSchedulePassed.value;
+  const volunteeringAvailable =
+    eventConfig.externalVolunteers?.enabled &&
+    (eventConfig?.externalVolunteers?.occupiedSlots || 0) <
+      (eventConfig?.externalVolunteers?.slots || 0);
   const computedButtons = [
     {
       label: "Registrar doação",
@@ -152,8 +156,7 @@ const buttons = computed((): Button[] => {
       type: "default",
       visible:
         isVolunteer.value ||
-        (eventConfig.externalVolunteers?.enabled &&
-          !isEventTwoDaysFromNowOrMore.value),
+        (volunteeringAvailable && !isEventTwoDaysFromNowOrMore.value),
       action: goToExternalVolunteerSubscription,
     },
     {
