@@ -1,21 +1,45 @@
 <template>
   <div class="event-page">
     <section class="event-details">
-      <ElIcon v-show="!eventConfig.private" class="arrow-left" @click="goToEventListPage">
+      <ElIcon
+        v-show="!eventConfig.private"
+        class="arrow-left"
+        @click="goToEventListPage"
+      >
         <ElIconArrowLeftBold />
       </ElIcon>
-      <NuxtImg fit="cover" :format="eventConfig.banner ? 'webp' : undefined" :src="eventConfig.banner ||
-        '/images/illustrations/rafiki-blood-donation.svg'
-        " class="event-banner" :alt="`Banner - ${eventConfig.name}`" />
+      <NuxtImg
+        fit="cover"
+        :format="eventConfig.banner ? 'webp' : undefined"
+        :src="
+          eventConfig.banner ||
+          '/images/illustrations/rafiki-blood-donation.svg'
+        "
+        class="event-banner"
+        :alt="`Banner - ${eventConfig.name}`"
+      />
       <div class="event-header">
         <h1 class="text-heading">
           {{ eventConfig.name }}
         </h1>
-        <MicroDateBox v-if="eventConfig.startAt" :date="eventConfig.startAt" light />
+        <MicroDateBox
+          v-if="eventConfig.startAt"
+          :date="eventConfig.startAt"
+          light
+        />
       </div>
-      <EventsInfo class="event-info" :address-text="addressText" :time-text="timeText" :participants="participants" />
+      <EventsInfo
+        class="event-info"
+        :address-text="addressText"
+        :time-text="timeText"
+        :participants="participants"
+      />
       <h1 style="padding: 1rem" class="text-heading">Localização</h1>
-      <GoogleMapsAddress v-if="addressText" class="map" :address="addressText" />
+      <GoogleMapsAddress
+        v-if="addressText"
+        class="map"
+        :address="addressText"
+      />
       <div class="map-subtitle">
         <h2 class="text-subheading">
           {{ eventConfig.name }}
@@ -23,7 +47,10 @@
         <span>{{ addressText }}</span>
       </div>
     </section>
-    <EventsFooter :event-slug="eventSlug" :register-donation-url="eventConfig.registerDonationUrl" />
+    <EventsFooter
+      :event-slug="eventSlug"
+      :register-donation-url="eventConfig.registerDonationUrl"
+    />
   </div>
 </template>
 
@@ -108,11 +135,12 @@ useSchemaOrg([
     ],
     image: [
       eventConfig.banner ??
-      "https://cdn.hemocione.com.br/events/uploads/1699940076138-logo_hemocione_fb-2(1).png",
+        "https://cdn.hemocione.com.br/events/uploads/1699940076138-logo_hemocione_fb-2(1).png",
     ],
     description:
       eventConfig.description ??
-      `Evento de doação de sangue do Hemocione - ${eventConfig.name ?? eventConfig.slug
+      `Evento de doação de sangue do Hemocione - ${
+        eventConfig.name ?? eventConfig.slug
       }`,
     organizer: {
       "@type": "Organization",
@@ -140,11 +168,13 @@ useServerSeoMeta({
   ogTitle: `${eventConfig.name ?? eventConfig.slug}`,
   description:
     eventConfig.description ??
-    `Evento de doação de sangue do Hemocione - ${eventConfig.name ?? eventConfig.slug
+    `Evento de doação de sangue do Hemocione - ${
+      eventConfig.name ?? eventConfig.slug
     }`,
   ogDescription:
     eventConfig.description ??
-    `Evento de doação de sangue do Hemocione - ${eventConfig.name ?? eventConfig.slug
+    `Evento de doação de sangue do Hemocione - ${
+      eventConfig.name ?? eventConfig.slug
     }`,
   twitterCard: "summary_large_image",
   fbAppId: "Hemocione",
@@ -158,7 +188,8 @@ const ogImageOptions = {
   title: `${eventConfig.name ?? eventConfig.slug}`,
   description:
     eventConfig.description ??
-    `Evento de doação de sangue do Hemocione - ${eventConfig.name ?? eventConfig.slug
+    `Evento de doação de sangue do Hemocione - ${
+      eventConfig.name ?? eventConfig.slug
     }`,
   addressText,
   timeText,
@@ -212,7 +243,7 @@ defineOgImage(ogImageOptions);
   min-height: 93dvh;
   display: flex;
   flex-direction: column;
-  background-color: var(--hemo-color-secondary);
+  background-color: white;
   color: var(--hemo-color-text-secondary);
   justify-self: center;
   position: relative;
