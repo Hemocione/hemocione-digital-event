@@ -66,7 +66,7 @@ const filteredEvents = computed(() => {
   }
   return currentEvents.value?.filter((event) => {
     const eventBaseString = `${event.name}${event?.location?.address || ""}${event.location?.state || ""}${event.location?.city || ""}`;
-    return getCleanText(eventBaseString).includes(cleanSearch.value)
+    return getCleanText(eventBaseString).includes(cleanSearch.value);
   });
 });
 
@@ -92,7 +92,6 @@ definePageMeta({
 </script>
 
 <style scoped>
-
 .events-page {
   padding: 1rem;
 }
@@ -101,11 +100,10 @@ definePageMeta({
   width: 100%;
   max-width: 300px;
   margin-bottom: 1rem;
-  --el-input-bg-color: var( --hemo-color-white);
+  --el-input-bg-color: var(--hemo-color-white);
   --el-border-color: var(--hemo-color-black-10);
   --el-input-text-color: var(--hemo-color-text-secondary);
   --el-input-icon-color: var(--hemo-color-text-secondary);
-  
 }
 .events-header {
   width: 100%;

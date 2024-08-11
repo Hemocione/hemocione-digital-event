@@ -12,7 +12,7 @@ const eventSlug = route.params.eventSlug as string;
 const event = await eventStore.getEvent(eventSlug);
 const addressText = event.location ? formatAddress(event.location) : null;
 
-defineOgImageCached({
+defineOgImage({
   title: event.name,
   addressText,
   startAt: event.startAt,

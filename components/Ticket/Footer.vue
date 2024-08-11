@@ -30,11 +30,11 @@
           <img src="/images/social/instagram.svg" alt="Instagram" />
           <span>Stories</span>
         </div>
-        <div class="media-wrapper" @click="shareEvent">
+        <NuxtLink :to="zapUrl" external target="_blank" class="media-wrapper">
           <img src="/images/social/zap.svg" alt="Whatsapp" />
           <span>WhatsApp</span>
-        </div>
-        <div class="media-wrapper" @click="shareEvent">
+        </NuxtLink>
+        <div class="media-wrapper" @click="() => shareEvent(false)">
           <img src="/images/icons/more.svg" alt="Outro" />
           <span>Outro</span>
         </div>
@@ -94,8 +94,7 @@ function toggleShareDrawer() {
 }
 
 const baseUrl = window.location.origin;
-const url = `${baseUrl}/event/${props.eventSlug}`;
-const instagramImageUrl = `${url}/share/instagram/__og_image__/og.png`;
+const instagramImageUrl = `${baseUrl}/__og-image__/image/event/${props.eventSlug}/share/instagram/og.png`;
 
 const instagramImageBlob = ref<Blob | null>(null);
 const instagramImageLocalUrl = ref<string | null>(null);
@@ -109,10 +108,13 @@ onMounted(async () => {
   instagramImageLocalUrl.value = URL.createObjectURL(instagramImageBlob.value);
 });
 
+const shareText = `Vou participar do evento "${props.eventName}" do Hemocione! Vamos juntos?`;
+const shareUrl = `${baseUrl}/event/${props.eventSlug}`;
+
+const zapUrl = getWhatsappUrl(shareText, shareUrl);
+
 async function shareEvent(withImage: boolean = false) {
   try {
-    const baseUrl = window.location.origin;
-    const url = `${baseUrl}/event/${props.eventSlug}`;
     const data: {
       title: string;
       text: string;
@@ -121,15 +123,12 @@ async function shareEvent(withImage: boolean = false) {
     } = {
       title: `Hemocione - ${props.eventName}`,
       text: "Estou participando de um evento Hemocione! Venha comigo!",
-      url,
+      url: shareUrl,
     };
 
-    if (withImage) {
-      const instagramImageFileBlob = await fetch(instagramImageUrl).then(
-        (res) => res.blob(),
-      );
+    if (withImage && instagramImageBlob.value) {
       const instagramImageFile = new File(
-        [instagramImageFileBlob],
+        [instagramImageBlob.value],
         "instagram.png",
         {
           type: "image/png",
@@ -143,7 +142,7 @@ async function shareEvent(withImage: boolean = false) {
     if (navigatorShareable && navigator.canShare(data)) {
       await navigator.share(data);
     } else {
-      navigator.clipboard.writeText(url);
+      navigator.clipboard.writeText(shareUrl);
       ElMessage({
         message: "O link do evento foi copiado para a área de transferência.",
         type: "success",
@@ -203,5 +202,6 @@ button {
   flex-grow: 1;
   font-size: 0.8rem;
   justify-content: space-between;
+  cursor: pointer;
 }
 </style>
