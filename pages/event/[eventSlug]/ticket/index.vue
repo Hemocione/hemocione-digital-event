@@ -6,7 +6,10 @@
         <span class="ticket-code">#{{ subscription.code }}</span>
         <span>{{ subscription.name }}</span>
         <section class="schedule-time">
-          <span>Horário previsto para doação: <strong>{{ ticketStartAt }}</strong></span>
+          <span
+            >Horário previsto para doação:
+            <strong>{{ ticketStartAt }}</strong></span
+          >
         </section>
         <ElButton
           v-if="isAllowedToCancel"
@@ -72,10 +75,10 @@ const state = reactive({
 const isAllowedToCancel = computed(() => {
   if (!subscription) return false;
 
-  const startAt = dayjs(eventConfig.startAt);
+  const startAt = dayjs(subscription.schedule.startAt);
   const now = dayjs();
 
-  return now.isBefore(startAt)
+  return now.isBefore(startAt);
 });
 
 const ticketStartAt = computed(() => {
