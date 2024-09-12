@@ -1,9 +1,6 @@
+import { z } from "zod";
 import { assertSecretAuth } from "~/server/services/auth";
-import {
-  updateEventExternalVolunteerReviewData,
-  updateEventExternalVolunteersData,
-} from "~/server/services/externalVolunteer";
-import z from "zod";
+import { updateEventExternalVolunteerReviewData } from "~/server/services/externalVolunteer";
 import {
   reviewNegativeFeedbacks,
   reviewPositiveFeedbacks,
@@ -32,10 +29,8 @@ export default defineEventHandler(async (event) => {
   if (!data) {
     throw createError({ statusCode: 422, statusMessage: "Invalid body" });
   }
-  const eventSlug = String(getRouterParam(event, "eventSlug"));
   const externalVolunteerId = String(getRouterParam(event, "id"));
 
-  //fazer funcao minha que atualiza só essa parte dentro de externalVolunteer dentro do evento
   const updatedExternalVolunteer = await updateEventExternalVolunteerReviewData(
     externalVolunteerId,
     data,

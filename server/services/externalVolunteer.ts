@@ -1,14 +1,12 @@
-import type { Slots } from "vue";
 import { Event } from "../models/event";
 import { ExternalVolunteer } from "../models/externalVolunteer";
 import type { HemocioneUserAuthTokenData } from "./auth";
+import type { externalVolunteerReviewDTO } from "~/server/api/v1/event/[eventSlug]/external-volunteer/[id]/review.put";
 import {
   getEventBySlug,
   incrementEventExternalVolunteersOccupiedSlots,
-  incrementEventScheduleOccupiedSlots,
-} from "./event";
+} from "~/server/services/event";
 import { getCleanFullName } from "~/utils/getCleanFullName";
-import type { externalVolunteerReviewDTO } from "../api/v1/event/[eventSlug]/external-volunteer/[id]/review.put";
 
 // Função para obter um voluntário externo com base no slug do evento e no ID do usuário
 export async function getExternalVolunteer(externalVolunteerId: string) {
@@ -91,19 +89,10 @@ export async function deleteExternalVolunteer(
   await incrementEventExternalVolunteersOccupiedSlots(eventSlug, -1);
 }
 
-//Função para colocar a review no voluntário
-export async function updateExternalVolunteer(
-  eventSlug: string,
-  hemocioneId: string,
-) {
-  const externalVolunteer = await ExternalVolunteer.findOne({
-    eventSlug,
-    hemocioneId,
-    review: null,
-  });
-  if (!externalVolunteer) return;
-
-  await externalVolunteer.save();
+export interface UpdateExternalVolunteersDTO {
+  htmlExplanationText?: string;
+  groupUrl: string;
+  slots: number;
 }
 
 export async function updateEventExternalVolunteersData(
@@ -130,13 +119,6 @@ export async function updateEventExternalVolunteersData(
   return updatedEvent;
 }
 
-export interface UpdateExternalVolunteersDTO {
-  htmlExplanationText?: string;
-  groupUrl: string;
-  slots: number;
-}
-
-//eu tenho que achar o evento pelo eventslug ou externalvolnu
 export async function updateEventExternalVolunteerReviewData(
   externalVolunteerId: string,
   data: externalVolunteerReviewDTO,
@@ -155,7 +137,7 @@ export async function updateEventExternalVolunteerReviewData(
         "review.reviewedBy.hemocioneId": data.reviewedBy.hemocioneId,
         "review.reviewedBy.name": data.reviewedBy.name,
         "review.reviewedBy.email": data.reviewedBy.email,
-        "externalVolunteers.numberOfHours": data.numberOfHours,
+        "review.numberOfHours": data.numberOfHours,
       },
     },
     { new: true },
