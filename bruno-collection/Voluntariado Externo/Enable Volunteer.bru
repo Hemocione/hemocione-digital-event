@@ -1,0 +1,23 @@
+meta {
+  name: Enable Volunteer
+  type: http
+  seq: 5
+}
+
+post {
+  url: {{api_url}}/v1/event/HEMOCIONECSA2023/external-volunteer/enable
+  body: json
+  auth: none
+}
+
+headers {
+  x-secret: {{secret}}
+}
+
+body:json {
+  {
+    "scheduleId": "65c96fac25a83248413ee96c",
+    "startAt": "2024-02-23T15:00:00.000+00:00",
+    "endAt": "2024-02-23T15:00:00.000+00:00"
+  }
+}

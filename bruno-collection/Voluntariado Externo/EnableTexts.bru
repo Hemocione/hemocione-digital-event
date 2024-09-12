@@ -1,0 +1,19 @@
+meta {
+  name: EnableTexts
+  type: http
+  seq: 5
+}
+
+put {
+  url: {{api_url}}/v1/event/HEMOCIONECSA2023/external-volunteer/index
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+     "slots": 10,
+    "groupUrl": "https://localhost:3000.com",
+    "htmlExplanationText": "oi"
+  }
+}

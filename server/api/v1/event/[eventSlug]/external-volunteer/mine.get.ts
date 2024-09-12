@@ -3,9 +3,9 @@ import { getExternalVolunteer } from "~/server/services/externalVolunteer";
 
 export default defineEventHandler(async (event) => {
   const user = useHemocioneUserAuth(event);
-  const eventSlug = String(getRouterParam(event, "eventSlug")); 
+  const eventSlug = String(getRouterParam(event, "eventSlug"));
 
-  const externalVolunteer = await getExternalVolunteer(eventSlug, user.id); 
+  const externalVolunteer = await getExternalVolunteer(eventSlug, user.id);
   if (!externalVolunteer) {
     throw createError({
       statusCode: 404,
@@ -13,5 +13,5 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  return externalVolunteer; 
+  return externalVolunteer;
 });

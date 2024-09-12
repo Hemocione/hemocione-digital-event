@@ -54,7 +54,8 @@ export default defineNuxtConfig({
       process.env.HEMOCIONE_ID_INTEGRATION_SECRET ?? "secret",
     secret: process.env.API_SECRET ?? "secret",
     mongodbUri:
-      process.env.MONGODB_URI ?? "mongodb://localhost:27017/admin?authSource=admin&readPreference=primary&directConnection=true&ssl=false",
+      process.env.MONGODB_URI ??
+      "mongodb://localhost:27017/admin?authSource=admin&readPreference=primary&directConnection=true&ssl=false",
     dbName: process.env.DB_NAME ?? "hemo",
     inngestKey: process.env.INNGEST_EVENT_KEY ?? "mock-key",
     digitalStandApiUrl:
@@ -158,6 +159,9 @@ export default defineNuxtConfig({
     "/event/:eventSlug/volunteer": {
       ssr: false,
     },
+    "/event/:eventSlug/volunteer/review": {
+      ssr: false,
+    },
     "/queue/join": {
       ssr: false,
     },
@@ -174,5 +178,5 @@ export default defineNuxtConfig({
     componentIslands: true,
   },
 
-  compatibilityDate: "2024-08-01"
+  compatibilityDate: "2024-08-01",
 });

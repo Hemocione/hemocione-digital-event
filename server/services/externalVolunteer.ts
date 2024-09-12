@@ -1,16 +1,32 @@
+import type { Slots } from "vue";
+import { Event } from "../models/event";
 import { ExternalVolunteer } from "../models/externalVolunteer";
 import type { HemocioneUserAuthTokenData } from "./auth";
-import { incrementEventExternalVolunteersOccupiedSlots, incrementEventScheduleOccupiedSlots } from "./event";
+import {
+  getEventBySlug,
+  incrementEventExternalVolunteersOccupiedSlots,
+  incrementEventScheduleOccupiedSlots,
+} from "./event";
 import { getCleanFullName } from "~/utils/getCleanFullName";
+import type { externalVolunteerReviewDTO } from "../api/v1/event/[eventSlug]/external-volunteer/[id]/review.put";
 
 // Função para obter um voluntário externo com base no slug do evento e no ID do usuário
-export async function getExternalVolunteer(eventSlug: string, hemocioneId: string) {
+export async function getExternalVolunteer(externalVolunteerId: string) {
   const externalVolunteer = await ExternalVolunteer.findOne({
-    eventSlug,
-    hemocioneId,
+    externalVolunteerId,
     deletedAt: null,
   }).lean();
   return externalVolunteer;
+}
+
+// Função para obter todos os voluntários externos de um evento
+export async function getAllExternalVolunteers(eventSlug: string) {
+  const externalVolunteers = await ExternalVolunteer.find({
+    eventSlug,
+    deletedAt: null, // Certificando-se de que só retorna os que não foram deletados
+  }).lean();
+
+  return externalVolunteers;
 }
 
 export async function getUserEventVolunteering(
@@ -38,7 +54,9 @@ export async function createExternalVolunteer(
 
   if (existingVolunteer) {
     // Se o voluntário já existe, retorne-o ou lance um erro
-    throw new Error(`Voluntário com hemocioneId "${user.id}" já está registrado para o evento "${eventSlug}".`);
+    throw new Error(
+      `Voluntário com hemocioneId "${user.id}" já está registrado para o evento "${eventSlug}".`,
+    );
   }
 
   const externalVolunteer = new ExternalVolunteer({
@@ -73,3 +91,75 @@ export async function deleteExternalVolunteer(
   await incrementEventExternalVolunteersOccupiedSlots(eventSlug, -1);
 }
 
+//Função para colocar a review no voluntário
+export async function updateExternalVolunteer(
+  eventSlug: string,
+  hemocioneId: string,
+) {
+  const externalVolunteer = await ExternalVolunteer.findOne({
+    eventSlug,
+    hemocioneId,
+    review: null,
+  });
+  if (!externalVolunteer) return;
+
+  await externalVolunteer.save();
+}
+
+export async function updateEventExternalVolunteersData(
+  eventSlug: string,
+  data: UpdateExternalVolunteersDTO,
+) {
+  const event = await getEventBySlug(eventSlug, false, { lean: false });
+  if (!event) return null;
+
+  const updatedEvent = await Event.findOneAndUpdate(
+    {
+      slug: eventSlug,
+    },
+    {
+      $set: {
+        "externalVolunteers.slots": data.slots,
+        "externalVolunteers.htmlExplanationText": data.htmlExplanationText,
+        "externalVolunteers.groupUrl": data.groupUrl,
+      },
+    },
+    { new: true },
+  );
+
+  return updatedEvent;
+}
+
+export interface UpdateExternalVolunteersDTO {
+  htmlExplanationText?: string;
+  groupUrl: string;
+  slots: number;
+}
+
+//eu tenho que achar o evento pelo eventslug ou externalvolnu
+export async function updateEventExternalVolunteerReviewData(
+  externalVolunteerId: string,
+  data: externalVolunteerReviewDTO,
+) {
+  const event = await getExternalVolunteer(externalVolunteerId);
+  if (!event) return null;
+
+  const updatedExternalVolunteer = await ExternalVolunteer.findOneAndUpdate(
+    {
+      $set: {
+        "review.status": data.status,
+        "review.rating": data.rating,
+        "review.negativeFeedback": data.negativeFeedback,
+        "review.positiveFeedback": data.positiveFeedback,
+        "review.feedbackComment": data.feedbackComment,
+        "review.reviewedBy.hemocioneId": data.reviewedBy.hemocioneId,
+        "review.reviewedBy.name": data.reviewedBy.name,
+        "review.reviewedBy.email": data.reviewedBy.email,
+        "externalVolunteers.numberOfHours": data.numberOfHours,
+      },
+    },
+    { new: true },
+  );
+
+  return updatedExternalVolunteer;
+}

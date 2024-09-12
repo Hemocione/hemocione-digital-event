@@ -6,7 +6,7 @@ const EventSchema = new Schema(
     canceledAt: {
       type: Date,
     },
-    canceldReason: {
+    canceledReason: {
       type: String,
       required: false,
     },
