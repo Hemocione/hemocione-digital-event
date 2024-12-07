@@ -17,14 +17,16 @@
       :percentage="donationPercentage"
       class="loader"
       :class="layout"
-    />
+    >
+      <span class="counter" v-if="counterRef">{{ counterRef }}</span>
+    </BloodBagLoader>
 
     <section class="additional-infos" :class="layout">
       <div class="logos">
         <NuxtImg
           src="/images/logo-hemocione-principal.svg"
           alt="hemocione-logo"
-          @click="flipLayout"
+          @click="increment"
         />
         <NuxtImg
           v-if="eventConfig?.logo"
@@ -32,6 +34,7 @@
           :src="eventConfig?.logo"
           alt="event-logo"
           class="event-logo"
+          @click="decrement"
         />
       </div>
       <div class="know-more shadow" v-if="!hideQrCode">
@@ -56,7 +59,7 @@ definePageMeta({
 });
 const route = useRoute();
 const router = useRouter();
-const { hideQrCode } = route.query;
+const { hideQrCode, counter } = route.query;
 const eventsParams = route.query.events as string;
 const eventSlugs = eventsParams.split(",");
 const layouts = ["horizontal", "vertical"] as const;
@@ -86,9 +89,22 @@ const getTimeElapsed = () => {
 };
 
 const timeElapsedSinceStart = ref(getTimeElapsed());
+const initialCounter = Number(counter) || 0;
+const counterRef = ref(initialCounter);
+
+const donationPercentageTime = computed(() =>
+  Math.min((timeElapsedSinceStart.value / totalTime) * 100, 100),
+);
+
+const donationPercentageCounter = computed(() =>
+  Math.min(
+    (counterRef.value / (eventConfig.queue?.participantsMax || 600)) * 100,
+    100,
+  ),
+);
 
 const donationPercentage = computed(() =>
-  Math.min((timeElapsedSinceStart.value / totalTime) * 100, 100),
+  Math.max(donationPercentageTime.value, donationPercentageCounter.value),
 );
 
 onMounted(() => {
@@ -97,10 +113,26 @@ onMounted(() => {
   }, 10000);
 });
 
-const flipLayout = () => {
-  layout.value = layout.value === "horizontal" ? "vertical" : "horizontal";
-  router.replace({ query: { ...route.query, layout: layout.value } });
+const increment = () => {
+  counterRef.value++;
 };
+
+const decrement = () => {
+  if (counterRef.value === 0) return;
+  counterRef.value--;
+};
+
+watch(
+  () => counterRef.value,
+  (value) => {
+    router.replace({
+      query: {
+        ...route.query,
+        counter: value,
+      },
+    });
+  },
+);
 </script>
 
 <style scoped>
@@ -235,5 +267,19 @@ const flipLayout = () => {
 
 .shadow {
   box-shadow: 0px 0px 8px var(--hemo-color-text-secondary-opaque);
+}
+
+.counter {
+  font-size: 7rem;
+  color: var(--hemo-color-secondary); /* Cor de preenchimento */
+  font-weight: 800;
+  position: absolute;
+  top: 50%;
+  z-index: 999999;
+  -webkit-text-stroke: 1px var(--hemo-color-primary); /* Borda branca ao redor do texto */
+  text-stroke: 1px var(--hemo-color-primary); /* Fallback para navegadores compatíveis com text-stroke */
+  text-fill-color: var(
+    --hemo-color-primary
+  ); /* Para compatibilidade com text-fill */
 }
 </style>

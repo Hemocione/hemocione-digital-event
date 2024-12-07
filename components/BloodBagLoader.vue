@@ -19,6 +19,7 @@
       <AnimatedWave />
       <div class="rectangle" />
     </div>
+    <slot />
   </div>
 </template>
 
