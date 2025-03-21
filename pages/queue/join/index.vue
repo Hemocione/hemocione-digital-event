@@ -28,7 +28,7 @@ const disableName = Boolean(initialName.length);
 
 const hemocioneIdIntegrated = Boolean(currentUser);
 
-if (shouldRedirect) await navigateTo("/queue/not-found");
+if (shouldRedirect) await navigateTo("/");
 
 const { data: eventConfig } = shouldRedirect
   ? { data: undefined }
@@ -37,7 +37,7 @@ const { data: eventConfig } = shouldRedirect
 useHead({
   title: `Fila de Doação Hemocione | ${eventConfig?.value?.name ?? eventId}`,
 });
-if (!eventConfig?.value) await navigateTo("/queue/not-found");
+if (!eventConfig?.value) await navigateTo("/");
 
 const form = ref({
   phone: initialPhone,
