@@ -80,7 +80,11 @@ export default defineNuxtConfig({
 
   nitro: {
     preset: "vercel",
-    plugins: ["~/server/plugins/mongoose.ts"],
+    plugins: [
+      "~/server/plugins/opentelemetry.ts",
+      "~/server/plugins/mongoose.ts",
+    ],
+    errorHandler: "~/errorHandler.ts",
   },
 
   devtools: {
