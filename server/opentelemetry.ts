@@ -5,13 +5,6 @@ import { OTLPTraceExporter } from "@opentelemetry/exporter-trace-otlp-http";
 import { MongoDBInstrumentation } from "@opentelemetry/instrumentation-mongodb";
 import { UndiciInstrumentation } from "@opentelemetry/instrumentation-undici";
 
-console.log("Starting OpenTelemetry...");
-console.log(
-  "OTEL_EXPORTER_OTLP_SPAN_ENDPOINT",
-  process.env.OTEL_EXPORTER_OTLP_SPAN_ENDPOINT,
-);
-console.log("OTEL_SERVICE_NAME", process.env.OTEL_SERVICE_NAME);
-
 const exporterOptions = {
   url: process.env.OTEL_EXPORTER_OTLP_SPAN_ENDPOINT,
 };
@@ -30,7 +23,9 @@ const sdk = new NodeSDK({
   serviceName: process.env.OTEL_SERVICE_NAME ?? "hemocione-digital-event",
 });
 
+console.log("Starting OpenTelemetry...");
 sdk.start();
+console.log("OpenTelemetry started!");
 
 process.on("SIGTERM", () => {
   console.log("SIGTERM signal received: closing OpenTelemetry...");
