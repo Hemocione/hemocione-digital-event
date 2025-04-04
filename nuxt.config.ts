@@ -76,15 +76,19 @@ export default defineNuxtConfig({
     "@pinia/nuxt",
     "nuxt-bugsnag",
     "nuxt-posthog",
+    "nitro-opentelemetry",
   ],
 
   nitro: {
     preset: "vercel",
-    plugins: [
-      "~/server/plugins/opentelemetry.ts",
-      "~/server/plugins/mongoose.ts",
-    ],
+    plugins: ["~/server/plugins/mongoose.ts"],
     errorHandler: "~/errorHandler.ts",
+    otel: {
+      preset: {
+        name: "custom",
+        filePath: "./server/opentelemetry.ts",
+      },
+    },
   },
 
   devtools: {
