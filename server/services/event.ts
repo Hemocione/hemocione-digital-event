@@ -93,7 +93,10 @@ export function getEventsToSendDonations() {
     .lean();
 }
 
-export async function incrementEventExternalVolunteersOccupiedSlots(eventSlug: string, increment: number) {
+export async function incrementEventExternalVolunteersOccupiedSlots(
+  eventSlug: string,
+  increment: number,
+) {
   const event = await Event.findOneAndUpdate(
     {
       slug: eventSlug,
@@ -104,7 +107,7 @@ export async function incrementEventExternalVolunteersOccupiedSlots(eventSlug: s
     {
       new: true, // Retorna o documento atualizado
       lean: true, // Retorna um documento plain JavaScript
-    }
+    },
   );
 
   removeEventFromCache(eventSlug);
@@ -232,15 +235,15 @@ export async function getEventBySlug(
   options: {
     lean?: boolean;
   } = {
-      lean: true,
-    },
+    lean: true,
+  },
 ) {
   const cacheKey = `${eventSlug}:${getCacheKeyFromParams({
     eventSlug,
     activeOnly,
     options,
   })}`;
-  const cached = currentEventsBySlugCache[cacheKey];
+  const cached: any = null; // currentEventsBySlugCache[cacheKey];
   if (
     cached &&
     cached.generatedAt.getTime() + MAX_CURRENT_EVENTS_CACHE_TTL >= Date.now()
@@ -382,13 +385,13 @@ export async function getEvents(oldEvents: boolean = false) {
 
 const allActiveEventsCache:
   | {
-    generatedAt: Date;
-    data: EventsFromDb;
-  }
+      generatedAt: Date;
+      data: EventsFromDb;
+    }
   | {
-    generatedAt: null;
-    data: null;
-  } = {
+      generatedAt: null;
+      data: null;
+    } = {
   generatedAt: null,
   data: null,
 };
