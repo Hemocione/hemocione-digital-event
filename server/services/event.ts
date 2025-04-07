@@ -243,7 +243,7 @@ export async function getEventBySlug(
     activeOnly,
     options,
   })}`;
-  const cached: any = null; // currentEventsBySlugCache[cacheKey];
+  const cached = currentEventsBySlugCache[cacheKey];
   if (
     cached &&
     cached.generatedAt.getTime() + MAX_CURRENT_EVENTS_CACHE_TTL >= Date.now()
