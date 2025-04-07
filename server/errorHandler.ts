@@ -3,7 +3,7 @@ import type { H3Error, H3Event } from "h3";
 
 export default defineNitroErrorHandler((error: H3Error, event: H3Event) => {
   console.log("ERROR HANDLER!!!!!!");
-  const span = event.otel.span;
+  const span = event.otel?.span;
 
   const statusCode = error.statusCode || 500; // Se não houver status, assume 500
   if (span && statusCode >= 500) {
