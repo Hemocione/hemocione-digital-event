@@ -44,6 +44,7 @@
 import { reactive } from "vue";
 import dayjs from "dayjs";
 import { formatTimeDuration, formatAddress } from "~/helpers/formatter";
+import { openSignosChat } from "~/plugins/signos.client";
 
 definePageMeta({
   middleware: ["auth"],
@@ -119,6 +120,14 @@ async function cancelSubscription() {
 function goBack() {
   navigateTo(`/event/${eventSlug}`);
 }
+
+const SIGNOS_FEEDBACK_DELAY = 3000; // 3 seconds
+
+onMounted(() => {
+  setTimeout(() => {
+    openSignosChat();
+  }, SIGNOS_FEEDBACK_DELAY);
+});
 </script>
 
 <style scoped>
