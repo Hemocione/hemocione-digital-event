@@ -15,4 +15,9 @@ useServerSeoMeta({
   twitterCard: "summary_large_image",
   viewport: "width=device-width, initial-scale=1.0, maximum-scale=5.0",
 });
+
+// signos widget
+useHead({
+  script: [{ src: "https://widget.getsignos.com/widget.js", defer: true }],
+});
 </script>
