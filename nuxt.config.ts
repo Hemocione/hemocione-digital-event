@@ -42,6 +42,7 @@ export default defineNuxtConfig({
         "https://hemocione-id-dev.cpt.hemocione.com.br",
       hemocioneIdUrl:
         process.env.HEMOCIONE_ID_URL ?? "https://id.d.hemocione.com.br",
+      signosOrganizationId: process.env.SIGNOS_ORGANIZATION_ID ?? "",
     },
     cdn: {
       bucket: process.env.CDN_BUCKET ?? "hemocione-assets",
