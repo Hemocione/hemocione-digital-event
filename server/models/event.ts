@@ -168,7 +168,7 @@ const EventSchema = new Schema(
       },
       mandatory: {
         type: Boolean,
-        required: true,
+        required: false,
         default: false,
       },
     },   

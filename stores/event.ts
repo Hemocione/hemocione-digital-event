@@ -30,8 +30,8 @@ interface Event {
     htmlExplanationText?: string;
   }
   preScreening?: {
-    disabled: boolean;
-    mandatory: boolean;
+    disabled: boolean | null;
+    mandatory: boolean | null;
   }
 }
 

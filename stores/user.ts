@@ -13,6 +13,7 @@ interface Subscription {
   lastQuestionnairePreScreening?: {
     formResponseId?: string;
     status?: "able-to-donate" | "unable-to-donate" | "ongoing";
+    answeredAt?: string; 
   } | null;
 }
 
