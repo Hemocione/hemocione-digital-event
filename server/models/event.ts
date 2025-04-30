@@ -160,7 +160,7 @@ const EventSchema = new Schema(
       required: false,
       default: null,
     },
-    PreScreening: { 
+    preScreening: { 
       disabled: { 
         type: Boolean,
         required: false, 
