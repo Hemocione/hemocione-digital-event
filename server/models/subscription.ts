@@ -67,7 +67,7 @@ const SubscriptionSchema = new Schema(
         },
         status: {
           type: String,
-          enum: ["able-to-donate", "unable-to-donate", "ongoing"],
+          enum: ["able-to-donate", "unable-to-donate"],
           required: false,
         },
         answeredAt: {

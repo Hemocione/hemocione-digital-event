@@ -12,7 +12,7 @@ interface Subscription {
   };
   lastQuestionnairePreScreening?: {
     formResponseId?: string;
-    status?: "able-to-donate" | "unable-to-donate" | "ongoing";
+    status?: "able-to-donate" | "unable-to-donate";
     answeredAt?: string; 
   } | null;
 }
