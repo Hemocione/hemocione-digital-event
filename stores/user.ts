@@ -36,15 +36,14 @@ export const useUserStore = defineStore("user", {
       this.user = user;
       this.subscriptions.clear();
 
-      //DESCOMENTAR
-      // if (!user) {
-      //   $clientPosthog.reset(); // Clear user data if user is not logged in anymore
-      // } else {
-      //   $clientPosthog.identify(user.id, {
-      //     email: user.email,
-      //     name: getCleanFullName(user.givenName, user.surName),
-      //   });
-      // }
+      if (!user) {
+        $clientPosthog.reset(); // Clear user data if user is not logged in anymore
+      } else {
+        $clientPosthog.identify(user.id, {
+          email: user.email,
+          name: getCleanFullName(user.givenName, user.surName),
+        });
+      }
     },
     setToken(token: string | null) {
       this.token = token;
