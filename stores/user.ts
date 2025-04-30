@@ -10,6 +10,10 @@ interface Subscription {
     startAt: string;
     endAt: string;
   };
+  lastQuestionnairePreScreening?: {
+    formResponseId?: string;
+    status?: "able-to-donate" | "unable-to-donate" | "ongoing";
+  } | null;
 }
 
 export const useUserStore = defineStore("user", {
@@ -32,14 +36,15 @@ export const useUserStore = defineStore("user", {
       this.user = user;
       this.subscriptions.clear();
 
-      if (!user) {
-        $clientPosthog.reset(); // Clear user data if user is not logged in anymore
-      } else {
-        $clientPosthog.identify(user.id, {
-          email: user.email,
-          name: getCleanFullName(user.givenName, user.surName),
-        });
-      }
+      //DESCOMENTAR
+      // if (!user) {
+      //   $clientPosthog.reset(); // Clear user data if user is not logged in anymore
+      // } else {
+      //   $clientPosthog.identify(user.id, {
+      //     email: user.email,
+      //     name: getCleanFullName(user.givenName, user.surName),
+      //   });
+      // }
     },
     setToken(token: string | null) {
       this.token = token;

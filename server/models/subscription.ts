@@ -58,6 +58,22 @@ const SubscriptionSchema = new Schema(
       },
       required: true,
     },
+    lastQuestionnairePreScreening: { 
+      type: {
+        formResponseId: {
+          type: Schema.Types.ObjectId,
+          ref: "FormResponse",
+          required: false,
+        },
+        status: {
+          type: String,
+          enum: ["able-to-donate", "unable-to-donate", "ongoing"],
+          required: false,
+        },
+      },
+      required: false,
+      default: null,
+    }, 
   },
   {
     timestamps: true,

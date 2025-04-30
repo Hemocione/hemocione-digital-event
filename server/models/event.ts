@@ -160,6 +160,18 @@ const EventSchema = new Schema(
       required: false,
       default: null,
     },
+    PreScreening: { 
+      disabled: { 
+        type: Boolean,
+        required: false, 
+        default: false,
+      },
+      mandatory: {
+        type: Boolean,
+        required: true,
+        default: false,
+      },
+    },   
   },
   {
     timestamps: true,
