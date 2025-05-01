@@ -167,7 +167,7 @@ const buttons = computed((): Button[] => {
         subscriptionsAvailable &&
         !hasSubscription &&
         !isFull.value,
-      action: goToSchedule,
+      action: goToPreScreenigMiddlePage,
     },
     {
       label: "Acessar ingresso",
@@ -219,6 +219,10 @@ const groupedButtonsByType = computed(
     return groupedButtons;
   },
 );
+
+function goToPreScreenigMiddlePage() {
+  navigateTo(`/event/${props.eventSlug}/PreScreeningMiddle`);
+}
 
 function goToSchedule() {
   navigateTo(`/event/${props.eventSlug}/schedules`);
