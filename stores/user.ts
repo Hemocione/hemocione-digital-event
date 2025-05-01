@@ -10,6 +10,11 @@ interface Subscription {
     startAt: string;
     endAt: string;
   };
+  lastQuestionnairePreScreening?: {
+    formResponseId?: string;
+    status?: "able-to-donate" | "unable-to-donate";
+    answeredAt?: string; 
+  } | null;
 }
 
 export const useUserStore = defineStore("user", {

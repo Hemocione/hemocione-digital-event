@@ -29,7 +29,10 @@ interface Event {
     occupiedSlots: number;
     htmlExplanationText?: string;
   }
-
+  preScreening?: {
+    disabled: boolean | null;
+    mandatory: boolean | null;
+  }
 }
 
 export const useEventStore = defineStore("event", {
