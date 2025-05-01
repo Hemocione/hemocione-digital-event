@@ -18,7 +18,6 @@
       </main>
       <PreScreeningMiddleFooter 
       :event-slug="eventSlug" />
-    />
     </div>
   </div>
 </template>
