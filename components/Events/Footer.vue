@@ -221,7 +221,7 @@ const groupedButtonsByType = computed(
 );
 
 function goToPreScreenigMiddlePage() {
-  navigateTo(`/event/${props.eventSlug}/PreScreeningMiddle`);
+  navigateTo(`/event/${props.eventSlug}/preScreeningMiddle`);
 }
 
 function goToSchedule() {
