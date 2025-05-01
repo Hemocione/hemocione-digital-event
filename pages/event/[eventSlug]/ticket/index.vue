@@ -124,9 +124,10 @@ function goBack() {
 const SIGNOS_FEEDBACK_DELAY = 3000; // 3 seconds
 
 onMounted(() => {
-  setTimeout(() => {
-    openSignosChat();
-  }, SIGNOS_FEEDBACK_DELAY);
+  // Open the Signos chat after a delay. Uncomment when it doenst make the page buggy
+  // setTimeout(() => {
+  //   openSignosChat();
+  // }, SIGNOS_FEEDBACK_DELAY);
 });
 </script>
 

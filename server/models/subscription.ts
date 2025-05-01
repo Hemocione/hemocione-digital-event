@@ -58,11 +58,10 @@ const SubscriptionSchema = new Schema(
       },
       required: true,
     },
-    lastQuestionnairePreScreening: { 
+    lastQuestionnairePreScreening: {
       type: {
         formResponseId: {
           type: Types.ObjectId,
-          ref: "FormResponse",
           required: false,
         },
         status: {
@@ -71,13 +70,13 @@ const SubscriptionSchema = new Schema(
           required: false,
         },
         answeredAt: {
-          type: Date, 
-          required: false, 
-        }
+          type: Date,
+          required: false,
+        },
       },
       required: false,
       default: null,
-    }, 
+    },
   },
   {
     timestamps: true,
