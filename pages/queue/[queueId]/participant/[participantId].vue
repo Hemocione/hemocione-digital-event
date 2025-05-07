@@ -124,7 +124,7 @@ onMounted(async () => {
 .main-container {
   width: 100%;
   height: 100%;
-  min-height: 93dvh;
+  min-height: calc(100dvh - var(--hemo-navbar-height));
   background: white;
   display: flex;
   flex-direction: column;

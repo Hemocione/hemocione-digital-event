@@ -16,7 +16,7 @@
 
 .page {
   width: 100%;
-  min-height: 93dvh;
+  min-height: calc(100dvh - var(--hemo-navbar-height));
   height: 100%;
 }
 </style>

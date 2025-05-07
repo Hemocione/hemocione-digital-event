@@ -17,6 +17,6 @@
 .page {
   padding: 1rem;
   width: 100%;
-  height: 93dvh;
+  height: calc(100dvh - var(--hemo-navbar-height));
 }
 </style>

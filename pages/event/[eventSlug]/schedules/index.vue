@@ -43,11 +43,9 @@ const eventSlug = route.params.eventSlug as string;
 const eventConfig = await eventStore.getEvent(eventSlug);
 const subscription = await userStore.getSubscription(eventSlug);
 
-
 if (!eventConfig) {
   navigateTo("/404");
 }
-
 
 if (subscription) {
   navigateTo(`/event/${eventSlug}/ticket`);
@@ -78,31 +76,40 @@ const IsTimeInPast = (time: string) => {
   return now > timeDate;
 };
 
-const subscriptionSchedulesInBetweenEventStartAndEnd = eventConfig.subscription?.schedules.filter(
-  (schedule) => {
-    if (!schedule.startAt || !schedule.endAt || !eventConfig.startAt || !eventConfig.endAt) return true;
+const subscriptionSchedulesInBetweenEventStartAndEnd =
+  eventConfig.subscription?.schedules.filter((schedule) => {
+    if (
+      !schedule.startAt ||
+      !schedule.endAt ||
+      !eventConfig.startAt ||
+      !eventConfig.endAt
+    )
+      return true;
 
     const startAt = new Date(schedule.startAt);
     const endAt = new Date(schedule.endAt);
     const eventStartAt = new Date(eventConfig.startAt);
     const eventEndAt = new Date(eventConfig.endAt);
     return startAt >= eventStartAt && endAt <= eventEndAt;
-  },
-);
+  });
 
 const schedules = computed(() => {
   const subscription = eventConfig.subscription;
 
   if (!subscription?.enabled) return [];
 
-  return subscriptionSchedulesInBetweenEventStartAndEnd?.map<Schedule>((schedule) => ({
-    id: String(schedule._id),
-    slots: schedule.slots,
-    occupiedSlots: schedule.occupiedSlots,
-    alert: getScheduleAlert(schedule.slots, schedule.occupiedSlots),
-    hour: dayjs(schedule.startAt).format("HH:mm"),
-    disabled: schedule.occupiedSlots >= schedule.slots || IsTimeInPast(schedule.startAt),
-  }));
+  return subscriptionSchedulesInBetweenEventStartAndEnd?.map<Schedule>(
+    (schedule) => ({
+      id: String(schedule._id),
+      slots: schedule.slots,
+      occupiedSlots: schedule.occupiedSlots,
+      alert: getScheduleAlert(schedule.slots, schedule.occupiedSlots),
+      hour: dayjs(schedule.startAt).format("HH:mm"),
+      disabled:
+        schedule.occupiedSlots >= schedule.slots ||
+        IsTimeInPast(schedule.startAt),
+    }),
+  );
 });
 
 function selectSchedule(schedule: Schedule) {
@@ -137,7 +144,7 @@ function goBack() {
   width: 100%;
   max-width: var(--hemo-page-max-width);
   margin: 0 auto;
-  min-height: 93dvh;
+  min-height: calc(100dvh - var(--hemo-navbar-height));
   display: flex;
   flex-direction: column;
   align-items: flex-start;

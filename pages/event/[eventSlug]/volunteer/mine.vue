@@ -128,13 +128,16 @@ function goBack() {
 function goToGrupoZap() {
   const groupUrl = eventConfig.externalVolunteers?.groupUrl;
   if (groupUrl) {
-    navigateTo(groupUrl, { external: true, open: {
-      target: "_blank",
-      windowFeatures: {
-        noopener: true,
-        noreferrer: true,
-      }
-    }});
+    navigateTo(groupUrl, {
+      external: true,
+      open: {
+        target: "_blank",
+        windowFeatures: {
+          noopener: true,
+          noreferrer: true,
+        },
+      },
+    });
   }
 }
 
@@ -168,7 +171,7 @@ async function deleteExternalVolunteerFront() {
   width: 100%;
   max-width: var(--hemo-page-max-width);
   margin: 0 auto;
-  min-height: 93dvh;
+  min-height: calc(100dvh - var(--hemo-navbar-height));
   display: flex;
   flex-direction: column;
   align-items: flex-start;

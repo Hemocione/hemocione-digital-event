@@ -34,6 +34,7 @@
   --el-bg-color: var(--hemo-color-secondary) !important;
   --el-border-radius-base: 8px !important;
   --hemo-page-max-width: 1080px;
+  --hemo-navbar-height: 7dvh;
 }
 
 .el-button+.el-button {

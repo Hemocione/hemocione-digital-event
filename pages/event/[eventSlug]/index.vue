@@ -198,8 +198,6 @@ const ogImageOptions = {
 };
 
 defineOgImage(ogImageOptions);
-
-// TODO: FIX ZAP OG IMAGE!
 </script>
 
 <style scoped>
@@ -240,7 +238,7 @@ defineOgImage(ogImageOptions);
 .event-details {
   width: 100%;
   max-width: var(--hemo-page-max-width);
-  min-height: 93dvh;
+  min-height: calc(100dvh - var(--hemo-navbar-height));
   display: flex;
   flex-direction: column;
   background-color: white;
@@ -252,7 +250,7 @@ defineOgImage(ogImageOptions);
 
 .event-page {
   width: 100%;
-  min-height: 93dvh;
+  min-height: calc(100dvh - var(--hemo-navbar-height));
   display: flex;
   align-items: center;
   justify-content: center;

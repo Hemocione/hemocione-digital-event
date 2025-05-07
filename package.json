@@ -18,6 +18,7 @@
     "@aws-sdk/client-sqs": "^3.600.0",
     "@element-plus/icons-vue": "^2.1.0",
     "@element-plus/nuxt": "^1.0.5",
+    "@hemocione/sdk": "^0.0.3",
     "@nuxt/devtools": "^1.0.2",
     "@nuxt/image": "^1.0.0",
     "@nuxtjs/eslint-config-typescript": "^12.1.0",

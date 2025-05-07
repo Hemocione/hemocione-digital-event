@@ -44,6 +44,8 @@
 </template>
 
 <script setup lang="ts">
+import { useHemocioneSdk } from "~/composables/useHemocioneSdk";
+
 const props = defineProps({
   eventSlug: {
     type: String,
@@ -137,17 +139,7 @@ async function shareEvent(withImage: boolean = false) {
       data.files = [instagramImageFile];
     }
 
-    const navigatorShareable = Boolean(navigator.canShare);
-
-    if (navigatorShareable && navigator.canShare(data)) {
-      await navigator.share(data);
-    } else {
-      navigator.clipboard.writeText(shareUrl);
-      ElMessage({
-        message: "O link do evento foi copiado para a área de transferência.",
-        type: "success",
-      });
-    }
+    await useHemocioneSdk()?.share(data);
     shareDrawerVisible.value = false;
   } catch (error) {
     ElMessage({

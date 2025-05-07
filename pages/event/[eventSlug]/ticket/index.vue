@@ -136,7 +136,7 @@ onMounted(() => {
   width: 100%;
   max-width: var(--hemo-page-max-width);
   margin: 0 auto;
-  min-height: 93dvh;
+  min-height: calc(100dvh - var(--hemo-navbar-height));
   display: flex;
   flex-direction: column;
   align-items: flex-start;
