@@ -3,7 +3,7 @@
     <div class="pre-screening-middle-page">
       <CommonEventHeader :event-name="eventConfig.name" @back="goBack" />
       <main class="content">
-        <h2>{{ eventName }}</h2>
+        <h2>{{ eventConfig.name }}</h2>
   
         <p class="description">
           Para continuar a inscrição, responda o questionário e verifique se você pode realizar a doação.
@@ -36,23 +36,9 @@ const route = useRoute();
 const eventStore = useEventStore();
 const router = useRouter();
 
-// Pega o slug do evento da URL
 const eventSlug = route.params.eventSlug as string;
 
-// Carrega as informações do evento
 const eventConfig = await eventStore.getEvent(eventSlug);
-
-// Você vai passar essas props de fora:
-const props = defineProps({
-  eventName: {
-    type: String,
-    required: true
-  },
-  canSkipQuestionnaire: {
-    type: Boolean,
-    default: false
-  }
-});
 
 function goBack() {
 navigateTo(`/event/${eventSlug}`);

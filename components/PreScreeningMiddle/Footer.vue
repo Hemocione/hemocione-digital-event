@@ -1,7 +1,7 @@
 <template>
-  <CommonCoolFooter v-if="buttons.length && !loading" height="fit-content">
+  <CommonCoolFooter v-if="visibleButtons.length && !loading" height="fit-content">
     <ElButton
-      v-for="button in buttons"
+      v-for="button in visibleButtons"
       :key="button.label"
       :type="button.type"
       :disabled="button.disabled"
@@ -15,6 +15,7 @@
 
 <script setup lang="ts">
 import { isTodayAndPast } from "~/helpers/todayAndPast";
+import { goToCanDonate } from "~/utils/goToCanDonate";
 
 const props = defineProps({
   eventSlug: {
@@ -48,13 +49,11 @@ const isCanDonateMandatory = computed(() => {
   return config && !config.disabled && config.mandatory;
 });
 
-const buttons = computed((): Button[] => {
-return [
+const buttons = computed((): Button[] => [
   {
     label: "Pular questionário",
     type: "default",
-    disabled: Boolean(isCanDonateMandatory.value),
-    visible: Boolean(isCanDonateOn.value),
+    visible: Boolean(isCanDonateOn.value && !isCanDonateMandatory.value),
     action: goToSchedule,
   },
   {
@@ -62,20 +61,17 @@ return [
     type: "primary",
     disabled: false,
     visible: Boolean(isCanDonateOn.value),
-    action: () => goToCanDonate("event-flow-schedule"),
+    action: () =>
+      goToCanDonate("event-flow-schedule", props.eventSlug, eventConfig.startAt),
   },
-] as const;
-});
+]);
+
+const visibleButtons = computed(() =>
+  buttons.value.filter((btn) => btn.visible)
+);
 
 function goToSchedule() {
   navigateTo(`/event/${props.eventSlug}/schedules`);
-}
-
-function goToCanDonate(slugType: "event-flow-schedule" | "event-ticket-adhoc") {
-  const baseUrl = "https://possodoar.hemocione.com.br/integration";
-  const eventDate = eventConfig.startAt?.split("T")[0] ?? "";
-  const url = `${baseUrl}/${slugType}?date=${encodeURIComponent(eventDate)}&eventSlug=${props.eventSlug}`;
-  navigateTo(url, { external: true });
 }
 </script>
 
