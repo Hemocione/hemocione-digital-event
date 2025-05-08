@@ -1,5 +1,5 @@
 <template>
-  <CommonCoolFooter v-if="visibleButtons.length && !loading" height="fit-content">
+  <CommonCoolFooter v-if="visibleButtons.length" height="fit-content">
     <ElButton
       v-for="button in visibleButtons"
       :key="button.label"
@@ -36,8 +36,6 @@ interface Button {
   visible: boolean;
   action?: () => void;
 }
-
-const loading = ref(false);
 
 const isCanDonateOn = computed(() => {
   const config = eventConfig?.preScreening;

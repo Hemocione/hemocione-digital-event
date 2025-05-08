@@ -3,8 +3,6 @@
     <div class="pre-screening-middle-page">
       <CommonEventHeader :event-name="eventConfig.name" @back="goBack" />
       <main class="content">
-        <h2>{{ eventConfig.name }}</h2>
-  
         <p class="description">
           Para continuar a inscrição, responda o questionário e verifique se você pode realizar a doação.
         </p>

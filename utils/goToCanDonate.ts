@@ -8,6 +8,11 @@ export function goToCanDonate(
   const config = useRuntimeConfig();
   const baseUrl = config.public.canDonateIntegrationUrl;
 
+  if (!baseUrl) {
+   console.error("Missing canDonateIntegrationUrl in runtime configuration");
+   return;
+ }
+
   const eventDate = startAt ?? "";
   const url = `${baseUrl}/${slugType}?date=${encodeURIComponent(eventDate)}&eventSlug=${eventSlug}`;
 

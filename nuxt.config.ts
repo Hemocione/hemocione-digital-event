@@ -43,7 +43,7 @@ export default defineNuxtConfig({
       hemocioneIdUrl:
         process.env.HEMOCIONE_ID_URL ?? "https://id.d.hemocione.com.br",
       signosOrganizationId: process.env.SIGNOS_ORGANIZATION_ID ?? "",
-      canDonateIntegrationUrl: process.env.CAN_DONATE_INTEGRATION_URL || "https://possoDoar.hemocione.com.br/integration",
+      canDonateIntegrationUrl: process.env.CAN_DONATE_INTEGRATION_URL || "https://possoDoar.d.hemocione.com.br/integration",
     },
     cdn: {
       bucket: process.env.CDN_BUCKET ?? "hemocione-assets",

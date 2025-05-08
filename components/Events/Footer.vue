@@ -123,6 +123,11 @@ const hasLastSubscriptionSchedulePassed = computed(() => {
   return now > lastScheduleDate;
 });
 
+const isCanDonateOn = computed(() => {
+  const config = eventConfig?.preScreening;
+  return config && !config.disabled;
+});
+
 const buttons = computed((): Button[] => {
   const isLogged = Boolean(user);
   const hasSubscription = Boolean(subscription);
@@ -167,7 +172,7 @@ const buttons = computed((): Button[] => {
         subscriptionsAvailable &&
         !hasSubscription &&
         !isFull.value,
-      action: goToPreScreenigMiddlePage,
+      action: !isCanDonateOn ? goToPreScreenigMiddlePage : goToSchedule,
     },
     {
       label: "Acessar ingresso",
