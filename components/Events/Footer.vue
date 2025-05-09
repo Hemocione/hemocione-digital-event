@@ -172,7 +172,7 @@ const buttons = computed((): Button[] => {
         subscriptionsAvailable &&
         !hasSubscription &&
         !isFull.value,
-      action: !isCanDonateOn ? goToPreScreenigMiddlePage : goToSchedule,
+      action: isCanDonateOn.value ? goToPreScreenigMiddlePage : goToSchedule,
     },
     {
       label: "Acessar ingresso",
