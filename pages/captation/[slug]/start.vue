@@ -72,9 +72,7 @@ if (leadId && uuid) {
 const finishedNotifying = ref(false);
 
 const goToCaptationForm = () => {
-  navigateTo(captationFormUrl, {
-    external: true,
-  });
+  window.location.href = captationFormUrl;
 };
 
 // trigger request to notify hemocione discord channel
