@@ -1,6 +1,6 @@
 import { inngest } from "~/server/inngest/client";
 import { sendSMS } from "~/server/services/sms";
-import { getTicketUrl, updateStatus } from "~/server/services/digitalStand";
+import { updateStatus } from "~/server/services/digitalStand";
 
 export interface NotifyCalledParticipant {
   data: {
@@ -29,7 +29,7 @@ export default inngest.createFunction(
     let text = `Olá ${name}, é a sua vez de doar! Por favor, dirija-se ao local de doação. O Hemocione agradece!`;
     if (leadId && uuid) {
       try {
-        const ticketUrl = getTicketUrl(leadId, uuid);
+        const ticketUrl = getDigitalStandTicketUrl(leadId, uuid);
         text = `Olá ${name}, é a sua vez de doar! Por favor, dirija-se ao local de doação e apresente seu ticket digital usando este link: ${ticketUrl}. O Hemocione agradece!`;
         await updateStatus(leadId, uuid, "success");
       } catch (error) {
