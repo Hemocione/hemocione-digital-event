@@ -11,30 +11,36 @@
 
       <!-- Text Content -->
       <div class="text-container">
-        <p class="description">
-          O Hemocione é uma ONG liderada por jovens que, desde 2017, transforma
-          a cultura da doação de sangue no Brasil. Conectamos instituições a
-          bancos de sangue para salvar vidas. Já realizamos mais de 223 eventos,
-          impactando 38 mil vidas com ações educativas e tecnologia em escolas,
-          universidades e empresas. Quer fazer a diferença?
-          <span style="font-weight: 900"
-            >Faça um evento com a gente e salve vidas!</span
-          >
-        </p>
+        <p class="description" v-html="description"></p>
       </div>
 
       <!-- Background Image -->
-      <img src="/images/hero.webp" alt="Background" class="background-image" />
+      <div class="image-container">
+        <img
+          src="/images/hero.webp"
+          alt="Background"
+          class="background-image"
+          loading="eager"
+        />
+      </div>
 
-      <!-- Button -->
-      <el-button
-        type="primary"
-        size="large"
-        class="continue-button"
-        @click="goToCaptationForm"
-      >
-        Tenho interesse!
-      </el-button>
+      <!-- Button Section -->
+      <div class="button-section">
+        <p class="button-text">
+          Preencha o formulário e garanta uma visita do Hemocione na sua
+          instituição!
+        </p>
+        <el-button
+          type="primary"
+          size="large"
+          class="continue-button"
+          @click="goToCaptationForm"
+          :loading="goingToCaptationForm"
+          :disabled="goingToCaptationForm"
+        >
+          Garantir minha visita
+        </el-button>
+      </div>
     </div>
   </div>
 </template>
@@ -62,12 +68,19 @@ if (leadId && uuid) {
   setCaptationDataToLocalStorage(captationData);
 }
 
-const finishedNotifying = ref(false);
+const description = computed(() => {
+  if (leadId && uuid) {
+    return "A <b>Layers, Bookfair e Sophia</b> acreditam que a doação de sangue salva vidas e querem ajudar sua escola a participar desse movimento! Garanta uma visita do Hemocione, ONG que transforma a cultura de doação de sangue no Brasil, na sua instituição. Esta ação é viabilizada por nossos parceiros que apoiam esta causa.";
+  }
 
+  return "O Hemocione é uma ONG liderada por jovens que, desde 2017, transforma a cultura da doação de sangue no Brasil. Conectamos instituições a bancos de sangue para salvar vidas. Já realizamos mais de 223 eventos, impactando 38 mil vidas com ações educativas e tecnologia em escolas, universidades e empresas. Quer fazer a diferença? Garanta uma visita do Hemocione na sua instituição!";
+});
+
+const finishedNotifying = ref(false);
+const goingToCaptationForm = ref(false);
 const goToCaptationForm = () => {
-  navigateTo(captationFormUrl, {
-    external: true,
-  });
+  goingToCaptationForm.value = true;
+  window.location.href = captationFormUrl;
 };
 
 // trigger request to notify hemocione discord channel
@@ -81,7 +94,7 @@ useFetch("/api/v1/captation/" + slug + "/start", {
 
 <style scoped>
 .landing-page {
-  height: 100vh;
+  height: 100svh;
   position: relative;
   display: flex;
   align-items: center;
@@ -98,9 +111,9 @@ useFetch("/api/v1/captation/" + slug + "/start", {
   display: flex;
   flex-direction: column;
   align-items: center;
-  padding: 0;
+  padding: 0.5rem;
   margin: 0 auto;
-  height: 100vh;
+  height: 100%;
 }
 
 .logo {
@@ -123,10 +136,32 @@ useFetch("/api/v1/captation/" + slug + "/start", {
 
 .background-image {
   width: 100%;
-  max-width: 24rem;
-  padding: 0 1rem;
-  margin: 1rem auto;
   object-fit: contain;
+  aspect-ratio: 16/9;
+  min-height: 0;
+  display: block;
+}
+
+.image-container {
+  width: 100%;
+  max-width: 30rem;
+  margin: 1rem auto;
+  aspect-ratio: 16/9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.button-section {
+  width: 100%;
+  text-align: center;
+  margin: auto 0 0 0;
+}
+
+.button-text {
+  font-size: 0.875rem;
+  color: #4b5563;
+  margin-bottom: 0.75rem;
 }
 
 .continue-button {
@@ -135,8 +170,8 @@ useFetch("/api/v1/captation/" + slug + "/start", {
   width: 100%;
   max-width: 42rem;
   padding: 1.5rem;
-  border-radius: 0;
-  margin: auto 0 0 0;
+  border-radius: 1rem;
+  margin: 0;
   height: auto;
   min-height: 4rem;
 }
@@ -155,8 +190,13 @@ useFetch("/api/v1/captation/" + slug + "/start", {
     line-height: 1.5;
   }
 
-  .background-image {
+  .background-image,
+  .image-container {
     max-width: 32rem;
+  }
+
+  .button-text {
+    font-size: 1rem;
   }
 
   .continue-button {

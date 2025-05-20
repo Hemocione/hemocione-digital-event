@@ -11,7 +11,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  height: 100vh;
+  height: 100svh;
   gap: 8px;
 }
 
@@ -54,6 +54,7 @@ assertEntityType(slug);
 
 const hemocioneSiteUrl = useRuntimeConfig().public.hemocioneSiteUrl;
 const captationData = getCaptationDataFromLocalStorage();
+deleteCaptationDataFromLocalStorage(); // always delete the data from local storage after the end page is accesed and the captationData is read
 
 const goToCorrectUrl = async () => {
   if (captationData.leadId && captationData.uuid) {
