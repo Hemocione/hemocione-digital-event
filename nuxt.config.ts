@@ -37,13 +37,23 @@ export default defineNuxtConfig({
       googleMapsApiKey: process.env.GOOGLE_MAPS_API_KEY ?? "mock-key",
       siteUrl,
       authCookieKey: process.env.HEMOCIONE_AUTH_COOKIE_KEY ?? "hemocioneId",
+      hemocioneSiteUrl:
+        process.env.HEMOCIONE_SITE_URL ?? "https://www.hemocione.com.br",
       hemocioneIdApiUrl:
         process.env.NUXT_HEMOCIONE_ID_API_URL ||
         "https://hemocione-id-dev.cpt.hemocione.com.br",
       hemocioneIdUrl:
         process.env.HEMOCIONE_ID_URL ?? "https://id.d.hemocione.com.br",
       signosOrganizationId: process.env.SIGNOS_ORGANIZATION_ID ?? "",
+      captation: {
+        formUrls: {
+          school: process.env.CAPTATION_FORM_URL_SCHOOL ?? "",
+          company: process.env.CAPTATION_FORM_URL_COMPANY ?? "",
+          college: process.env.CAPTATION_FORM_URL_COLLEGE ?? "",
+        },
+      },
     },
+    discordWebhookUrl: process.env.DISCORD_WEBHOOK_URL ?? "",
     cdn: {
       bucket: process.env.CDN_BUCKET ?? "hemocione-assets",
       basePath: process.env.CDN_BASE_PATH ?? `events/${currentEnv}/uploads`,
@@ -178,6 +188,9 @@ export default defineNuxtConfig({
       ssr: false,
     },
     "/chart/line-and-candlestick": {
+      ssr: false,
+    },
+    "/captation/**": {
       ssr: false,
     },
     "/**": { cors: true },

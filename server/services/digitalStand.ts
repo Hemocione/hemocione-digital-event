@@ -43,6 +43,3 @@ export const upsertFBDataOnLead = async (
 
   if (!response.ok) throw new Error("Error sending FB data to digital stand");
 };
-
-export const getTicketUrl = (leadId: string, uuid: string) =>
-  `https://estande-digital.layers.digital/leadIntent?leadId=${leadId}&${uuid}`;
