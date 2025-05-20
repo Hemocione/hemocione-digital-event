@@ -39,6 +39,8 @@
         size="large"
         class="continue-button"
         @click="goToCaptationForm"
+        :loading="goingToCaptationForm"
+        :disabled="goingToCaptationForm"
       >
         Tenho interesse!
       </el-button>
@@ -70,8 +72,9 @@ if (leadId && uuid) {
 }
 
 const finishedNotifying = ref(false);
-
+const goingToCaptationForm = ref(false);
 const goToCaptationForm = () => {
+  goingToCaptationForm.value = true;
   window.location.href = captationFormUrl;
 };
 
