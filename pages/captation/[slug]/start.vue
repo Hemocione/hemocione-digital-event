@@ -24,7 +24,14 @@
       </div>
 
       <!-- Background Image -->
-      <img src="/images/hero.webp" alt="Background" class="background-image" />
+      <div class="image-container">
+        <img
+          src="/images/hero.webp"
+          alt="Background"
+          class="background-image"
+          loading="eager"
+        />
+      </div>
 
       <!-- Button -->
       <el-button
@@ -123,10 +130,20 @@ useFetch("/api/v1/captation/" + slug + "/start", {
 
 .background-image {
   width: 100%;
-  max-width: 24rem;
-  padding: 0 1rem;
-  margin: 1rem auto;
   object-fit: contain;
+  aspect-ratio: 16/9;
+  min-height: 0;
+  display: block;
+}
+
+.image-container {
+  width: 100%;
+  max-width: 30rem;
+  margin: 1rem auto;
+  aspect-ratio: 16/9;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
 .continue-button {
@@ -155,7 +172,8 @@ useFetch("/api/v1/captation/" + slug + "/start", {
     line-height: 1.5;
   }
 
-  .background-image {
+  .background-image,
+  .image-container {
     max-width: 32rem;
   }
 

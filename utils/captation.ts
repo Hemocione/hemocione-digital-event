@@ -19,6 +19,10 @@ export const getCaptationDataFromLocalStorage = () => {
   return data ? JSON.parse(data) : null;
 };
 
+export const deleteCaptationDataFromLocalStorage = () => {
+  localStorage.removeItem("captationData");
+};
+
 export const setCaptationDataToLocalStorage = (
   data: Record<string, unknown>,
 ) => {
