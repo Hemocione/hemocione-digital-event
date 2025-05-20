@@ -1,3 +1,4 @@
+import { updateStatus } from "~/server/services/digitalStand";
 import { getDiscordNotificationService } from "~/server/services/discord";
 
 export default defineEventHandler(async (event) => {
@@ -5,6 +6,17 @@ export default defineEventHandler(async (event) => {
   const userAgent = event.node.req.headers["user-agent"];
   const discordNotificationService = getDiscordNotificationService();
   const body = await readBody(event);
+
+  const { leadId, uuid } = body;
+  if (leadId && uuid) {
+    try {
+      await updateStatus(leadId, uuid, "success");
+    } catch (error) {
+      // ignore error for now
+      console.error(error);
+    }
+  }
+
   const entityType = String(event.context.params?.slug as string);
   const endedAt = new Date().toISOString();
   runAsync(
