@@ -26,10 +26,7 @@
 
       <!-- Button Section -->
       <div class="button-section">
-        <p class="button-text">
-          Preencha o formulário e garanta uma visita do Hemocione na sua
-          instituição!
-        </p>
+        <p class="button-text" v-html="buttonExplanationText"></p>
         <el-button
           type="primary"
           size="large"
@@ -70,10 +67,22 @@ if (leadId && uuid) {
 
 const description = computed(() => {
   if (leadId && uuid) {
-    return "A <b>Layers, Bookfair e Sophia</b> acreditam que a doação de sangue salva vidas e querem ajudar sua escola a participar desse movimento! Garanta uma visita do Hemocione, ONG que transforma a cultura de doação de sangue no Brasil, na sua instituição. Esta ação é viabilizada por nossos parceiros que apoiam esta causa.";
+    return `
+      Uma ação solidária que pode <b>transformar vidas</b> na sua escola. <br />
+      A <b>Layers, Bookfair e Sophia</b> acreditam no poder da doação de sangue e estão viabilizando a visita do Hemocione à sua instituição — um presente das nossas empresas para ajudar a levar esse movimento de solidariedade ainda mais longe. <br />
+      O Hemocione é uma ONG que promove a cultura da doação de sangue nas escolas e comunidades de todo o Brasil. <b>Agora, sua escola também pode fazer parte dessa causa.</b>
+    `;
   }
 
-  return "O Hemocione é uma ONG liderada por jovens que, desde 2017, transforma a cultura da doação de sangue no Brasil. Conectamos instituições a bancos de sangue para salvar vidas. Já realizamos mais de 223 eventos, impactando 38 mil vidas com ações educativas e tecnologia em escolas, universidades e empresas. Quer fazer a diferença? Garanta uma visita do Hemocione na sua instituição!";
+  return "O Hemocione é uma ONG liderada por jovens que, desde 2017, transforma a cultura da doação de sangue no Brasil. Conectamos instituições a bancos de sangue para <b>salvar vidas</b>. Já realizamos mais de <b>223 eventos</b>, impactando <b>38 mil vidas</b> com ações educativas e tecnologia em escolas, universidades e empresas. Quer fazer a diferença? Garanta uma visita do Hemocione na sua instituição!";
+});
+
+const buttonExplanationText = computed(() => {
+  if (leadId && uuid) {
+    return "Preencha o formulário e garanta uma visita do Hemocione à sua instituição, com o apoio da Layers, Bookfair e Sophia.";
+  }
+
+  return "Preencha o formulário e garanta uma visita do Hemocione na sua instituição!";
 });
 
 const finishedNotifying = ref(false);
@@ -123,7 +132,7 @@ useFetch("/api/v1/captation/" + slug + "/start", {
 
 .text-container {
   width: 100%;
-  text-align: center;
+  text-align: justify;
   padding: 0 1rem;
   margin: auto 0;
 }
@@ -143,9 +152,8 @@ useFetch("/api/v1/captation/" + slug + "/start", {
 }
 
 .image-container {
-  width: 100%;
-  max-width: 30rem;
-  margin: 1rem auto;
+  height: 20svh;
+  margin: 0 1rem;
   aspect-ratio: 16/9;
   display: flex;
   align-items: center;
@@ -160,8 +168,9 @@ useFetch("/api/v1/captation/" + slug + "/start", {
 
 .button-text {
   font-size: 0.875rem;
-  color: #4b5563;
+  color: #1f2937;
   margin-bottom: 0.75rem;
+  font-weight: 600;
 }
 
 .continue-button {
