@@ -8,18 +8,14 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
 
   const { leadId, uuid } = body;
+  let promises: Promise<void>[] = [];
   if (leadId && uuid) {
-    try {
-      await updateStatus(leadId, uuid, "success");
-    } catch (error) {
-      // ignore error for now
-      console.error(error);
-    }
+    promises.push(updateStatus(leadId, uuid, "success"));
   }
 
   const entityType = String(event.context.params?.slug as string);
   const endedAt = new Date().toISOString();
-  runAsync(
+  promises.push(
     discordNotificationService.sendEmbed({
       title: `Captation Form Ended - ${entityType}`,
       description: JSON.stringify({
@@ -31,6 +27,9 @@ export default defineEventHandler(async (event) => {
       color: 0x00ff00, // green color
     }),
   );
+
+  const allSettledPromise = Promise.allSettled(promises);
+  runAsync(allSettledPromise);
 
   return {
     message: "Captation form ended",
