@@ -57,7 +57,7 @@ const captationData = getCaptationDataFromLocalStorage();
 deleteCaptationDataFromLocalStorage(); // always delete the data from local storage after the end page is accesed and the captationData is read
 
 const goToCorrectUrl = async () => {
-  if (captationData.leadId && captationData.uuid) {
+  if (captationData?.leadId && captationData?.uuid) {
     const digitalStandUrl = getDigitalStandTicketUrl(
       captationData.leadId,
       captationData.uuid,
