@@ -1,5 +1,5 @@
 <template>
-  <CommonCoolFooter height="fit-content" desktop-border-radius="0">
+  <!-- <CommonCoolFooter height="fit-content" desktop-border-radius="0"> -->
     <ElButton type="default" size="large" @click="goToCalendar"
       >Adicionar ao Calendário
       <el-icon class="el-icon--right" size="30"
@@ -7,10 +7,10 @@
           src="/images/icons/google_calendar_icon.svg"
           height="30" /></el-icon
     ></ElButton>
-    <ElButton type="primary" size="large" @click="toggleShareDrawer">
+    <ElButton type="default" size="large" @click="toggleShareDrawer">
       Compartilhar evento
     </ElButton>
-  </CommonCoolFooter>
+  <!-- </CommonCoolFooter> -->
   <ElDrawer
     v-model="shareDrawerVisible"
     direction="btt"
@@ -154,7 +154,7 @@ async function shareEvent(withImage: boolean = false) {
 
 <style scoped>
 button {
-  height: 48px;
+  height: 40px;
 }
 
 .share-wrapper {
