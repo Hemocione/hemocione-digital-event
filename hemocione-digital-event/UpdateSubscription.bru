@@ -1,0 +1,22 @@
+meta {
+  name: UpdateSubscription
+  type: http
+  seq: 1
+}
+
+put {
+  url: http://localhost:3000/api/v1/event/[eventSlug]/subscription
+  body: json
+  auth: inherit
+}
+
+headers {
+  Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImI0ZDkyZmE2LTdjYjktNGZhYy05YTNmLTZjNTg2ZjZmNGE0MiIsImdpdmVuTmFtZSI6Ikhhbm5haCIsInN1ck5hbWUiOiJHb2xkc3RlaW4iLCJibG9vZFR5cGUiOiJBKyIsImVtYWlsIjoiaGFubmFoYmdvbGRzdGVpbkBoZW1vY2lvbmUuY29tLmJyIiwicGhvbmUiOiIrNTUyMTk4NzQ2Njc5OCIsImdlbmRlciI6IkYiLCJkb2N1bWVudCI6IjA2NTkwNDIxNzczIiwiaWF0IjoxNzQ3Nzc4OTY5LCJleHAiOjE3NTAzNzA5Njl9.bu92WO_caG9OZoBXpKHix_RYp_3zIQ9g7ogq3EBz528
+}
+
+body:json {
+  {
+    "questionnaireId": "652e9b8dfd2e9b1f487bb431",
+    "status": "able-to-donate"
+  }
+}

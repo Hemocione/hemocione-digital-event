@@ -97,6 +97,51 @@ export const useUserStore = defineStore("user", {
       this.subscriptions.delete(eventSlug);
     },
 
+    async updateSubscriptionPreScreening(
+      eventSlug: string,
+      questionnaireId: string,
+      status: "able-to-donate" | "unable-to-donate"
+    ) {
+      console.log("📩 updateSubscriptionPreScreening chamada com:", {
+        eventSlug,
+        questionnaireId,
+        status,
+      });
+    
+      try {
+        const updated = await fetchWithAuth(
+          `/api/v1/event/${eventSlug}/subscription`,
+          {
+            method: "PUT",
+            body: {
+              questionnaireId,
+              status,
+            },
+          }
+        );
+    
+        console.log("✅ Resposta do update-prescreening:", updated);
+    
+        if (this.subscriptions.has(eventSlug)) {
+          const sub = this.subscriptions.get(eventSlug)!;
+          sub.lastQuestionnairePreScreening = {
+            formResponseId: questionnaireId,
+            status,
+            answeredAt: new Date().toISOString(),
+          };
+          this.subscriptions.set(eventSlug, sub);
+    
+          console.log("🧠 Subscription atualizada localmente:", sub);
+        }
+    
+        return updated;
+      } catch (err) {
+        console.error("❌ Erro ao atualizar pré-triagem:", err);
+        return null;
+      }
+    },
+    
+
     async createExternalVolunteer(eventSlug: string) {
       await fetchWithAuth(`/api/v1/event/${eventSlug}/external-volunteer`, {
         method: "POST",
