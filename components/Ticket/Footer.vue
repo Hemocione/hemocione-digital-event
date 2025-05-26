@@ -1,16 +1,15 @@
 <template>
-  <CommonCoolFooter height="fit-content" desktop-border-radius="0">
+  <!-- <CommonCoolFooter height="fit-content" desktop-border-radius="0"> -->
     <ElButton type="default" size="large" @click="goToCalendar"
-      >Adicionar ao Calendário
-      <el-icon class="el-icon--right" size="30"
-        ><NuxtImg
-          src="/images/icons/google_calendar_icon.svg"
-          height="30" /></el-icon
-    ></ElButton>
-    <ElButton type="primary" size="large" @click="toggleShareDrawer">
+      >
+      <NuxtImg class="list-image" src="images/calendar-icon.svg" alt="list icon" height="30" />
+      Adicionar ao Calendário
+    </ElButton>
+    <ElButton type="default" size="large" @click="toggleShareDrawer">
+      <NuxtImg class="list-image" src="images/share.svg" alt="list icon" height="30" />
       Compartilhar evento
     </ElButton>
-  </CommonCoolFooter>
+  <!-- </CommonCoolFooter> -->
   <ElDrawer
     v-model="shareDrawerVisible"
     direction="btt"
@@ -154,7 +153,13 @@ async function shareEvent(withImage: boolean = false) {
 
 <style scoped>
 button {
-  height: 48px;
+  height: 40px;
+}
+
+.list-image {
+  width: 24px;
+  height: 22px;
+  padding-right: 10px;
 }
 
 .share-wrapper {
