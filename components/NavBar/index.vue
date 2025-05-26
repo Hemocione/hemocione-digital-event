@@ -45,6 +45,11 @@ onBeforeMount(() => {
 }
 .logo-wrapper {
   height: 100%;
+  padding: 0.5rem;
+  box-sizing: border-box;
+  align-items: center;
+  justify-content: center;
+  display: flex;
 }
 
 .logo {
