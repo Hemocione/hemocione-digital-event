@@ -48,7 +48,7 @@
       "
     >
       <img
-        style="width: 100%; object-fit: contain; max-height: 100%"
+        style="width: 100%; object-fit: contain; max-height: 90%"
         src="/images/logo-horizontal-vermelha-branca.svg"
         alt="hemocione-logo"
       />
