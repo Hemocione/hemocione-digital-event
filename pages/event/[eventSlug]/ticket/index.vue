@@ -16,12 +16,12 @@
           :loading="state.loading"
           @click="cancelSubscription"
         >
-        
-          Cancelar agendamento
+        <NuxtImg class="list-image" src="images/cancel.svg" alt="list icon" height="30" />
+          <span> Cancelar agendamento </span>
         </ElButton>
         <ElButton v-if="!isCanDonateMandatory && !hasAnsweredPreScreening" class="default" @click="() => goToCanDonate('event-ticket-adhoc', eventSlug, eventConfig.startAt)" >
-         <NuxtImg class="list-image" src="images/list.svg" alt="list icon" height="30" />
-          <span class="default"> Verificar se posso doar </span>
+         <NuxtImg class="list-image" src="images/list-dark.svg" alt="list icon" height="30" />
+          <span> Verificar se posso doar </span>
         </ElButton>
       </CommonCard>
       <EventsDisclaimer />
@@ -73,7 +73,7 @@
     class="default"
     @click="() => goToCanDonate('event-ticket-adhoc', eventSlug, eventConfig.startAt)"
   >
-    <NuxtImg class="list-image" src="images/list.svg" alt="list icon" />
+    <NuxtImg class="list-image" src="images/list-dark.svg" alt="list icon" />
     <span>Verificar novamente</span>
   </ElButton>
 </template>
@@ -81,18 +81,18 @@
 
   <template v-else>
     <div class="highlight-box">
-    <span class="subtext-posso-doar">
-    Suas últimas respostas no questionário indicam que você pode <strong> não </strong> estar elegível para a doação. Para mais informações sobre sua elegibilidade, consulte um banco de sangue ou tire suas dúvidas com o <u>Hemocione</u>.
-    </span>
-    <div class="subtext-posso-doar">   
+    <p class="subtext-posso-doar">
+    Suas últimas respostas no questionário indicam que você pode <strong> não </strong> estar elegível para a doação. Para mais informações sobre sua elegibilidade, consulte um banco de sangue ou tire suas dúvidas com o Hemocione.
+    </p>
+    <p class="subtext-posso-doar">   
       <span class="status-dot"></span>
-      Última resposta em {{ lastAnsweredAt }}</div>
+      Última resposta em {{ lastAnsweredAt }}</p>
       </div>
     <ElButton
       class="default"
       @click="() => goToCanDonate('event-ticket-adhoc', eventSlug, eventConfig.startAt)"
     >
-      <NuxtImg class="list-image" src="images/list.svg" alt="list icon" />
+      <NuxtImg class="list-image" src="images/list-dark.svg" alt="list icon" />
       <span>Verificar novamente</span>
     </ElButton>
   </template>
@@ -268,9 +268,30 @@ article {
   padding: 1rem;
 }
 
-.button-posso-doar {
+/* .button-posso-doar {
   background-color: var(--hemo-color-primary-medium);
+} */
+
+.button-posso-doar {
+  background-color: var(--hemo-color-primary-medium); 
+  padding: 20px 40px; 
+  align-items: center;
+  justify-content: center;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s;
 }
+
+.button-posso-doar:hover {
+  background-color: var(--hemo-color-primary-dark); 
+}
+
+.list-image {
+  width: 24px;
+  height: 22px;
+  padding-right: 10px;
+}
+
 
 .button-posso-doar-texto {
   color: var(--hemo-color-white); 
