@@ -49,20 +49,30 @@ export const useUserStore = defineStore("user", {
     setToken(token: string | null) {
       this.token = token;
     },
-    async createSubscription(eventSlug: string, scheduleId: string) {
+    async createSubscription(
+      eventSlug: string,
+      scheduleId: string,
+      questionnaireId?: string,
+      status?: "able-to-donate" | "unable-to-donate"
+    ) {
       const subscription = await fetchWithAuth(
         `/api/v1/event/${eventSlug}/subscription`,
         {
           method: "POST",
-          body: { scheduleId },
+          body: {
+            scheduleId,
+            questionnaireId,
+            status,
+          },
         },
       );
-
+    
       this.subscriptions.set(eventSlug, subscription);
+    
       const eventStore = useEventStore();
       eventStore.incrementSlot(eventSlug, scheduleId);
     },
-
+    
     async getSubscription(eventSlug: string): Promise<Subscription | null> {
       if (this.subscriptions.has(eventSlug)) {
         return this.subscriptions.get(eventSlug)!;
@@ -108,6 +118,12 @@ export const useUserStore = defineStore("user", {
         status,
       });
     
+      const mySubscription = this.subscriptions.get(eventSlug);
+      if (!mySubscription) {
+        console.warn("⚠️ Nenhuma subscription encontrada localmente.");
+        return null;
+      }
+    
       try {
         const updated = await fetchWithAuth(
           `/api/v1/event/${eventSlug}/subscription`,
@@ -120,27 +136,22 @@ export const useUserStore = defineStore("user", {
           }
         );
     
+        mySubscription.lastQuestionnairePreScreening = {
+          formResponseId: questionnaireId,
+          status,
+          answeredAt: new Date().toISOString(),
+        };
+        this.subscriptions.set(eventSlug, mySubscription);
+    
+        console.log("🧠 Subscription atualizada localmente:", mySubscription);
         console.log("✅ Resposta do update-prescreening:", updated);
-    
-        if (this.subscriptions.has(eventSlug)) {
-          const sub = this.subscriptions.get(eventSlug)!;
-          sub.lastQuestionnairePreScreening = {
-            formResponseId: questionnaireId,
-            status,
-            answeredAt: new Date().toISOString(),
-          };
-          this.subscriptions.set(eventSlug, sub);
-    
-          console.log("🧠 Subscription atualizada localmente:", sub);
-        }
     
         return updated;
       } catch (err) {
         console.error("❌ Erro ao atualizar pré-triagem:", err);
         return null;
       }
-    },
-    
+    },    
 
     async createExternalVolunteer(eventSlug: string) {
       await fetchWithAuth(`/api/v1/event/${eventSlug}/external-volunteer`, {

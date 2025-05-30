@@ -52,6 +52,8 @@ export default defineEventHandler(async (event) => {
 
   await subscription.save();
 
+  console.log("🍪 Cookie recebido:", getCookie(event, "hemocioneId"));
+
   return {
     success: true,
     subscription: {

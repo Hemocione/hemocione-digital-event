@@ -80,7 +80,13 @@ export async function getUserNextSubscription({
 export async function createSubscription(
   eventSlug: string,
   user: HemocioneUserAuthTokenData,
-  schedule: { _id: string; startAt: Date; endAt: Date },
+  schedule: {
+    _id: string;
+    startAt: Date;
+    endAt: Date;
+    questionnaireId?: string;
+    status?: "able-to-donate" | "unable-to-donate";
+  },
 ) {
   const subscription = new Subscription({
     eventSlug,
@@ -92,7 +98,14 @@ export async function createSubscription(
     schedule,
   });
 
-  // todo: wrap in transaction
+  if (schedule.questionnaireId && schedule.status) {
+    subscription.lastQuestionnairePreScreening = {
+      formResponseId: schedule.questionnaireId,
+      status: schedule.status,
+      answeredAt: new Date(),
+    };
+  }
+
   await subscription.save();
   await incrementEventScheduleOccupiedSlots(
     eventSlug,

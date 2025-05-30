@@ -4,8 +4,8 @@ meta {
   seq: 1
 }
 
-put {
-  url: http://localhost:3000/api/v1/event/[eventSlug]/subscription
+post {
+  url: http://localhost:3000/api/v1/event/HEMOCIONECSA2023/subscription
   body: json
   auth: inherit
 }
@@ -16,7 +16,9 @@ headers {
 
 body:json {
   {
-    "questionnaireId": "652e9b8dfd2e9b1f487bb431",
+    "scheduleId": "665524385454618605148932",
+    "questionnaireId": "xyz789",
     "status": "able-to-donate"
   }
+  
 }
