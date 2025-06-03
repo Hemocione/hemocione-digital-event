@@ -42,13 +42,8 @@ const route = useRoute();
 const eventSlug = route.params.eventSlug as string;
 const userStore = useUserStore();
 
-  const questionnaireId = route.query.questionnaireId as string | undefined;
-  const status = route.query.status as "able-to-donate" | "unable-to-donate" | undefined;
-
-  // if (questionnaireId && status) {
-  //   console.log("Chamando update com", questionnaireId, status);
-  //   await userStore.updateSubscriptionPreScreening(eventSlug, questionnaireId, status);
-  // }
+const questionnaireId = route.query.questionnaireId as string | undefined;
+const status = route.query.status as "able-to-donate" | "unable-to-donate" | undefined;
 
 const subscription = await userStore.getSubscription(eventSlug);
 const eventStore = useEventStore();
