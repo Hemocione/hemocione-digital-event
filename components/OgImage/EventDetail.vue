@@ -31,7 +31,7 @@
     </div> -->
     <div
       style="
-        height: 40%;
+        height: 30%;
         width: 100%;
         padding: 1rem;
         background: radial-gradient(
@@ -48,8 +48,8 @@
       "
     >
       <img
-        style="width: 90%; object-fit: contain; max-height: 90%"
-        src="/images/logo-padrao.png"
+        style="width: 100%; object-fit: contain; max-height: 90%"
+        src="/images/logo-horizontal-vermelha-branca.svg"
         alt="hemocione-logo"
       />
       <div
@@ -79,12 +79,12 @@
     </div>
     <div
       style="
-        padding: 1rem;
+        padding: 1rem 1.5rem 1.5rem 1.5rem;
         display: flex;
         flex-direction: column;
         justify-content: space-between;
         gap: 1rem;
-        height: 60%;
+        height: 70%;
         width: 100%;
         margin: 0;
       "

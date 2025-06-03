@@ -14,7 +14,7 @@ export function goToCanDonate(
  }
 
   const eventDate = startAt ?? "";
-  const url = `${baseUrl}/${slugType}?date=${encodeURIComponent(eventDate)}&eventSlug=${eventSlug}`;
+  const url = `${baseUrl}/${slugType}?eventDate=${encodeURIComponent(eventDate)}&eventSlug=${eventSlug}`;
 
   navigateTo(url, { external: true });
 }
