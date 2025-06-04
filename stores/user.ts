@@ -118,14 +118,8 @@ export const useUserStore = defineStore("user", {
         status,
       });
     
-      const mySubscription = this.subscriptions.get(eventSlug);
-      if (!mySubscription) {
-        console.warn("⚠️ Nenhuma subscription encontrada localmente.");
-        return null;
-      }
-    
       try {
-        const updated = await fetchWithAuth(
+        const updated: any = await fetchWithAuth(
           `/api/v1/event/${eventSlug}/subscription`,
           {
             method: "PUT",
@@ -136,22 +130,19 @@ export const useUserStore = defineStore("user", {
           }
         );
     
-        mySubscription.lastQuestionnairePreScreening = {
-          formResponseId: questionnaireId,
-          status,
-          answeredAt: new Date().toISOString(),
-        };
-        this.subscriptions.set(eventSlug, mySubscription);
-    
-        console.log("🧠 Subscription atualizada localmente:", mySubscription);
-        console.log("✅ Resposta do update-prescreening:", updated);
+        if (updated?.subscription) {
+          this.subscriptions.set(eventSlug, updated.subscription);
+          console.log("🧠 Subscription atualizada localmente:", updated.subscription);
+        } else {
+          console.warn("⚠️ Resposta do backend sem subscription");
+        }
     
         return updated;
       } catch (err) {
         console.error("❌ Erro ao atualizar pré-triagem:", err);
         return null;
       }
-    },    
+    },       
 
     async createExternalVolunteer(eventSlug: string) {
       await fetchWithAuth(`/api/v1/event/${eventSlug}/external-volunteer`, {

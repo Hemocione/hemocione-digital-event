@@ -2,6 +2,7 @@ import { defineEventHandler, readBody, createError } from "h3";
 import { Subscription } from "~/server/models/subscription";
 import { Types } from "mongoose";
 import z from "zod";
+import { useHemocioneUserAuth } from "~/server/services/auth";
 
 const bodySchema = z.object({
   questionnaireId: z.string().refine((val) => Types.ObjectId.isValid(val)),
@@ -10,6 +11,7 @@ const bodySchema = z.object({
 
 export default defineEventHandler(async (event) => {
   console.log("📨 Método recebido:", event.method);
+  const user = useHemocioneUserAuth(event);
   const { eventSlug } = event.context.params as { eventSlug: string };
   const body = await readBody(event);
   const parsed = bodySchema.safeParse(body);
@@ -19,14 +21,6 @@ export default defineEventHandler(async (event) => {
       statusCode: 422,
       statusMessage: "Invalid request data",
       data: parsed.error.errors,
-    });
-  }
-
-  const user = event.context.auth?.user;
-  if (!user) {
-    throw createError({
-      statusCode: 401,
-      statusMessage: "Unauthorized",
     });
   }
 
