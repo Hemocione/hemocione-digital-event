@@ -48,7 +48,7 @@ export async function getUserEventSubscription(
     eventSlug,
     hemocioneId,
     deletedAt: null,
-  }).lean();
+  });
   return subscription;
 }
 

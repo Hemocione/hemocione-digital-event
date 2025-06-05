@@ -45,16 +45,19 @@ const userStore = useUserStore();
 const questionnaireId = route.query.questionnaireId as string | undefined;
 const status = route.query.status as "able-to-donate" | "unable-to-donate" | undefined;
 
-const subscription = await userStore.getSubscription(eventSlug);
 const eventStore = useEventStore();
 const eventConfig = await eventStore.getEvent(eventSlug);
 
-if (!eventConfig) {
-  navigateTo("/404");
-}
+try {
+  const subscription = await userStore.getSubscription(eventSlug);
 
-if (subscription) {
+  if (subscription) {
   navigateTo(`/event/${eventSlug}/ticket`);
+}
+} catch (err: any) {
+  if (err?.statusCode !== 404) {
+    console.error("Erro inesperado ao buscar subscription:", err);
+  }
 }
 
 useServerSeoMeta({

@@ -117,10 +117,15 @@ const eventStore = useEventStore();
 const userStore = useUserStore();
 const eventSlug = route.params.eventSlug as string;
 const eventConfig = await eventStore.getEvent(eventSlug);
-const subscription = await userStore.getSubscription(eventSlug);
 
 const questionnaireId = route.query.questionnaireId as string | undefined;
 const status = route.query.status as "able-to-donate" | "unable-to-donate" | undefined;
+const subscription = await userStore.getSubscription(eventSlug, {questionnaireId, status});
+
+const url = new URL(window.location.href)
+url.searchParams.delete('questionnaireId')
+url.searchParams.delete('status')
+window.history.replaceState({}, document.title, url.toString())
 
 if (!eventConfig) {
   navigateTo("/404");
@@ -209,16 +214,6 @@ function goBack() {
 }
 
 const SIGNOS_FEEDBACK_DELAY = 3000; // 3 seconds
-
-onMounted(async () => {
-  if (questionnaireId && status) {
-    await userStore.updateSubscriptionPreScreening(
-      eventSlug,
-      questionnaireId,
-      status
-    );
-  }
-});
 
 // onMounted(() => {
   // Open the Signos chat after a delay. Uncomment when it doenst make the page buggy

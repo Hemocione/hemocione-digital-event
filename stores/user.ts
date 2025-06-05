@@ -73,14 +73,15 @@ export const useUserStore = defineStore("user", {
       eventStore.incrementSlot(eventSlug, scheduleId);
     },
     
-    async getSubscription(eventSlug: string): Promise<Subscription | null> {
+    async getSubscription(eventSlug: string, options?: {questionnaireId?: string, status?: "able-to-donate"|"unable-to-donate"}): Promise<Subscription | null> {
       if (this.subscriptions.has(eventSlug)) {
         return this.subscriptions.get(eventSlug)!;
       }
 
       const subscription = await fetchWithAuth(
         `/api/v1/event/${eventSlug}/subscription/mine`,
-      )?.catch(() => null);
+        {query: options}
+      );
 
       if (!subscription) {
         return null;
@@ -107,42 +108,42 @@ export const useUserStore = defineStore("user", {
       this.subscriptions.delete(eventSlug);
     },
 
-    async updateSubscriptionPreScreening(
-      eventSlug: string,
-      questionnaireId: string,
-      status: "able-to-donate" | "unable-to-donate"
-    ) {
-      console.log("📩 updateSubscriptionPreScreening chamada com:", {
-        eventSlug,
-        questionnaireId,
-        status,
-      });
+    // async updateSubscriptionPreScreening(
+    //   eventSlug: string,
+    //   questionnaireId: string,
+    //   status: "able-to-donate" | "unable-to-donate"
+    // ) {
+    //   console.log("📩 updateSubscriptionPreScreening chamada com:", {
+    //     eventSlug,
+    //     questionnaireId,
+    //     status,
+    //   });
     
-      try {
-        const updated: any = await fetchWithAuth(
-          `/api/v1/event/${eventSlug}/subscription`,
-          {
-            method: "PUT",
-            body: {
-              questionnaireId,
-              status,
-            },
-          }
-        );
+    //   try {
+    //     const updated = await fetchWithAuth(
+    //       `/api/v1/event/${eventSlug}/subscription`,
+    //       {
+    //         method: "PUT",
+    //         body: {
+    //           questionnaireId,
+    //           status,
+    //         },
+    //       }
+    //     );
     
-        if (updated?.subscription) {
-          this.subscriptions.set(eventSlug, updated.subscription);
-          console.log("🧠 Subscription atualizada localmente:", updated.subscription);
-        } else {
-          console.warn("⚠️ Resposta do backend sem subscription");
-        }
+    //     if (updated?.subscription) {
+    //       this.subscriptions.set(eventSlug, updated.subscription);
+    //       console.log("🧠 Subscription atualizada localmente:", updated.subscription);
+    //     } else {
+    //       console.warn("⚠️ Resposta do backend sem subscription");
+    //     }
     
-        return updated;
-      } catch (err) {
-        console.error("❌ Erro ao atualizar pré-triagem:", err);
-        return null;
-      }
-    },       
+    //     return updated;
+    //   } catch (err) {
+    //     console.error("❌ Erro ao atualizar pré-triagem:", err);
+    //     return null;
+    //   }
+    // },       
 
     async createExternalVolunteer(eventSlug: string) {
       await fetchWithAuth(`/api/v1/event/${eventSlug}/external-volunteer`, {

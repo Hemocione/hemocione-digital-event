@@ -26,7 +26,6 @@ const props = defineProps({
 
 const eventStore = useEventStore();
 const userStore = useUserStore();
-const subscription = await userStore.getSubscription(props.eventSlug);
 const eventConfig = await eventStore.getEvent(props.eventSlug);
 
 interface Button {
