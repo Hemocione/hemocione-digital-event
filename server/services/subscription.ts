@@ -84,7 +84,7 @@ export async function createSubscription(
     _id: string;
     startAt: Date;
     endAt: Date;
-    questionnaireId?: string;
+    formResponseId?: string;
     status?: "able-to-donate" | "unable-to-donate";
   },
 ) {
@@ -98,9 +98,9 @@ export async function createSubscription(
     schedule,
   });
 
-  if (schedule.questionnaireId && schedule.status) {
+  if (schedule.formResponseId && schedule.status) {
     subscription.lastQuestionnairePreScreening = {
-      formResponseId: schedule.questionnaireId,
+      formResponseId: schedule.formResponseId,
       status: schedule.status,
       answeredAt: new Date(),
     };

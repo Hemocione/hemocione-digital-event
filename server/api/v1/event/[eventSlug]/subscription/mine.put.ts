@@ -5,7 +5,7 @@ import z from "zod";
 import { useHemocioneUserAuth } from "~/server/services/auth";
 
 const bodySchema = z.object({
-  questionnaireId: z.string().refine((val) => Types.ObjectId.isValid(val)),
+  formResponseId: z.string().refine((val) => Types.ObjectId.isValid(val)),
   status: z.enum(["able-to-donate", "unable-to-donate"]),
 });
 
@@ -37,7 +37,7 @@ export default defineEventHandler(async (event) => {
   }
 
   subscription.lastQuestionnairePreScreening = {
-    formResponseId: new Types.ObjectId(parsed.data.questionnaireId) as unknown as {
+    formResponseId: new Types.ObjectId(parsed.data.formResponseId) as unknown as {
       prototype?: Types.ObjectId;
     },    
     status: parsed.data.status,

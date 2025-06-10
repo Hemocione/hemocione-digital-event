@@ -52,7 +52,7 @@ export const useUserStore = defineStore("user", {
     async createSubscription(
       eventSlug: string,
       scheduleId: string,
-      questionnaireId?: string,
+      formResponseId?: string,
       status?: "able-to-donate" | "unable-to-donate"
     ) {
       const subscription = await fetchWithAuth(
@@ -61,7 +61,7 @@ export const useUserStore = defineStore("user", {
           method: "POST",
           body: {
             scheduleId,
-            questionnaireId,
+            formResponseId,
             status,
           },
         },
@@ -73,23 +73,33 @@ export const useUserStore = defineStore("user", {
       eventStore.incrementSlot(eventSlug, scheduleId);
     },
     
-    async getSubscription(eventSlug: string, options?: {questionnaireId?: string, status?: "able-to-donate"|"unable-to-donate"}): Promise<Subscription | null> {
+    async getSubscription(
+      eventSlug: string,
+      options?: { formResponseId?: string; status?: "able-to-donate" | "unable-to-donate" }
+    ): Promise<Subscription | null> {
       if (this.subscriptions.has(eventSlug)) {
         return this.subscriptions.get(eventSlug)!;
       }
-
-      const subscription = await fetchWithAuth(
-        `/api/v1/event/${eventSlug}/subscription/mine`,
-        {query: options}
-      );
-
-      if (!subscription) {
-        return null;
+    
+      try {
+        const subscription = await fetchWithAuth(
+          `/api/v1/event/${eventSlug}/subscription/mine`,
+          { query: options }
+        );
+    
+        if (!subscription) return null;
+    
+        this.subscriptions.set(eventSlug, subscription);
+        return subscription;
+      } catch (err: any) {
+        if (err?.data?.statusCode === 404) {
+          return null;
+        }
+    
+        console.error("Erro ao buscar subscription:", err);
+        throw err;
       }
-
-      this.subscriptions.set(eventSlug, subscription);
-      return subscription;
-    },
+    },    
 
     async cancelSubscription(eventSlug: string) {
       await fetchWithAuth(`/api/v1/event/${eventSlug}/subscription/mine`, {
@@ -110,12 +120,12 @@ export const useUserStore = defineStore("user", {
 
     // async updateSubscriptionPreScreening(
     //   eventSlug: string,
-    //   questionnaireId: string,
+    //   formResponseId: string,
     //   status: "able-to-donate" | "unable-to-donate"
     // ) {
     //   console.log("📩 updateSubscriptionPreScreening chamada com:", {
     //     eventSlug,
-    //     questionnaireId,
+    //     formResponseId,
     //     status,
     //   });
     
@@ -125,7 +135,7 @@ export const useUserStore = defineStore("user", {
     //       {
     //         method: "PUT",
     //         body: {
-    //           questionnaireId,
+    //           formResponseId,
     //           status,
     //         },
     //       }

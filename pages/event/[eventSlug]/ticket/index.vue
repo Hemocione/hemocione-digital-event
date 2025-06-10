@@ -118,12 +118,12 @@ const userStore = useUserStore();
 const eventSlug = route.params.eventSlug as string;
 const eventConfig = await eventStore.getEvent(eventSlug);
 
-const questionnaireId = route.query.questionnaireId as string | undefined;
+const formResponseId = route.query.formResponseId as string | undefined;
 const status = route.query.status as "able-to-donate" | "unable-to-donate" | undefined;
-const subscription = await userStore.getSubscription(eventSlug, {questionnaireId, status});
+const subscription = await userStore.getSubscription(eventSlug, {formResponseId, status});
 
 const url = new URL(window.location.href)
-url.searchParams.delete('questionnaireId')
+url.searchParams.delete('formResponseId')
 url.searchParams.delete('status')
 window.history.replaceState({}, document.title, url.toString())
 

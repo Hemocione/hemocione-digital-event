@@ -25,7 +25,7 @@ const props = defineProps({
     type: String as PropType<string | null>,
     default: null,
   },
-  questionnaireId: {
+  formResponseId: {
   type: String as PropType<string | undefined>,
   default: undefined,
   },
@@ -56,7 +56,7 @@ async function selectSchedule() {
     await userStore.createSubscription(
       props.eventSlug,
       props.selectedScheduleId,
-      props.questionnaireId,
+      props.formResponseId,
       props.status,
     );
     navigateTo(`/event/${props.eventSlug}/ticket`);

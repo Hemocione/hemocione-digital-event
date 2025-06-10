@@ -48,17 +48,26 @@ const status = route.query.status as "able-to-donate" | "unable-to-donate" | und
 const eventStore = useEventStore();
 const eventConfig = await eventStore.getEvent(eventSlug);
 
-try {
-  const subscription = await userStore.getSubscription(eventSlug);
+const subscription = await userStore.getSubscription(eventSlug, {
+  questionnaireId,
+  status
+});
 
-  if (subscription) {
+if (subscription) {
   navigateTo(`/event/${eventSlug}/ticket`);
 }
-} catch (err: any) {
-  if (err?.statusCode !== 404) {
-    console.error("Erro inesperado ao buscar subscription:", err);
-  }
-}
+
+// try {
+//   const subscription = await userStore.getSubscription(eventSlug);
+
+//   if (subscription) {
+//   navigateTo(`/event/${eventSlug}/ticket`);
+// }
+// } catch (err: any) {
+//   if (err?.statusCode !== 404) {
+//     console.error("Erro inesperado ao buscar subscription:", err);
+//   }
+// }
 
 useServerSeoMeta({
   title: `Horários - ${eventConfig?.name}`,
