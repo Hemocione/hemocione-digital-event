@@ -26,8 +26,8 @@ const props = defineProps({
     default: null,
   },
   formResponseId: {
-  type: String as PropType<string | undefined>,
-  default: undefined,
+    type: String as PropType<string | undefined>,
+    default: undefined,
   },
   status: {
     type: String as PropType<"able-to-donate" | "unable-to-donate" | undefined>,

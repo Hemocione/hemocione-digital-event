@@ -20,7 +20,6 @@ export async function evaluateCurrentLogin(query?: LocationQuery) {
 
   if (user) return true;
 
-  // || ""
   const token = getCurrentToken(query);
 
   if (!token) return false;

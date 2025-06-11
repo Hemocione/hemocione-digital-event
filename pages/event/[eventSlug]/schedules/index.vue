@@ -57,18 +57,6 @@ if (subscription) {
   navigateTo(`/event/${eventSlug}/ticket`);
 }
 
-// try {
-//   const subscription = await userStore.getSubscription(eventSlug);
-
-//   if (subscription) {
-//   navigateTo(`/event/${eventSlug}/ticket`);
-// }
-// } catch (err: any) {
-//   if (err?.statusCode !== 404) {
-//     console.error("Erro inesperado ao buscar subscription:", err);
-//   }
-// }
-
 useServerSeoMeta({
   title: `Horários - ${eventConfig?.name}`,
 });
