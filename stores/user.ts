@@ -116,44 +116,7 @@ export const useUserStore = defineStore("user", {
         -1,
       );
       this.subscriptions.delete(eventSlug);
-    },
-
-    // async updateSubscriptionPreScreening(
-    //   eventSlug: string,
-    //   formResponseId: string,
-    //   status: "able-to-donate" | "unable-to-donate"
-    // ) {
-    //   console.log("📩 updateSubscriptionPreScreening chamada com:", {
-    //     eventSlug,
-    //     formResponseId,
-    //     status,
-    //   });
-    
-    //   try {
-    //     const updated = await fetchWithAuth(
-    //       `/api/v1/event/${eventSlug}/subscription`,
-    //       {
-    //         method: "PUT",
-    //         body: {
-    //           formResponseId,
-    //           status,
-    //         },
-    //       }
-    //     );
-    
-    //     if (updated?.subscription) {
-    //       this.subscriptions.set(eventSlug, updated.subscription);
-    //       console.log("🧠 Subscription atualizada localmente:", updated.subscription);
-    //     } else {
-    //       console.warn("⚠️ Resposta do backend sem subscription");
-    //     }
-    
-    //     return updated;
-    //   } catch (err) {
-    //     console.error("❌ Erro ao atualizar pré-triagem:", err);
-    //     return null;
-    //   }
-    // },       
+    },    
 
     async createExternalVolunteer(eventSlug: string) {
       await fetchWithAuth(`/api/v1/event/${eventSlug}/external-volunteer`, {
