@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "hemocione-digital-event",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}
