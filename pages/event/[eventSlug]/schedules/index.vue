@@ -23,7 +23,7 @@
     <SchedulesFooter
     :event-slug="eventSlug"
     :selected-schedule-id="state.selectedScheduleId"
-    :questionnaire-id="questionnaireId"
+    :formResponseId-id="formResponseId"
     :status="status"
   />
   </main>
@@ -42,14 +42,14 @@ const route = useRoute();
 const eventSlug = route.params.eventSlug as string;
 const userStore = useUserStore();
 
-const questionnaireId = route.query.questionnaireId as string | undefined;
+const formResponseId = route.query.formResponseId as string | undefined;
 const status = route.query.status as "able-to-donate" | "unable-to-donate" | undefined;
 
 const eventStore = useEventStore();
 const eventConfig = await eventStore.getEvent(eventSlug);
 
 const subscription = await userStore.getSubscription(eventSlug, {
-  questionnaireId,
+  formResponseId,
   status
 });
 
