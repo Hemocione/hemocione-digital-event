@@ -23,7 +23,7 @@
     <SchedulesFooter
     :event-slug="eventSlug"
     :selected-schedule-id="state.selectedScheduleId"
-    :formResponseId-id="formResponseId"
+    :form-response-id="formResponseId"
     :status="status"
   />
   </main>

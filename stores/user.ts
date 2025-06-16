@@ -67,10 +67,16 @@ export const useUserStore = defineStore("user", {
         },
       );
     
-      this.subscriptions.set(eventSlug, subscription);
-    
-      const eventStore = useEventStore();
-      eventStore.incrementSlot(eventSlug, scheduleId);
+      if (!subscription) {
+          throw new Error("Authentication required to create a subscription");
+        }
+        
+        this.subscriptions.set(eventSlug, subscription);
+        
+        const eventStore = useEventStore();
+        eventStore.incrementSlot(eventSlug, scheduleId);
+        
+        return subscription;
     },
     
     async getSubscription(
