@@ -25,6 +25,14 @@ const props = defineProps({
     type: String as PropType<string | null>,
     default: null,
   },
+  formResponseId: {
+    type: String as PropType<string | undefined>,
+    default: undefined,
+  },
+  status: {
+    type: String as PropType<"able-to-donate" | "unable-to-donate" | undefined>,
+    default: undefined,
+  },
 });
 
 const state = reactive({
@@ -48,6 +56,8 @@ async function selectSchedule() {
     await userStore.createSubscription(
       props.eventSlug,
       props.selectedScheduleId,
+      props.formResponseId,
+      props.status,
     );
     navigateTo(`/event/${props.eventSlug}/ticket`);
   } catch (error) {

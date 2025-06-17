@@ -48,7 +48,7 @@ export async function getUserEventSubscription(
     eventSlug,
     hemocioneId,
     deletedAt: null,
-  }).lean();
+  });
   return subscription;
 }
 
@@ -80,7 +80,13 @@ export async function getUserNextSubscription({
 export async function createSubscription(
   eventSlug: string,
   user: HemocioneUserAuthTokenData,
-  schedule: { _id: string; startAt: Date; endAt: Date },
+  schedule: {
+    _id: string;
+    startAt: Date;
+    endAt: Date;
+    formResponseId?: string;
+    status?: "able-to-donate" | "unable-to-donate";
+  },
 ) {
   const subscription = new Subscription({
     eventSlug,
@@ -92,7 +98,14 @@ export async function createSubscription(
     schedule,
   });
 
-  // todo: wrap in transaction
+  if (schedule.formResponseId && schedule.status) {
+    subscription.lastQuestionnairePreScreening = {
+      formResponseId: schedule.formResponseId,
+      status: schedule.status,
+      answeredAt: new Date(),
+    };
+  }
+
   await subscription.save();
   await incrementEventScheduleOccupiedSlots(
     eventSlug,

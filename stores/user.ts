@@ -49,36 +49,63 @@ export const useUserStore = defineStore("user", {
     setToken(token: string | null) {
       this.token = token;
     },
-    async createSubscription(eventSlug: string, scheduleId: string) {
+    async createSubscription(
+      eventSlug: string,
+      scheduleId: string,
+      formResponseId?: string,
+      status?: "able-to-donate" | "unable-to-donate"
+    ) {
       const subscription = await fetchWithAuth(
         `/api/v1/event/${eventSlug}/subscription`,
         {
           method: "POST",
-          body: { scheduleId },
+          body: {
+            scheduleId,
+            formResponseId,
+            status,
+          },
         },
       );
-
-      this.subscriptions.set(eventSlug, subscription);
-      const eventStore = useEventStore();
-      eventStore.incrementSlot(eventSlug, scheduleId);
+    
+      if (!subscription) {
+          throw new Error("Authentication required to create a subscription");
+        }
+        
+        this.subscriptions.set(eventSlug, subscription);
+        
+        const eventStore = useEventStore();
+        eventStore.incrementSlot(eventSlug, scheduleId);
+        
+        return subscription;
     },
-
-    async getSubscription(eventSlug: string): Promise<Subscription | null> {
+    
+    async getSubscription(
+      eventSlug: string,
+      options?: { formResponseId?: string; status?: "able-to-donate" | "unable-to-donate" }
+    ): Promise<Subscription | null> {
       if (this.subscriptions.has(eventSlug)) {
         return this.subscriptions.get(eventSlug)!;
       }
-
-      const subscription = await fetchWithAuth(
-        `/api/v1/event/${eventSlug}/subscription/mine`,
-      )?.catch(() => null);
-
-      if (!subscription) {
-        return null;
+    
+      try {
+        const subscription = await fetchWithAuth(
+          `/api/v1/event/${eventSlug}/subscription/mine`,
+          { query: options }
+        );
+    
+        if (!subscription) return null;
+    
+        this.subscriptions.set(eventSlug, subscription);
+        return subscription;
+      } catch (err: any) {
+        if (err?.data?.statusCode === 404) {
+          return null;
+        }
+    
+        console.error("Erro ao buscar subscription:", err);
+        throw err;
       }
-
-      this.subscriptions.set(eventSlug, subscription);
-      return subscription;
-    },
+    },    
 
     async cancelSubscription(eventSlug: string) {
       await fetchWithAuth(`/api/v1/event/${eventSlug}/subscription/mine`, {
@@ -95,7 +122,7 @@ export const useUserStore = defineStore("user", {
         -1,
       );
       this.subscriptions.delete(eventSlug);
-    },
+    },    
 
     async createExternalVolunteer(eventSlug: string) {
       await fetchWithAuth(`/api/v1/event/${eventSlug}/external-volunteer`, {

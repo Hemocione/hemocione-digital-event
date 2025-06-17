@@ -117,7 +117,15 @@ const eventStore = useEventStore();
 const userStore = useUserStore();
 const eventSlug = route.params.eventSlug as string;
 const eventConfig = await eventStore.getEvent(eventSlug);
-const subscription = await userStore.getSubscription(eventSlug);
+
+const formResponseId = route.query.formResponseId as string | undefined;
+const status = route.query.status as "able-to-donate" | "unable-to-donate" | undefined;
+const subscription = await userStore.getSubscription(eventSlug, {formResponseId, status});
+
+const url = new URL(window.location.href)
+url.searchParams.delete('formResponseId')
+url.searchParams.delete('status')
+window.history.replaceState({}, document.title, url.toString())
 
 if (!eventConfig) {
   navigateTo("/404");
@@ -207,12 +215,12 @@ function goBack() {
 
 const SIGNOS_FEEDBACK_DELAY = 3000; // 3 seconds
 
-onMounted(() => {
+// onMounted(() => {
   // Open the Signos chat after a delay. Uncomment when it doenst make the page buggy
   // setTimeout(() => {
   //   openSignosChat();
   // }, SIGNOS_FEEDBACK_DELAY);
-});
+// });
 </script>
 
 <style scoped>
