@@ -33,6 +33,10 @@ const props = defineProps({
     type: String as PropType<"able-to-donate" | "unable-to-donate" | undefined>,
     default: undefined,
   },
+  lastQuestionnairePreScreening: {
+    type: Object as PropType<any>,
+    default: undefined,
+  },
 });
 
 const state = reactive({
@@ -58,6 +62,7 @@ async function selectSchedule() {
       props.selectedScheduleId,
       props.formResponseId,
       props.status,
+      props.lastQuestionnairePreScreening
     );
     navigateTo(`/event/${props.eventSlug}/ticket`);
   } catch (error) {

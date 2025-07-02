@@ -53,17 +53,22 @@ export const useUserStore = defineStore("user", {
       eventSlug: string,
       scheduleId: string,
       formResponseId?: string,
-      status?: "able-to-donate" | "unable-to-donate"
+      status?: "able-to-donate" | "unable-to-donate",
+      lastQuestionnairePreScreening?: any
     ) {
+      const body: any = {
+        scheduleId,
+        formResponseId,
+        status,
+      };
+      if (lastQuestionnairePreScreening) {
+        body.lastQuestionnairePreScreening = lastQuestionnairePreScreening;
+      }
       const subscription = await fetchWithAuth(
         `/api/v1/event/${eventSlug}/subscription`,
         {
           method: "POST",
-          body: {
-            scheduleId,
-            formResponseId,
-            status,
-          },
+          body,
         },
       );
     

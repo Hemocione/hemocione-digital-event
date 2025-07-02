@@ -196,7 +196,17 @@ async function cancelSubscription() {
   state.loading = true;
 
   try {
+    // Always fetch the latest subscription before deleting
+    const latestSubscription = await userStore.getSubscription(eventSlug);
+    if (latestSubscription?.lastQuestionnairePreScreening) {
+      localStorage.setItem(
+        `lastPreScreening_${eventSlug}`,
+        JSON.stringify(latestSubscription.lastQuestionnairePreScreening)
+      );
+      console.log("Saved to localStorage:", localStorage.getItem(`lastPreScreening_${eventSlug}`));
+    }
     await userStore.cancelSubscription(eventSlug);
+    // DO NOT remove the key here!
     goBack();
   } catch (error) {
     ElNotification({
@@ -214,6 +224,9 @@ function goBack() {
 }
 
 const SIGNOS_FEEDBACK_DELAY = 3000; // 3 seconds
+
+const lastPreScreening = localStorage.getItem(`lastPreScreening_${eventSlug}`);
+const lastQuestionnairePreScreening = lastPreScreening ? JSON.parse(lastPreScreening) : undefined;
 
 // onMounted(() => {
   // Open the Signos chat after a delay. Uncomment when it doenst make the page buggy

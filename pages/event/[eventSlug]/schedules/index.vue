@@ -25,6 +25,7 @@
     :selected-schedule-id="state.selectedScheduleId"
     :form-response-id="formResponseId"
     :status="status"
+    :last-questionnaire-pre-screening="lastQuestionnairePreScreening"
   />
   </main>
 </template>
@@ -143,6 +144,9 @@ function isSelected(scheduleId: string) {
 function goBack() {
   navigateTo(`/event/${eventSlug}`);
 }
+
+const lastPreScreening = localStorage.getItem(`lastPreScreening_${eventSlug}`);
+const lastQuestionnairePreScreening = lastPreScreening ? JSON.parse(lastPreScreening) : undefined;
 </script>
 
 <style scoped>
