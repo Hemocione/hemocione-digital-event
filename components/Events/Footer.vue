@@ -172,7 +172,7 @@ const buttons = computed((): Button[] => {
         subscriptionsAvailable &&
         !hasSubscription &&
         !isFull.value,
-      action: isCanDonateOn.value ? goToPreScreenigMiddlePage : goToSchedule,
+      action: () => goToPreScreeningOrSchedule(props.eventSlug),
     },
     {
       label: "Acessar ingresso",
@@ -225,8 +225,16 @@ const groupedButtonsByType = computed(
   },
 );
 
-function goToPreScreenigMiddlePage() {
-  navigateTo(`/event/${props.eventSlug}/pre-screening`);
+function goToPreScreeningOrSchedule(eventSlug: string) {
+  // Try to get from localStorage first
+  const lastPreScreening = localStorage.getItem(`lastPreScreening_${eventSlug}`);
+  if (lastPreScreening) {
+    // User already answered, skip to schedules
+    navigateTo(`/event/${eventSlug}/schedules`);
+    return;
+  }
+  // Otherwise, go to pre-screening
+  navigateTo(`/event/${eventSlug}/pre-screening`);
 }
 
 function goToSchedule() {
