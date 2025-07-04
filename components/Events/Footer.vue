@@ -235,16 +235,14 @@ function goToPreScreeningOrSchedule(eventSlug: string) {
         const now = new Date();
         const diffMonths = (now.getTime() - answeredAt.getTime()) / (1000 * 60 * 60 * 24 * 30);
         if (diffMonths <= 1) {
-          // Only skip if answered within the last month
           navigateTo(`/event/${eventSlug}/schedules`);
           return;
         }
       }
     } catch (e) {
-      // If parsing fails, just continue to pre-screening
+      // Continue to pre screening
     }
   }
-  // Otherwise, go to pre-screening
   navigateTo(`/event/${eventSlug}/pre-screening`);
 }
 
