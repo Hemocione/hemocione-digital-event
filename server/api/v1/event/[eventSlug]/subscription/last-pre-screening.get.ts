@@ -23,5 +23,23 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  return lastCancelled.lastQuestionnairePreScreening;
+  const lastPreScreeningStr = localStorage.getItem(`lastPreScreening_${eventSlug}`);
+  let lastQuestionnairePreScreening = undefined;
+  if (lastPreScreeningStr) {
+    try {
+      const lastPreScreening = JSON.parse(lastPreScreeningStr);
+      if (lastPreScreening.answeredAt) {
+        const answeredAt = new Date(lastPreScreening.answeredAt);
+        const now = new Date();
+        const diffMonths = (now.getTime() - answeredAt.getTime()) / (1000 * 60 * 60 * 24 * 30);
+        if (diffMonths <= 1) {
+          lastQuestionnairePreScreening = lastPreScreening;
+        }
+      }
+    } catch (e) {
+      // ignore
+    }
+  }
+
+  return lastQuestionnairePreScreening || lastCancelled.lastQuestionnairePreScreening;
 });

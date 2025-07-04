@@ -146,7 +146,22 @@ function goBack() {
 }
 
 const lastPreScreening = localStorage.getItem(`lastPreScreening_${eventSlug}`);
-const lastQuestionnairePreScreening = lastPreScreening ? JSON.parse(lastPreScreening) : undefined;
+let lastQuestionnairePreScreening = undefined;
+if (lastPreScreening) {
+  try {
+    const parsed = JSON.parse(lastPreScreening);
+    if (parsed.answeredAt) {
+      const answeredAt = new Date(parsed.answeredAt);
+      const now = new Date();
+      const diffMonths = (now.getTime() - answeredAt.getTime()) / (1000 * 60 * 60 * 24 * 30);
+      if (diffMonths <= 1) {
+        lastQuestionnairePreScreening = parsed;
+      }
+    }
+  } catch (e) {
+    // ignore
+  }
+}
 </script>
 
 <style scoped>

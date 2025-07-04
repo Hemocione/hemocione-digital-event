@@ -226,12 +226,23 @@ const groupedButtonsByType = computed(
 );
 
 function goToPreScreeningOrSchedule(eventSlug: string) {
-  // Try to get from localStorage first
-  const lastPreScreening = localStorage.getItem(`lastPreScreening_${eventSlug}`);
-  if (lastPreScreening) {
-    // User already answered, skip to schedules
-    navigateTo(`/event/${eventSlug}/schedules`);
-    return;
+  const lastPreScreeningStr = localStorage.getItem(`lastPreScreening_${eventSlug}`);
+  if (lastPreScreeningStr) {
+    try {
+      const lastPreScreening = JSON.parse(lastPreScreeningStr);
+      if (lastPreScreening.answeredAt) {
+        const answeredAt = new Date(lastPreScreening.answeredAt);
+        const now = new Date();
+        const diffMonths = (now.getTime() - answeredAt.getTime()) / (1000 * 60 * 60 * 24 * 30);
+        if (diffMonths <= 1) {
+          // Only skip if answered within the last month
+          navigateTo(`/event/${eventSlug}/schedules`);
+          return;
+        }
+      }
+    } catch (e) {
+      // If parsing fails, just continue to pre-screening
+    }
   }
   // Otherwise, go to pre-screening
   navigateTo(`/event/${eventSlug}/pre-screening`);
