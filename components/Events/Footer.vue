@@ -233,7 +233,7 @@ function goToPreScreeningOrSchedule(eventSlug: string) {
       if (lastPreScreening.answeredAt) {
         const answeredAt = new Date(lastPreScreening.answeredAt);
         const now = new Date();
-        const diffMonths = (now.getTime() - answeredAt.getTime()) / (1000 * 60 * 60 * 24 * 30);
+        const diffMonths = (now.getFullYear() - answeredAt.getFullYear()) * 12 + (now.getMonth() - answeredAt.getMonth());
         if (diffMonths <= 1) {
           navigateTo(`/event/${eventSlug}/schedules`);
           return;

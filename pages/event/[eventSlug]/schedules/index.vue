@@ -153,7 +153,7 @@ if (lastPreScreening) {
     if (parsed.answeredAt) {
       const answeredAt = new Date(parsed.answeredAt);
       const now = new Date();
-      const diffMonths = (now.getTime() - answeredAt.getTime()) / (1000 * 60 * 60 * 24 * 30);
+      const diffMonths = (now.getFullYear() - answeredAt.getFullYear()) * 12 + (now.getMonth() - answeredAt.getMonth());
       if (diffMonths <= 1) {
         lastQuestionnairePreScreening = parsed;
       }
