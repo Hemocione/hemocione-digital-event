@@ -17,6 +17,12 @@ interface Subscription {
   } | null;
 }
 
+interface LastQuestionnairePreScreening {
+  formResponseId?: string;
+  status?: "able-to-donate" | "unable-to-donate";
+  answeredAt?: string;
+}
+
 export const useUserStore = defineStore("user", {
   state: () => ({
     user: null as CurrentUserData | null,
@@ -54,9 +60,14 @@ export const useUserStore = defineStore("user", {
       scheduleId: string,
       formResponseId?: string,
       status?: "able-to-donate" | "unable-to-donate",
-      lastQuestionnairePreScreening?: any
+      lastQuestionnairePreScreening?: LastQuestionnairePreScreening
     ) {
-      const body: any = {
+      const body: {
+            scheduleId: string;
+            formResponseId?: string;
+            status?: "able-to-donate" | "unable-to-donate";
+            lastQuestionnairePreScreening?: LastQuestionnairePreScreening;
+          } = {
         scheduleId,
         formResponseId,
         status,
