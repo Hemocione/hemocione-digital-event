@@ -68,7 +68,7 @@ async function selectSchedule() {
       props.selectedScheduleId,
       props.formResponseId,
       props.status,
-      props.lastQuestionnairePreScreening
+      props.lastQuestionnairePreScreening,
     );
     navigateTo(`/event/${props.eventSlug}/ticket`);
   } catch (error) {
