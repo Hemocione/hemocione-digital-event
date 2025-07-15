@@ -16,6 +16,12 @@ import { reactive } from "vue";
 
 const userStore = useUserStore();
 
+interface LastQuestionnairePreScreening {
+  formResponseId?: string;
+  status?: "able-to-donate" | "unable-to-donate";
+  answeredAt?: string;
+}
+
 const props = defineProps({
   eventSlug: {
     type: String,
@@ -34,7 +40,7 @@ const props = defineProps({
     default: undefined,
   },
   lastQuestionnairePreScreening: {
-    type: Object as PropType<any>,
+    type: Object as PropType<LastQuestionnairePreScreening>,
     default: undefined,
   },
 });
