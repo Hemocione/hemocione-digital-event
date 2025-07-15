@@ -16,7 +16,7 @@ export function goToCanDonate(
   if (!baseUrl) return;
 
   const eventDate = startAt ?? "";
-  const url = `${baseUrl}/${slugType}?eventDate=${encodeURIComponent(eventDate)}&eventSlug=${eventSlug}&token=${userStore.token}`;
+  const url = `${baseUrl}/${slugType}?eventDate=${encodeURIComponent(eventDate)}&eventSlug=${eventSlug}&token=${userStore.token}&iframed=${userStore.iframed}`;
 
   return navigateTo(url, { external: true });
 }
