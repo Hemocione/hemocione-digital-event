@@ -25,6 +25,7 @@
     :selected-schedule-id="state.selectedScheduleId"
     :form-response-id="formResponseId"
     :status="status"
+    :last-questionnaire-pre-screening="lastQuestionnairePreScreening"
   />
   </main>
 </template>
@@ -142,6 +143,24 @@ function isSelected(scheduleId: string) {
 
 function goBack() {
   navigateTo(`/event/${eventSlug}`);
+}
+
+const lastPreScreening = localStorage.getItem(`lastPreScreening_${eventSlug}`);
+let lastQuestionnairePreScreening = undefined;
+if (lastPreScreening) {
+  try {
+    const parsed = JSON.parse(lastPreScreening);
+    if (parsed.answeredAt) {
+      const answeredAt = new Date(parsed.answeredAt);
+      const now = new Date();
+      const diffMonths = (now.getFullYear() - answeredAt.getFullYear()) * 12 + (now.getMonth() - answeredAt.getMonth());
+      if (diffMonths <= 1) {
+        lastQuestionnairePreScreening = parsed;
+      }
+    }
+  } catch (e) {
+    // ignore
+  }
 }
 </script>
 

@@ -102,7 +102,7 @@
 </template>
 
 <script setup lang="ts">
-import { reactive } from "vue";
+import { reactive, onMounted, nextTick } from "vue";
 import dayjs from "dayjs";
 import { formatTimeDuration, formatAddress } from "~/helpers/formatter";
 import { openSignosChat } from "~/plugins/signos.client";
@@ -196,7 +196,17 @@ async function cancelSubscription() {
   state.loading = true;
 
   try {
+    // Always fetch the latest subscription before deleting
+    const latestSubscription = await userStore.getSubscription(eventSlug);
+    if (latestSubscription?.lastQuestionnairePreScreening) {
+      localStorage.setItem(
+        `lastPreScreening_${eventSlug}`,
+        JSON.stringify(latestSubscription.lastQuestionnairePreScreening)
+      );
+      console.log("Saved to localStorage:", localStorage.getItem(`lastPreScreening_${eventSlug}`));
+    }
     await userStore.cancelSubscription(eventSlug);
+    // DO NOT remove the key here!
     goBack();
   } catch (error) {
     ElNotification({
@@ -214,6 +224,20 @@ function goBack() {
 }
 
 const SIGNOS_FEEDBACK_DELAY = 3000; // 3 seconds
+
+const lastPreScreening = localStorage.getItem(`lastPreScreening_${eventSlug}`);
+const lastQuestionnairePreScreening = lastPreScreening ? JSON.parse(lastPreScreening) : undefined;
+
+const shouldCancel = route.query.shouldCancel === "true";
+
+onMounted(async () => {
+  if (shouldCancel) {
+    await nextTick();
+    if (isAllowedToCancel.value && !state.loading) {
+      cancelSubscription();
+    }
+  }
+});
 
 // onMounted(() => {
   // Open the Signos chat after a delay. Uncomment when it doenst make the page buggy

@@ -172,7 +172,7 @@ const buttons = computed((): Button[] => {
         subscriptionsAvailable &&
         !hasSubscription &&
         !isFull.value,
-      action: isCanDonateOn.value ? goToPreScreenigMiddlePage : goToSchedule,
+      action: () => goToPreScreeningOrSchedule(props.eventSlug),
     },
     {
       label: "Acessar ingresso",
@@ -225,8 +225,25 @@ const groupedButtonsByType = computed(
   },
 );
 
-function goToPreScreenigMiddlePage() {
-  navigateTo(`/event/${props.eventSlug}/pre-screening`);
+function goToPreScreeningOrSchedule(eventSlug: string) {
+  try {
+    const lastPreScreeningStr = localStorage.getItem(`lastPreScreening_${eventSlug}`);
+    if (lastPreScreeningStr) {
+      const lastPreScreening = JSON.parse(lastPreScreeningStr);
+      if (lastPreScreening.answeredAt) {
+        const answeredAt = new Date(lastPreScreening.answeredAt);
+        const now = new Date();
+        const diffMonths = (now.getFullYear() - answeredAt.getFullYear()) * 12 + (now.getMonth() - answeredAt.getMonth());
+        if (diffMonths <= 1) {
+          navigateTo(`/event/${eventSlug}/schedules`);
+          return;
+        }
+      }
+    }
+  } catch (e) {
+    // Continue to pre screening
+  }
+  navigateTo(`/event/${eventSlug}/pre-screening`);
 }
 
 function goToSchedule() {
