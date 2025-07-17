@@ -25,7 +25,6 @@
 import { useRouter } from "vue-router";
 import { useRoute } from "vue-router";
 import { useEventStore } from "~/stores/event";
-import { onMounted } from "vue";
 
 definePageMeta({
 middleware: ["auth"],
@@ -39,19 +38,9 @@ const eventSlug = route.params.eventSlug as string;
 
 const eventConfig = await eventStore.getEvent(eventSlug);
 
-const shouldCancel = route.query.shouldCancel === "true";
-
 function goBack() {
 navigateTo(`/event/${eventSlug}`);
 }
-
-onMounted(() => {
-  if (shouldCancel) {
-    if (!state.loading && isAllowedToCancel.value) {
-      cancelSubscription();
-    }
-  }
-});
 </script>
 
 <style scoped>

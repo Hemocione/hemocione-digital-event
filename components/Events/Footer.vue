@@ -226,9 +226,9 @@ const groupedButtonsByType = computed(
 );
 
 function goToPreScreeningOrSchedule(eventSlug: string) {
-  const lastPreScreeningStr = localStorage.getItem(`lastPreScreening_${eventSlug}`);
-  if (lastPreScreeningStr) {
-    try {
+  try {
+    const lastPreScreeningStr = localStorage.getItem(`lastPreScreening_${eventSlug}`);
+    if (lastPreScreeningStr) {
       const lastPreScreening = JSON.parse(lastPreScreeningStr);
       if (lastPreScreening.answeredAt) {
         const answeredAt = new Date(lastPreScreening.answeredAt);
@@ -239,9 +239,9 @@ function goToPreScreeningOrSchedule(eventSlug: string) {
           return;
         }
       }
-    } catch (e) {
-      // Continue to pre screening
     }
+  } catch (e) {
+    // Continue to pre screening
   }
   navigateTo(`/event/${eventSlug}/pre-screening`);
 }
