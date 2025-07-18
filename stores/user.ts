@@ -13,8 +13,14 @@ interface Subscription {
   lastQuestionnairePreScreening?: {
     formResponseId?: string;
     status?: "able-to-donate" | "unable-to-donate";
-    answeredAt?: string; 
+    answeredAt?: string;
   } | null;
+}
+
+interface LastQuestionnairePreScreening {
+  formResponseId?: string;
+  status?: "able-to-donate" | "unable-to-donate";
+  answeredAt?: string;
 }
 
 export const useUserStore = defineStore("user", {
@@ -23,6 +29,7 @@ export const useUserStore = defineStore("user", {
     token: null as string | null,
     subscriptions: new Map<string, Subscription>(),
     volunteering: new Map<string, Boolean>(),
+    iframed: false as boolean,
   }),
   getters: {
     hasSubscriptionInEvent: (state) => (eventSlug: string) =>
@@ -32,6 +39,9 @@ export const useUserStore = defineStore("user", {
     loggedIn: (state) => Boolean(state.user),
   },
   actions: {
+    setIframed(value: boolean) {
+      this.iframed = value;
+    },
     setUser(user: CurrentUserData | null) {
       const { $clientPosthog } = useNuxtApp();
       this.user = user;
@@ -53,59 +63,72 @@ export const useUserStore = defineStore("user", {
       eventSlug: string,
       scheduleId: string,
       formResponseId?: string,
-      status?: "able-to-donate" | "unable-to-donate"
+      status?: "able-to-donate" | "unable-to-donate",
+      lastQuestionnairePreScreening?: LastQuestionnairePreScreening,
     ) {
+      const body: {
+            scheduleId: string;
+            formResponseId?: string;
+            status?: "able-to-donate" | "unable-to-donate";
+            lastQuestionnairePreScreening?: LastQuestionnairePreScreening;
+          } = {
+        scheduleId,
+        formResponseId,
+        status,
+      };
+      if (lastQuestionnairePreScreening) {
+        body.lastQuestionnairePreScreening = lastQuestionnairePreScreening;
+      }
       const subscription = await fetchWithAuth(
         `/api/v1/event/${eventSlug}/subscription`,
         {
           method: "POST",
-          body: {
-            scheduleId,
-            formResponseId,
-            status,
-          },
+          body,
         },
       );
-    
+
       if (!subscription) {
-          throw new Error("Authentication required to create a subscription");
-        }
-        
-        this.subscriptions.set(eventSlug, subscription);
-        
-        const eventStore = useEventStore();
-        eventStore.incrementSlot(eventSlug, scheduleId);
-        
-        return subscription;
+        throw new Error("Authentication required to create a subscription");
+      }
+
+      this.subscriptions.set(eventSlug, subscription);
+
+      const eventStore = useEventStore();
+      eventStore.incrementSlot(eventSlug, scheduleId);
+
+      return subscription;
     },
-    
+
     async getSubscription(
       eventSlug: string,
-      options?: { formResponseId?: string; status?: "able-to-donate" | "unable-to-donate" }
+      options?: {
+        formResponseId?: string;
+        status?: "able-to-donate" | "unable-to-donate";
+      },
     ): Promise<Subscription | null> {
       if (this.subscriptions.has(eventSlug)) {
         return this.subscriptions.get(eventSlug)!;
       }
-    
+
       try {
         const subscription = await fetchWithAuth(
           `/api/v1/event/${eventSlug}/subscription/mine`,
-          { query: options }
+          { query: options },
         );
-    
+
         if (!subscription) return null;
-    
+
         this.subscriptions.set(eventSlug, subscription);
         return subscription;
       } catch (err: any) {
         if (err?.data?.statusCode === 404) {
           return null;
         }
-    
+
         console.error("Erro ao buscar subscription:", err);
         throw err;
       }
-    },    
+    },
 
     async cancelSubscription(eventSlug: string) {
       await fetchWithAuth(`/api/v1/event/${eventSlug}/subscription/mine`, {
@@ -122,7 +145,7 @@ export const useUserStore = defineStore("user", {
         -1,
       );
       this.subscriptions.delete(eventSlug);
-    },    
+    },
 
     async createExternalVolunteer(eventSlug: string) {
       await fetchWithAuth(`/api/v1/event/${eventSlug}/external-volunteer`, {

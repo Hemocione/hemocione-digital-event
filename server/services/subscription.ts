@@ -86,6 +86,11 @@ export async function createSubscription(
     endAt: Date;
     formResponseId?: string;
     status?: "able-to-donate" | "unable-to-donate";
+    lastQuestionnairePreScreening?: {
+      formResponseId?: string;
+      status?: "able-to-donate" | "unable-to-donate";
+      answeredAt?: Date;
+    };
   },
 ) {
   const subscription = new Subscription({
@@ -98,7 +103,9 @@ export async function createSubscription(
     schedule,
   });
 
-  if (schedule.formResponseId && schedule.status) {
+  if (schedule.lastQuestionnairePreScreening) {
+    subscription.lastQuestionnairePreScreening = schedule.lastQuestionnairePreScreening;
+  } else if (schedule.formResponseId && schedule.status) {
     subscription.lastQuestionnairePreScreening = {
       formResponseId: schedule.formResponseId,
       status: schedule.status,
