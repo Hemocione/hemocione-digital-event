@@ -124,8 +124,7 @@ const hasLastSubscriptionSchedulePassed = computed(() => {
 });
 
 const isCanDonateOn = computed(() => {
-  const config = eventConfig?.preScreening;
-  return config && !config.disabled;
+  return eventConfig?.preScreening?.disabled !== true;
 });
 
 const buttons = computed((): Button[] => {
@@ -226,23 +225,35 @@ const groupedButtonsByType = computed(
 );
 
 function goToPreScreeningOrSchedule(eventSlug: string) {
+  if (eventConfig?.preScreening?.disabled === true) {
+    // Triagem desativada explicitamente → pula direto
+    navigateTo(`/event/${eventSlug}/schedules`);
+    return;
+  }
+
   try {
     const lastPreScreeningStr = localStorage.getItem(`lastPreScreening_${eventSlug}`);
     if (lastPreScreeningStr) {
       const lastPreScreening = JSON.parse(lastPreScreeningStr);
-      if (lastPreScreening.answeredAt) {
+      if (lastPreScreening?.answeredAt) {
         const answeredAt = new Date(lastPreScreening.answeredAt);
-        const now = new Date();
-        const diffMonths = (now.getFullYear() - answeredAt.getFullYear()) * 12 + (now.getMonth() - answeredAt.getMonth());
-        if (diffMonths <= 1) {
-          navigateTo(`/event/${eventSlug}/schedules`);
-          return;
+        if (!isNaN(answeredAt.getTime())) {
+          const now = new Date();
+          const diffMonths =
+            (now.getFullYear() - answeredAt.getFullYear()) * 12 +
+            (now.getMonth() - answeredAt.getMonth());
+
+          if (diffMonths <= 1) {
+            navigateTo(`/event/${eventSlug}/schedules`);
+            return;
+          }
         }
       }
     }
   } catch (e) {
-    // Continue to pre screening
+    console.warn("Erro ao ler localStorage do preScreening:", e);
   }
+
   navigateTo(`/event/${eventSlug}/pre-screening`);
 }
 

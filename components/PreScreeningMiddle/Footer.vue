@@ -37,31 +37,29 @@ interface Button {
 }
 
 const isCanDonateOn = computed(() => {
-  const config = eventConfig?.preScreening;
-  return config && !config.disabled;
+  return eventConfig?.preScreening?.disabled !== true;
 });
 
 const isCanDonateMandatory = computed(() => {
-  const config = eventConfig?.preScreening;
-  return config && !config.disabled && config.mandatory;
+  return eventConfig?.preScreening?.mandatory === true;
 });
 
 const buttons = computed((): Button[] => [
   {
     label: "Pular questionário",
     type: "default",
-    visible: Boolean(isCanDonateOn.value && !isCanDonateMandatory.value),
+    visible: isCanDonateOn.value && !isCanDonateMandatory.value,
     action: goToSchedule,
   },
   {
     label: "Continuar",
     type: "primary",
-    disabled: false,
-    visible: Boolean(isCanDonateOn.value),
+    visible: isCanDonateOn.value,
     action: () =>
-      goToCanDonate("event-flow-schedule", props.eventSlug, eventConfig.startAt),
+      goToCanDonate("event-flow-schedule", props.eventSlug, eventConfig?.startAt),
   },
 ]);
+
 
 const visibleButtons = computed(() =>
   buttons.value.filter((btn) => btn.visible)
