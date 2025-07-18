@@ -124,8 +124,7 @@ const hasLastSubscriptionSchedulePassed = computed(() => {
 });
 
 const isCanDonateOn = computed(() => {
-  const config = eventConfig?.preScreening;
-  return config && !config.disabled;
+  return eventConfig?.preScreening?.disabled !== true;
 });
 
 const buttons = computed((): Button[] => {
