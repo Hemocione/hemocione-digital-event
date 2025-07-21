@@ -225,17 +225,21 @@ const groupedButtonsByType = computed(
 );
 
 function goToPreScreeningOrSchedule(eventSlug: string) {
-  if (eventConfig?.preScreening?.disabled === true) {
-    // Triagem desativada explicitamente → pula direto
-    navigateTo(`/event/${eventSlug}/schedules`);
+  const userStore = useUserStore();
+  const userId = userStore.user?.id;
+
+  if (!userId) {
+    console.warn("Usuário não identificado, não é possível verificar localStorage.");
+    navigateTo(`/event/${eventSlug}/pre-screening`);
     return;
   }
 
   try {
-    const lastPreScreeningStr = localStorage.getItem(`lastPreScreening_${eventSlug}`);
+    const key = `lastPreScreening_${userId}_${eventSlug}`;
+    const lastPreScreeningStr = localStorage.getItem(key);
     if (lastPreScreeningStr) {
       const lastPreScreening = JSON.parse(lastPreScreeningStr);
-      if (lastPreScreening?.answeredAt) {
+      if (lastPreScreening.answeredAt) {
         const answeredAt = new Date(lastPreScreening.answeredAt);
         if (!isNaN(answeredAt.getTime())) {
           const now = new Date();
@@ -256,6 +260,7 @@ function goToPreScreeningOrSchedule(eventSlug: string) {
 
   navigateTo(`/event/${eventSlug}/pre-screening`);
 }
+
 
 function goToSchedule() {
   navigateTo(`/event/${props.eventSlug}/schedules`);

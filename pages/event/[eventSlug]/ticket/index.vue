@@ -196,25 +196,34 @@ async function cancelSubscription() {
   state.loading = true;
 
   try {
-    // Always fetch the latest subscription before deleting
-    const latestSubscription = await userStore.getSubscription(eventSlug);
-    if (latestSubscription?.lastQuestionnairePreScreening) {
-      localStorage.setItem(
-        `lastPreScreening_${eventSlug}`,
-        JSON.stringify(latestSubscription.lastQuestionnairePreScreening)
-      );
-      console.log("Saved to localStorage:", localStorage.getItem(`lastPreScreening_${eventSlug}`));
-    }
-    await userStore.cancelSubscription(eventSlug);
-    // DO NOT remove the key here!
-    goBack();
-  } catch (error) {
-    ElNotification({
-      title: "Erro ao cancelar agendamento",
-      message: "Por favor, tente novamente mais tarde.",
-      type: "error",
-    });
+  // Always fetch the latest subscription before deleting
+  const latestSubscription = await userStore.getSubscription(eventSlug);
+
+  if (latestSubscription?.lastQuestionnairePreScreening && userStore.user) {
+    const storageKey = `lastPreScreening_${userStore.user.id}_${eventSlug}`;
+    
+    localStorage.setItem(
+      storageKey,
+      JSON.stringify({
+        ...latestSubscription.lastQuestionnairePreScreening,
+        eventSlug, // opcional: útil para debug
+      })
+    );
+
+    console.log("Saved to localStorage:", localStorage.getItem(storageKey));
   }
+
+  await userStore.cancelSubscription(eventSlug);
+  // DO NOT remove the key here!
+  goBack();
+} catch (error) {
+  ElNotification({
+    title: "Erro ao cancelar agendamento",
+    message: "Por favor, tente novamente mais tarde.",
+    type: "error",
+  });
+}
+
 
   state.loading = false;
 }
