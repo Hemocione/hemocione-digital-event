@@ -14,7 +14,6 @@
 </template>
 
 <script setup lang="ts">
-import { useLastPreScreening } from "~/composables/useLastPreScreening";
 import { isTodayAndPast } from "~/helpers/todayAndPast";
 
 const props = defineProps({
@@ -232,6 +231,11 @@ function goToPreScreeningOrSchedule(eventSlug: string) {
   if (!userId) {
     console.warn("Usuário não identificado, não é possível verificar localStorage.");
     navigateTo(`/event/${eventSlug}/pre-screening`);
+    return;
+  }
+
+  if (eventConfig?.preScreening?.disabled === true) {
+    navigateTo(`/event/${eventSlug}/schedules`);
     return;
   }
 
