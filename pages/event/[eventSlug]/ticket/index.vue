@@ -205,8 +205,7 @@ async function cancelSubscription() {
     localStorage.setItem(
       storageKey,
       JSON.stringify({
-        ...latestSubscription.lastQuestionnairePreScreening,
-        eventSlug, // opcional: útil para debug
+        ...latestSubscription.lastQuestionnairePreScreening
       })
     );
 
@@ -214,7 +213,6 @@ async function cancelSubscription() {
   }
 
   await userStore.cancelSubscription(eventSlug);
-  // DO NOT remove the key here!
   goBack();
 } catch (error) {
   ElNotification({
