@@ -14,6 +14,7 @@
 </template>
 
 <script setup lang="ts">
+import { useLastPreScreening } from "~/composables/useLastPreScreening";
 import { isTodayAndPast } from "~/helpers/todayAndPast";
 
 const props = defineProps({
@@ -234,33 +235,14 @@ function goToPreScreeningOrSchedule(eventSlug: string) {
     return;
   }
 
-  try {
-    const key = `lastPreScreening_${userId}_${eventSlug}`;
-    const lastPreScreeningStr = localStorage.getItem(key);
-    if (lastPreScreeningStr) {
-      const lastPreScreening = JSON.parse(lastPreScreeningStr);
-      if (lastPreScreening.answeredAt) {
-        const answeredAt = new Date(lastPreScreening.answeredAt);
-        if (!isNaN(answeredAt.getTime())) {
-          const now = new Date();
-          const diffMonths =
-            (now.getFullYear() - answeredAt.getFullYear()) * 12 +
-            (now.getMonth() - answeredAt.getMonth());
+  const preScreening = useLastPreScreening(userId, eventSlug);
 
-          if (diffMonths <= 1) {
-            navigateTo(`/event/${eventSlug}/schedules`);
-            return;
-          }
-        }
-      }
-    }
-  } catch (e) {
-    console.warn("Erro ao ler localStorage do preScreening:", e);
+  if (preScreening) {
+    navigateTo(`/event/${eventSlug}/schedules`);
+  } else {
+    navigateTo(`/event/${eventSlug}/pre-screening`);
   }
-
-  navigateTo(`/event/${eventSlug}/pre-screening`);
 }
-
 
 function goToSchedule() {
   navigateTo(`/event/${props.eventSlug}/schedules`);
