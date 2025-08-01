@@ -123,6 +123,10 @@ const hasLastSubscriptionSchedulePassed = computed(() => {
   return now > lastScheduleDate;
 });
 
+const isCanDonateOn = computed(() => {
+  return eventConfig?.preScreening?.disabled !== true;
+});
+
 const buttons = computed((): Button[] => {
   const isLogged = Boolean(user);
   const hasSubscription = Boolean(subscription);
@@ -167,7 +171,7 @@ const buttons = computed((): Button[] => {
         subscriptionsAvailable &&
         !hasSubscription &&
         !isFull.value,
-      action: goToSchedule,
+      action: () => goToPreScreeningOrSchedule(props.eventSlug),
     },
     {
       label: "Acessar ingresso",
@@ -219,6 +223,30 @@ const groupedButtonsByType = computed(
     return groupedButtons;
   },
 );
+
+function goToPreScreeningOrSchedule(eventSlug: string) {
+  const userStore = useUserStore();
+  const userId = userStore.user?.id;
+
+  if (!userId) {
+    console.warn("Usuário não identificado, não é possível verificar localStorage.");
+    navigateTo(`/event/${eventSlug}/pre-screening`);
+    return;
+  }
+
+  if (eventConfig?.preScreening?.disabled === true) {
+    navigateTo(`/event/${eventSlug}/schedules`);
+    return;
+  }
+
+  const preScreening = useLastPreScreening(userId, eventSlug);
+
+  if (preScreening) {
+    navigateTo(`/event/${eventSlug}/schedules`);
+  } else {
+    navigateTo(`/event/${eventSlug}/pre-screening`);
+  }
+}
 
 function goToSchedule() {
   navigateTo(`/event/${props.eventSlug}/schedules`);

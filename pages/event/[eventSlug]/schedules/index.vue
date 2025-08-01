@@ -21,15 +21,19 @@
       </div>
     </article>
     <SchedulesFooter
-      :event-slug="eventSlug"
-      :selected-schedule-id="state.selectedScheduleId"
-    />
+    :event-slug="eventSlug"
+    :selected-schedule-id="state.selectedScheduleId"
+    :form-response-id="formResponseId"
+    :status="status"
+    :last-questionnaire-pre-screening="lastQuestionnairePreScreening"
+  />
   </main>
 </template>
 
 <script setup lang="ts">
 import dayjs from "dayjs";
 import { computed, reactive } from "vue";
+import { useLastPreScreening } from "~/composables/useLastPreScreening";
 import { isTodayAndPast } from "~/helpers/todayAndPast";
 
 definePageMeta({
@@ -37,15 +41,19 @@ definePageMeta({
 });
 
 const route = useRoute();
-const eventStore = useEventStore();
-const userStore = useUserStore();
 const eventSlug = route.params.eventSlug as string;
-const eventConfig = await eventStore.getEvent(eventSlug);
-const subscription = await userStore.getSubscription(eventSlug);
+const userStore = useUserStore();
 
-if (!eventConfig) {
-  navigateTo("/404");
-}
+const formResponseId = route.query.formResponseId as string | undefined;
+const status = route.query.status as "able-to-donate" | "unable-to-donate" | undefined;
+
+const eventStore = useEventStore();
+const eventConfig = await eventStore.getEvent(eventSlug);
+
+const subscription = await userStore.getSubscription(eventSlug, {
+  formResponseId,
+  status
+});
 
 if (subscription) {
   navigateTo(`/event/${eventSlug}/ticket`);
@@ -137,6 +145,9 @@ function isSelected(scheduleId: string) {
 function goBack() {
   navigateTo(`/event/${eventSlug}`);
 }
+
+const userId = userStore.user?.id;
+const lastQuestionnairePreScreening = useLastPreScreening(userId, eventSlug);
 </script>
 
 <style scoped>

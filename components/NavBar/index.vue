@@ -16,6 +16,9 @@
 <script setup lang="ts">
 const route = useRoute();
 const isIframed = ref(route.query.iframed === "true");
+const userStore = useUserStore();
+
+userStore.setIframed(isIframed.value);
 
 onBeforeMount(() => {
   if (isIframed.value) {

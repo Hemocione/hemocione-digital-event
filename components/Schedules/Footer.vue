@@ -16,6 +16,12 @@ import { reactive } from "vue";
 
 const userStore = useUserStore();
 
+interface LastQuestionnairePreScreening {
+  formResponseId?: string;
+  status?: "able-to-donate" | "unable-to-donate";
+  answeredAt?: string;
+}
+
 const props = defineProps({
   eventSlug: {
     type: String,
@@ -24,6 +30,18 @@ const props = defineProps({
   selectedScheduleId: {
     type: String as PropType<string | null>,
     default: null,
+  },
+  formResponseId: {
+    type: String as PropType<string | undefined>,
+    default: undefined,
+  },
+  status: {
+    type: String as PropType<"able-to-donate" | "unable-to-donate" | undefined>,
+    default: undefined,
+  },
+  lastQuestionnairePreScreening: {
+    type: Object as PropType<LastQuestionnairePreScreening>,
+    default: undefined,
   },
 });
 
@@ -48,6 +66,9 @@ async function selectSchedule() {
     await userStore.createSubscription(
       props.eventSlug,
       props.selectedScheduleId,
+      props.formResponseId,
+      props.status,
+      props.lastQuestionnairePreScreening,
     );
     navigateTo(`/event/${props.eventSlug}/ticket`);
   } catch (error) {
