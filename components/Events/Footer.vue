@@ -225,36 +225,27 @@ const groupedButtonsByType = computed(
 );
 
 function goToPreScreeningOrSchedule(eventSlug: string) {
+  const userStore = useUserStore();
+  const userId = userStore.user?.id;
+
+  if (!userId) {
+    console.warn("Usuário não identificado, não é possível verificar localStorage.");
+    navigateTo(`/event/${eventSlug}/pre-screening`);
+    return;
+  }
+
   if (eventConfig?.preScreening?.disabled === true) {
-    // Triagem desativada explicitamente → pula direto
     navigateTo(`/event/${eventSlug}/schedules`);
     return;
   }
 
-  try {
-    const lastPreScreeningStr = localStorage.getItem(`lastPreScreening_${eventSlug}`);
-    if (lastPreScreeningStr) {
-      const lastPreScreening = JSON.parse(lastPreScreeningStr);
-      if (lastPreScreening?.answeredAt) {
-        const answeredAt = new Date(lastPreScreening.answeredAt);
-        if (!isNaN(answeredAt.getTime())) {
-          const now = new Date();
-          const diffMonths =
-            (now.getFullYear() - answeredAt.getFullYear()) * 12 +
-            (now.getMonth() - answeredAt.getMonth());
+  const preScreening = useLastPreScreening(userId, eventSlug);
 
-          if (diffMonths <= 1) {
-            navigateTo(`/event/${eventSlug}/schedules`);
-            return;
-          }
-        }
-      }
-    }
-  } catch (e) {
-    console.warn("Erro ao ler localStorage do preScreening:", e);
+  if (preScreening) {
+    navigateTo(`/event/${eventSlug}/schedules`);
+  } else {
+    navigateTo(`/event/${eventSlug}/pre-screening`);
   }
-
-  navigateTo(`/event/${eventSlug}/pre-screening`);
 }
 
 function goToSchedule() {
