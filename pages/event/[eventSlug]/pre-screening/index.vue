@@ -37,8 +37,20 @@ definePageMeta({
 const route = useRoute();
 const eventStore = useEventStore();
 const router = useRouter();
+const userStore = useUserStore();
 
 const eventSlug = route.params.eventSlug as string;
+
+// 1) Fast path: usa o cache local
+if (userStore.hasSubscriptionInEvent(eventSlug)) {
+  return navigateTo(`/event/${eventSlug}/ticket`);
+}
+
+// 2) Check definitivo: busca no backend se necessário
+const existing = await userStore.getSubscription(eventSlug);
+if (existing) {
+  return navigateTo(`/event/${eventSlug}/ticket`);
+}
 
 const eventConfig = await eventStore.getEvent(eventSlug);
 
