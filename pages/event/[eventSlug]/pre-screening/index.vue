@@ -41,12 +41,6 @@ const userStore = useUserStore();
 
 const eventSlug = route.params.eventSlug as string;
 
-// 1) Fast path: usa o cache local
-if (userStore.hasSubscriptionInEvent(eventSlug)) {
-  navigateTo(`/event/${eventSlug}/ticket`);
-}
-
-// 2) Check definitivo: busca no backend se necessário
 const existing = await userStore.getSubscription(eventSlug);
 if (existing) {
   navigateTo(`/event/${eventSlug}/ticket`);
