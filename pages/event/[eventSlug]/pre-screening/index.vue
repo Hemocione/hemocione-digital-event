@@ -37,8 +37,14 @@ definePageMeta({
 const route = useRoute();
 const eventStore = useEventStore();
 const router = useRouter();
+const userStore = useUserStore();
 
 const eventSlug = route.params.eventSlug as string;
+
+const existing = await userStore.getSubscription(eventSlug);
+if (existing) {
+  navigateTo(`/event/${eventSlug}/ticket`);
+}
 
 const eventConfig = await eventStore.getEvent(eventSlug);
 
