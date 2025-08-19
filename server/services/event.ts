@@ -446,3 +446,39 @@ export async function markDonationsAsSent(eventSlug: string) {
     },
   );
 }
+
+export async function getPointsOndeDoar(oldEvents: boolean = false) {
+  const cached = getEventsCache.get(oldEvents);
+  if (cached && cached.generatedAt.getTime() + EVENTS_CACHE_TTL >= Date.now()) {
+    return cached.data;
+  }
+
+  const filter = {
+    private: { $ne: true },
+    ...(oldEvents
+      ? { endAt: { $lte: new Date() } }
+      : { endAt: { $gte: new Date() } }),
+  };
+  const sort = oldEvents
+    ? { startAt: -1, endAt: -1, _id: -1 }
+    : { startAt: 1, endAt: 1, _id: 1 };
+
+  const events = await getEventsFromDBPromise(filter, sort);
+  const now = new Date();
+
+  // Transform to return only name, dates, location, and active status
+  const simplifiedEvents = events.map((event) => ({
+    name: event.name,
+    startAt: event.startAt,
+    endAt: event.endAt,
+    location: event.location || null,
+  }));
+
+  // update cache
+  getEventsCache.set(oldEvents, {
+    generatedAt: new Date(),
+    data: simplifiedEvents,
+  });
+
+  return simplifiedEvents;
+}
