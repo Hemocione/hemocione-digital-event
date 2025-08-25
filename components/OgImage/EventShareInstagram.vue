@@ -1,148 +1,95 @@
 <template>
-  <div
-    style="
-      position: relative;
-      background-color: #fce6e8;
-      color: #25282b;
-      width: 100%;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      height: 100%;
-    "
+  <div 
+    class="background"
+    style="position: relative; width: 1080px; height: 1920px; background-image: url('/images/illustrations/EventShare-background.png'); background-size: cover; background-position: center; background-repeat: no-repeat; color: #25282b; display: flex; align-items: center; justify-content: center;"
   >
-    <div
-      style="
-        height: 70%;
-        width: 100%;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        gap: 32px;
-      "
+    <div 
+      class="info"
+      style="position: absolute; top: 28%; width: 920px; display: flex; flex-direction: column; align-items: center;"
     >
-      <div
-        v-for="i in 3"
-        :key="i"
-        style="
-          display: flex;
-          gap: 32px;
-          opacity: 0.25;
-          height: 33%;
-          padding: 32px;
-        "
+      <div 
+        class="slogan"
+        style="font-size: 64px; font-weight: 700; color: #BB0A08; text-align: center; line-height: 1.1; margin-bottom: 40px;"
       >
-        <img
-          v-for="ind in 5"
-          :key="ind"
-          src="/images/icons/hemologo-tracejado.svg"
-          style="flex-grow: 1; height: 100%; object-fit: contain"
-        />
+        Doe sangue, salve vidas!
       </div>
-      <div
-        style="
-          position: absolute;
-          top: 2rem;
-          width: 100%;
-          display: flex;
-          justify-content: center;
-        "
+
+      <div 
+        class="info-box"
+        style="width: 100%; background: #F4F1EA; border: 6px solid #3A3A3A; border-radius: 28px; padding: 36px 40px; display: flex; flex-direction: column; gap: 18px;"
       >
-        <img
-          src="/images/hemocione-logo-default.svg"
-          height="400"
-          width="800"
-        />
-      </div>
-      <div
-        style="
-          width: 100%;
-          display: flex;
-          justify-content: center;
-          position: absolute;
-          bottom: 0;
-        "
-      >
-        <img src="/images/illustrations/amizade.svg" width="800" height="466" />
-      </div>
-    </div>
-    <div
-      style="
-        height: 30%;
-        width: 100%;
-        padding: 50px;
-        border-top: 10px solid #bb0a08;
-        display: flex;
-        flex-direction: column;
-        gap: 1rem;
-        position: relative;
-        background-color: #bb0a0820;
-      "
-    >
-      <h1 style="color: #bb0a08; font-weight: bold; font-size: 4rem">
-        DOE SANGUE, SALVE VIDAS
-      </h1>
-      <div style="display: flex; gap: 1rem; width: 100%">
-        <div
-          v-if="props.startAt"
-          style="
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            gap: 0.25rem;
-            padding: 0.5rem;
-            border-radius: 100%;
-            width: 14rem;
-            height: 14rem;
-            text-align: center;
-            background-color: #bb0a08;
-            color: #f2f2f2;
-          "
+        <div 
+          class="info-box-title"
+          style="font-size: 52px; font-weight: 700; color: #25282b; text-align: left; line-height: 1.2;"
         >
-          <span style="font-size: 3.5rem">{{ humanReadableMonth }}</span>
-          <span style="font-size: 5rem; font-weight: bold">{{ day }}</span>
+          {{ title }}
         </div>
-        <div
-          style="display: flex; flex-direction: column; gap: 2rem; width: 80%"
+
+        <div 
+          class="info-box-date"
+          style="display: flex; align-items: flex-start; gap: 12px; font-size: 40px; color: #25282b; line-height: 1.3;"
         >
-          <h1 style="font-size: 3rem; margin: 0">{{ title }}</h1>
-          <p style="font-size: 2rem">{{ addressText }}</p>
+          <ElIcon 
+            class="icon"
+            style="width: 40px !important; height: 40px !important; color: #BB0A08; flex-shrink: 0; font-size: 40px !important;"
+          >
+            <ElIconCalendar style="width: 40px !important; height: 40px !important;" />
+          </ElIcon>
+          <span>{{ formattedDate }}</span>
         </div>
+
+        <div 
+          class="info-box-location"
+          style="display: flex; align-items: flex-start; gap: 12px; font-size: 40px; color: #25282b; line-height: 1.3;"
+        >
+          <ElIcon 
+            class="icon"
+            style="width: 40px !important; height: 40px !important; color: #BB0A08; flex-shrink: 0; font-size: 40px !important;"
+          >
+            <ElIconLocation style="width: 40px !important; height: 40px !important;" />
+          </ElIcon>
+          <span>{{ addressText || 'Local do evento' }}</span>
+        </div>
+      </div>
+
+      <div 
+        class="registration-pill"
+        style="margin-top: 40px; background: #BB0A08; color: white; padding: 12px 24px; border-radius: 40px; font-size: 38px; font-weight: 700; text-align: center; line-height: 1.2; white-space: nowrap;"
+      >
+        Se inscreva em eventos.hemocione.com.br
       </div>
     </div>
   </div>
 </template>
+
 <script setup lang="ts">
-defineOptions({
-  inheritAttrs: false,
-});
+defineOptions({ inheritAttrs: false })
+
+
 const props = defineProps<{
-  title: string;
-  addressText: string;
-  startAt: string;
-}>();
+  title: string
+  addressText: string
+  startAt: string
+}>()
 
-const monthMinimalText = [
-  "JAN",
-  "FEV",
-  "MAR",
-  "ABR",
-  "MAI",
-  "JUN",
-  "JUL",
-  "AGO",
-  "SET",
-  "OUT",
-  "NOV",
-  "DEZ",
-] as const;
+const monthNames = [
+  'janeiro','fevereiro','março','abril','maio','junho',
+  'julho','agosto','setembro','outubro','novembro','dezembro'
+] as const
 
-const validDate = props.startAt ? new Date(props.startAt) : undefined;
+const validDate = props.startAt ? new Date(props.startAt) : undefined
 
-const humanReadableMonth = validDate
-  ? monthMinimalText[validDate.getMonth()]
-  : undefined;
+const pad = (n: number) => n.toString().padStart(2, '0')
+const formatDate = (date: Date) => {
+  const day = date.getDate()
+  const month = monthNames[date.getMonth()]
+  const year = date.getFullYear()
+  const hours = pad(date.getHours())
+  const minutes = pad(date.getMinutes())
+  return `${day} de ${month} de ${year} às ${hours}:${minutes}`
+}
 
-const day = validDate ? validDate.getDate() : undefined;
+const formattedDate = validDate ? formatDate(validDate) : 'Data do evento'
 </script>
+
+
