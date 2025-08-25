@@ -81,12 +81,19 @@ const validDate = props.startAt ? new Date(props.startAt) : undefined
 
 const pad = (n: number) => n.toString().padStart(2, '0')
 const formatDate = (date: Date) => {
-  const day = date.getDate()
-  const month = monthNames[date.getMonth()]
-  const year = date.getFullYear()
-  const hours = pad(date.getHours())
-  const minutes = pad(date.getMinutes())
-  return `${day} de ${month} de ${year} às ${hours}:${minutes}`
+  const formatter = new Intl.DateTimeFormat("pt-BR", {
+    timeZone: "America/Sao_Paulo",
+    day: "2-digit",
+    month: "long",
+    year: "numeric",
+    hour: "2-digit",
+    minute: "2-digit"
+  })
+
+  const parts = formatter.formatToParts(date)
+  const get = (type: string) => parts.find(p => p.type === type)?.value || ""
+
+  return `${get("day")} de ${get("month")} de ${get("year")} às ${get("hour")}:${get("minute")}`
 }
 
 const formattedDate = validDate ? formatDate(validDate) : 'Data do evento'
