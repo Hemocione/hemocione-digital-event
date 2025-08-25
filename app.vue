@@ -6,7 +6,7 @@
         title="Hemocione"
         cta-text="INSTALAR APP"
         store-url="https://apps.apple.com/app/idXXXXXXXXX"
-        icon="/icons/drop.svg"
+        icon="/images/logo.svg"
         :top="96"
         :height="100"
         :peek-width="80"

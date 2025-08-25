@@ -9,9 +9,9 @@ const props = withDefaults(defineProps<{
 
   // posição / tamanhos
   top?: number
-  right?: number          // offset quando ABERTO (ex.: 16)
-  rightClosed?: number    // offset quando FECHADO (normalmente 0 = colado)
-  edgeNudge?: number      // micro ajuste (ex.: 0.5) pra eliminar “fio” subpixel
+  right?: number          
+  rightClosed?: number    
+  edgeNudge?: number      
   height?: number
   openWidth?: number
   peekWidth?: number
@@ -26,12 +26,12 @@ const props = withDefaults(defineProps<{
   title: 'Hemocione',
   ctaText: 'INSTALAR APP',
   storeUrl: '#',
-  icon: '/icons/drop.svg',
+  icon: '/images/logo.svg',
 
   top: 96,
   right: 16,
   rightClosed: 0,
-  edgeNudge: 0,       // se enxergar um “ar” de 1px, experimente 0.5
+  edgeNudge: 0,      
   height: 56,
   openWidth: 420,
   peekWidth: 120,
@@ -69,10 +69,9 @@ onMounted(() => { open.value = false })
       <button v-if="open" class="close" aria-label="Fechar" @click="open = false">×</button>
 
       <!-- conteúdo (logo e textos só quando aberto) -->
-      <img v-if="open" class="logo" :src="icon" alt="" @error="(e:any)=> e.target?.remove?.()" />
+      <img class="logo" :src="icon" alt="" @error="(e:any)=> e.target?.remove?.()" />
       <div class="text" @click="open = true">
         <strong class="title">{{ title }}</strong>
-        <span class="subtitle" v-if="open">Instale o app para ter a melhor experiência</span>
       </div>
 
       <component
@@ -140,11 +139,10 @@ onMounted(() => { open.value = false })
 /* conteúdo */
 .logo { width: 40px; height: 40px; border-radius: 9999px; }
 .text { min-width: 0; cursor: pointer; }
-.title { display:block; font-size:16px; line-height:1.1; }
-.subtitle { display:block; font-size:12px; color:#666; }
+.title { display:block; font-size:18px; line-height:1.1;color: var(--hemo-color-black-100) }
 
 button.cta {
-  border: 0; padding: 8px 12px; border-radius: 9999px;
+  border: 0; padding: 8px 12px; border-radius: 8px;
   font-weight: 600; background: var(--color); color:#fff; cursor: pointer;
 }
 
