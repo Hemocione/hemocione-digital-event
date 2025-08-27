@@ -37,7 +37,7 @@ const props = withDefaults(defineProps<{
   peekWidth: 120,
 
   lineColor: '#E54B4B',
-  lineWidth: 3,
+  lineWidth: 2,
   radius: 28,
 
   useElementPlus: false,
@@ -65,8 +65,14 @@ onMounted(() => { open.value = false })
 <template>
   <teleport to="body">
     <div class="pill" :class="{ open }" :style="vars" role="dialog" aria-live="polite">
-      <!-- fechar (só quando aberto) -->
-      <button v-if="open" class="close" aria-label="Fechar" @click="open = false">×</button>
+     
+     <!-- fechar (só quando aberto) -->
+      <button v-if="open" class="close" aria-label="Fechar" @click="open = false">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <line x1="6" y1="6" x2="18" y2="18" />
+          <line x1="18" y1="6" x2="6" y2="18" />
+        </svg>
+      </button>
 
       <!-- conteúdo (logo e textos só quando aberto) -->
       <div class="logo-wrap">
@@ -113,7 +119,7 @@ onMounted(() => { open.value = false })
   padding: 0 14px;
   z-index: 9999;
 
-  border: var(--stroke) solid var(--color);
+  border: var(--stroke) solid var(--hemo-color-pinkish-red);
   border-right: 0;
   border-top-left-radius: var(--radius);
   border-bottom-left-radius: var(--radius);
@@ -133,11 +139,12 @@ onMounted(() => { open.value = false })
 .pill.open {
   left: 50%;
   right: auto;
-  transform: translateX(-50%);                     /* ABERTO: centraliza no X */
-  width: min(var(--openW), 90vw);                  /* largura no aberto */
+  transform: translateX(-50%);                    
+  width: min(var(--openW), 90vw);                  
   border-right: var(--stroke) solid var(--color);
-  border-top-right-radius: var(--radius);          /* direita curva no aberto */
+  border-top-right-radius: var(--radius);          
   border-bottom-right-radius: var(--radius);
+  overflow: visible;  
 }
 
 /* conteúdo */
@@ -146,7 +153,7 @@ onMounted(() => { open.value = false })
 .title { display:block; font-size:18px; line-height:1.1;color: var(--hemo-color-black-100) }
 
 button.cta {
-  border: 0; padding: 8px 12px; border-radius: 8px;
+  border: 0; padding: 8px 8px; border-radius: 8px;
   font-weight: 600; background: var(--hemo-color-primary-medium); color:#fff; cursor: pointer;
 }
 
@@ -158,16 +165,12 @@ button.cta {
   cursor: pointer; font-size:18px; line-height:28px;
 }
 
-/* área clicável no fechado */
 .hit { position: absolute; inset: 0; border: 0; background: transparent; cursor: pointer; }
 
-/* overlay */
 .overlay { position: fixed; inset: 0; background: rgba(0,0,0,.2); z-index: 9998; }
 
-/* garante que a cápsula fique por cima */
 .pill { z-index: 9999; }
 
-/* (opcional) se usar Element Plus no CTA, harmoniza a cor */
 .pill :deep(.el-button) {
   --el-color-danger: var(--color);
   --el-button-hover-bg-color: color-mix(in oklab, var(--color), #fff 20%);
@@ -181,5 +184,41 @@ button.cta {
   box-shadow: 0 0 0 2px #C9CDD3; 
   display: grid;
   place-items: center;         
+}
+
+.close {
+  position: absolute;
+  top: -5px;                
+  left: -5px;
+  width: 28px;
+  height: 28px;
+  border: 0;
+  border-radius: 9999px;
+  background: var(--hemo-color-secondary);           
+  box-shadow:
+    0 0 0 4px var(--hemo-color-pinkish-red),  
+    0 6px 16px rgba(0,0,0,.18);
+  display: grid;
+  place-items: center;
+  cursor: pointer;
+  z-index: 1;             
+}
+
+
+.close svg {
+  width: 17px;
+  height: 17px;
+  stroke: #222;              
+  stroke-width: 3;
+  stroke-linecap: round;
+  fill: none;
+}
+
+/* feedback */
+.close:hover { filter: brightness(0.98); }
+.close:active { transform: scale(0.98); }
+.close:focus-visible {
+  outline: 2px solid color-mix(in oklab, var(--color), #fff 35%);
+  outline-offset: 2px;
 }
 </style>
