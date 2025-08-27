@@ -33,7 +33,7 @@ const props = withDefaults(defineProps<{
   rightClosed: 0,
   edgeNudge: 0,      
   height: 56,
-  openWidth: 420,
+  openWidth: 320,
   peekWidth: 120,
 
   lineColor: '#E54B4B',
@@ -69,7 +69,9 @@ onMounted(() => { open.value = false })
       <button v-if="open" class="close" aria-label="Fechar" @click="open = false">×</button>
 
       <!-- conteúdo (logo e textos só quando aberto) -->
-      <img class="logo" :src="icon" alt="" @error="(e:any)=> e.target?.remove?.()" />
+      <div class="logo-wrap">
+        <img class="logo" :src="icon" alt="" @error="(e:any)=> e.target?.remove?.()" />
+      </div>
       <div class="text" @click="open = true">
         <strong class="title">{{ title }}</strong>
       </div>
@@ -103,7 +105,7 @@ onMounted(() => { open.value = false })
   right: calc(var(--rightClosed) - var(--nudge)); /* FECHADO: colado na direita */
   height: var(--h);
   width: var(--peekW);                             /* largura no fechado */
-  background: #fff;
+  background: var(--hemo-color-secondary);
   display: grid;
   grid-auto-flow: column;
   align-items: center;
@@ -112,6 +114,7 @@ onMounted(() => { open.value = false })
   z-index: 9999;
 
   border: var(--stroke) solid var(--color);
+  border-right: 0;
   border-top-left-radius: var(--radius);
   border-bottom-left-radius: var(--radius);
   border-top-right-radius: 0;                      /* direita reta no fechado */
@@ -132,18 +135,19 @@ onMounted(() => { open.value = false })
   right: auto;
   transform: translateX(-50%);                     /* ABERTO: centraliza no X */
   width: min(var(--openW), 90vw);                  /* largura no aberto */
+  border-right: var(--stroke) solid var(--color);
   border-top-right-radius: var(--radius);          /* direita curva no aberto */
   border-bottom-right-radius: var(--radius);
 }
 
 /* conteúdo */
-.logo { width: 40px; height: 40px; border-radius: 9999px; }
+.logo { width: 32px; height: 32px; border-radius: 9999px; }
 .text { min-width: 0; cursor: pointer; }
 .title { display:block; font-size:18px; line-height:1.1;color: var(--hemo-color-black-100) }
 
 button.cta {
   border: 0; padding: 8px 12px; border-radius: 8px;
-  font-weight: 600; background: var(--color); color:#fff; cursor: pointer;
+  font-weight: 600; background: var(--hemo-color-primary-medium); color:#fff; cursor: pointer;
 }
 
 /* botão X */
@@ -167,5 +171,15 @@ button.cta {
 .pill :deep(.el-button) {
   --el-color-danger: var(--color);
   --el-button-hover-bg-color: color-mix(in oklab, var(--color), #fff 20%);
+}
+
+.logo-wrap {
+  width: 44px;                 
+  height: 44px;
+  border-radius: 9999px;      
+  background: #fff;           
+  box-shadow: 0 0 0 2px #C9CDD3; 
+  display: grid;
+  place-items: center;         
 }
 </style>
