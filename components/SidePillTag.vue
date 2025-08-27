@@ -84,7 +84,7 @@ onMounted(() => { open.value = false })
 
       <component
         :is="useElementPlus ? 'el-button' : 'button'"
-        v-if="open"
+        v-show="open"
         class="cta"
         :type="useElementPlus ? 'danger' : null"
         :round="useElementPlus ? true : null"
@@ -153,7 +153,7 @@ onMounted(() => { open.value = false })
 .title { display:block; font-size:18px; line-height:1.1;color: var(--hemo-color-black-100) }
 
 button.cta {
-  border: 0; padding: 8px 8px; border-radius: 8px;
+  white-space: nowrap; border: 0; padding: 8px 8px; border-radius: 8px;
   font-weight: 600; background: var(--hemo-color-primary-medium); color:#fff; cursor: pointer;
 }
 
