@@ -7,7 +7,6 @@ const props = withDefaults(defineProps<{
   storeUrl?: string
   icon?: string
 
-  // posição / tamanhos
   top?: number
   right?: number          
   rightClosed?: number    
@@ -16,7 +15,6 @@ const props = withDefaults(defineProps<{
   openWidth?: number
   peekWidth?: number
 
-  // estilo
   lineColor?: string
   lineWidth?: number
   radius?: number
@@ -47,8 +45,8 @@ const open = ref(false)
 
 const vars = computed(() => ({
   '--top': props.top + 'px',
-  '--right': props.right + 'px',                 // aberto
-  '--rightClosed': props.rightClosed + 'px',     // fechado
+  '--right': props.right + 'px',                 
+  '--rightClosed': props.rightClosed + 'px',     
   '--nudge': props.edgeNudge + 'px',
   '--h': props.height + 'px',
   '--openW': props.openWidth + 'px',
@@ -94,23 +92,20 @@ onMounted(() => { open.value = false })
         {{ ctaText }}
       </component>
 
-      <!-- hit area no fechado -->
       <button v-if="!open" class="hit" aria-label="Abrir" @click="open = true"></button>
     </div>
 
-    <!-- overlay -->
     <div v-if="open" class="overlay" @click="open = false" aria-hidden="true"></div>
   </teleport>
 </template>
 
 <style scoped>
-/* cápsula fixa, com traço próprio; lateral direita reta */
 .pill {
   position: fixed;
   top: var(--top);
-  right: calc(var(--rightClosed) - var(--nudge)); /* FECHADO: colado na direita */
+  right: calc(var(--rightClosed) - var(--nudge)); 
   height: var(--h);
-  width: var(--peekW);                             /* largura no fechado */
+  width: var(--peekW);                            
   background: var(--hemo-color-secondary);
   display: grid;
   grid-auto-flow: column;
@@ -123,7 +118,7 @@ onMounted(() => { open.value = false })
   border-right: 0;
   border-top-left-radius: var(--radius);
   border-bottom-left-radius: var(--radius);
-  border-top-right-radius: 0;                      /* direita reta no fechado */
+  border-top-right-radius: 0;                   
   border-bottom-right-radius: 0;
 
   box-shadow: 0 14px 40px rgba(0,0,0,.20);
@@ -147,7 +142,6 @@ onMounted(() => { open.value = false })
   overflow: visible;  
 }
 
-/* conteúdo */
 .logo { width: 32px; height: 32px; border-radius: 9999px; }
 .text { min-width: 0; cursor: pointer; }
 .title { display:block; font-size:18px; line-height:1.1;color: var(--hemo-color-black-100) }
@@ -157,7 +151,6 @@ button.cta {
   font-weight: 600; background: var(--hemo-color-primary-medium); color:#fff; cursor: pointer;
 }
 
-/* botão X */
 .close {
   position: absolute; top: -10px; left: -10px;
   width: 28px; height: 28px; border: 0; border-radius: 9999px;
@@ -204,7 +197,6 @@ button.cta {
   z-index: 1;             
 }
 
-
 .close svg {
   width: 17px;
   height: 17px;
@@ -214,7 +206,6 @@ button.cta {
   fill: none;
 }
 
-/* feedback */
 .close:hover { filter: brightness(0.98); }
 .close:active { transform: scale(0.98); }
 .close:focus-visible {
