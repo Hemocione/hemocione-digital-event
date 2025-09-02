@@ -24,11 +24,13 @@ const props = withDefaults(defineProps<{
 
   useElementPlus?: boolean
 }>(), {
+  // ---- conteúdo ----
   title: 'Hemocione',
   ctaText: 'INSTALAR APP',
   storeUrl: 'https://apps.apple.com/app/idXXXXXXXXX',
   icon: '/images/logo.svg',
 
+  // ---- defaults (os que você passava no app.vue) ----
   top: 96,
   right: 16,
   rightClosed: 0,
@@ -45,12 +47,13 @@ const props = withDefaults(defineProps<{
 })
 
 const open = ref(false)
-const visible = ref(true) // controla se o componente deve renderizar
+const visible = ref(true) // controla se deve renderizar (regra de 12h)
 
+// CSS vars
 const vars = computed(() => ({
   '--top': props.top + 'px',
-  '--right': props.right + 'px',
-  '--rightClosed': props.rightClosed + 'px',
+  '--right': props.right + 'px',                 
+  '--rightClosed': props.rightClosed + 'px',     
   '--nudge': props.edgeNudge + 'px',
   '--h': props.height + 'px',
   '--openW': props.openWidth + 'px',
@@ -60,10 +63,9 @@ const vars = computed(() => ({
   '--color': props.lineColor,
 }))
 
-function goStore() {
-  window.open(props.storeUrl, '_blank')
-}
+function goStore () { window.open(props.storeUrl, '_blank') }
 
+// Fecha e grava "não mostrar por 12h"
 function closeAndRemember() {
   open.value = false
   const expiresAt = Date.now() + EXPIRATION_HOURS * 60 * 60 * 1000
@@ -71,12 +73,12 @@ function closeAndRemember() {
   visible.value = false
 }
 
+// Só fecha (sem gravar)
 function closeOnly() {
   open.value = false
 }
 
 onMounted(() => {
-  // checa se já foi fechado nas últimas 12h
   const stored = localStorage.getItem(STORAGE_KEY)
   if (stored && Number(stored) > Date.now()) {
     visible.value = false
@@ -108,12 +110,7 @@ onMounted(() => {
 
       <!-- conteúdo (logo e textos só quando aberto) -->
       <div class="logo-wrap">
-        <img
-          class="logo"
-          :src="icon"
-          alt=""
-          @error="(e:any)=> e.target?.remove?.()"
-        />
+        <img class="logo" :src="icon" alt="" @error="(e:any)=> e.target?.remove?.()" />
       </div>
       <div class="text" @click="open = true">
         <strong class="title">{{ title }}</strong>
@@ -131,12 +128,7 @@ onMounted(() => {
         {{ ctaText }}
       </component>
 
-      <button
-        v-if="!open"
-        class="hit"
-        aria-label="Abrir"
-        @click="open = true"
-      ></button>
+      <button v-if="!open" class="hit" aria-label="Abrir" @click="open = true"></button>
     </div>
 
     <!-- overlay só fecha, não grava no storage -->
@@ -194,7 +186,7 @@ onMounted(() => {
 
 .logo { width: 32px; height: 32px; border-radius: 9999px; }
 .text { min-width: 0; cursor: pointer; }
-.title { display:block; font-size:18px; line-height:1.1;color: var(--hemo-color-black-100) }
+.title { display:block; font-size:18px; line-height:1.1; color: var(--hemo-color-black-100) }
 
 button.cta {
   white-space: nowrap; border: 0; padding: 8px 8px; border-radius: 8px;
@@ -229,6 +221,7 @@ button.cta {
   place-items: center;         
 }
 
+/* Botão de fechar com moldura do tema */
 .close {
   position: absolute;
   top: -5px;                
@@ -261,5 +254,15 @@ button.cta {
 .close:focus-visible {
   outline: 2px solid color-mix(in oklab, var(--color), #fff 35%);
   outline-offset: 2px;
+}
+
+/* --------- MOBILE ONLY (CSS) ---------
+   Oculta a pill e o overlay em telas maiores (desktop/tablet).
+   Ajuste o breakpoint se quiser. */
+@media (min-width: 768px) {
+  .pill,
+  .overlay {
+    display: none !important;
+  }
 }
 </style>
