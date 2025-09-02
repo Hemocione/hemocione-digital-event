@@ -7,17 +7,6 @@
         cta-text="INSTALAR APP"
         store-url="https://apps.apple.com/app/idXXXXXXXXX"
         icon="/images/logo.svg"
-        :top="96"
-        :height="100"
-        :peek-width="70"
-        :open-width="320"
-        :radius="48"
-        :line-width="3"
-        line-color="#E54B4B"
-        :right="16"          
-        :right-closed="0"    
-        :edge-nudge="0.5"    
-        :use-element-plus="false"
       />
     </ClientOnly>
   </NuxtLayout>

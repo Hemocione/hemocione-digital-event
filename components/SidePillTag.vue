@@ -21,22 +21,24 @@ const props = withDefaults(defineProps<{
 
   useElementPlus?: boolean
 }>(), {
+  // ---- conteúdo ----
   title: 'Hemocione',
   ctaText: 'INSTALAR APP',
-  storeUrl: '#',
+  storeUrl: 'https://apps.apple.com/app/idXXXXXXXXX',
   icon: '/images/logo.svg',
 
+  // ---- defaults internos iguais aos que você passava no app.vue ----
   top: 96,
   right: 16,
   rightClosed: 0,
-  edgeNudge: 0,      
-  height: 56,
+  edgeNudge: 0.5,
+  height: 100,
   openWidth: 320,
-  peekWidth: 120,
+  peekWidth: 70,
 
   lineColor: '#E54B4B',
-  lineWidth: 2,
-  radius: 28,
+  lineWidth: 3,
+  radius: 48,
 
   useElementPlus: false,
 })
