@@ -27,7 +27,7 @@ const props = withDefaults(defineProps<{
   // ---- conteúdo ----
   title: 'Hemocione',
   ctaText: 'INSTALAR APP',
-  storeUrl: 'https://apps.apple.com/app/idXXXXXXXXX',
+  storeUrl: 'https://link.hemocione.com.br/download-app',
   icon: '/images/logo.svg',
 
   // ---- defaults (os que você passava no app.vue) ----
