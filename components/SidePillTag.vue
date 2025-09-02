@@ -1,6 +1,9 @@
 <script setup lang="ts">
 import { ref, computed, onMounted } from 'vue'
 
+const STORAGE_KEY = 'sidepilltag-dismissed'
+const EXPIRATION_HOURS = 12
+
 const props = withDefaults(defineProps<{
   title?: string
   ctaText?: string
@@ -21,13 +24,11 @@ const props = withDefaults(defineProps<{
 
   useElementPlus?: boolean
 }>(), {
-  // ---- conteúdo ----
   title: 'Hemocione',
   ctaText: 'INSTALAR APP',
   storeUrl: 'https://apps.apple.com/app/idXXXXXXXXX',
   icon: '/images/logo.svg',
 
-  // ---- defaults internos iguais aos que você passava no app.vue ----
   top: 96,
   right: 16,
   rightClosed: 0,
@@ -44,11 +45,12 @@ const props = withDefaults(defineProps<{
 })
 
 const open = ref(false)
+const visible = ref(true) // controla se o componente deve renderizar
 
 const vars = computed(() => ({
   '--top': props.top + 'px',
-  '--right': props.right + 'px',                 
-  '--rightClosed': props.rightClosed + 'px',     
+  '--right': props.right + 'px',
+  '--rightClosed': props.rightClosed + 'px',
   '--nudge': props.edgeNudge + 'px',
   '--h': props.height + 'px',
   '--openW': props.openWidth + 'px',
@@ -58,16 +60,46 @@ const vars = computed(() => ({
   '--color': props.lineColor,
 }))
 
-function goStore () { window.open(props.storeUrl, '_blank') }
-onMounted(() => { open.value = false })
+function goStore() {
+  window.open(props.storeUrl, '_blank')
+}
+
+function closeAndRemember() {
+  open.value = false
+  const expiresAt = Date.now() + EXPIRATION_HOURS * 60 * 60 * 1000
+  localStorage.setItem(STORAGE_KEY, String(expiresAt))
+  visible.value = false
+}
+
+function closeOnly() {
+  open.value = false
+}
+
+onMounted(() => {
+  // checa se já foi fechado nas últimas 12h
+  const stored = localStorage.getItem(STORAGE_KEY)
+  if (stored && Number(stored) > Date.now()) {
+    visible.value = false
+  } else {
+    visible.value = true
+    open.value = false
+  }
+})
 </script>
 
 <template>
   <teleport to="body">
-    <div class="pill" :class="{ open }" :style="vars" role="dialog" aria-live="polite">
-     
-     <!-- fechar (só quando aberto) -->
-      <button v-if="open" class="close" aria-label="Fechar" @click="open = false">
+    <!-- só renderiza se ainda não tiver sido fechado nas últimas 12h -->
+    <div
+      v-if="visible"
+      class="pill"
+      :class="{ open }"
+      :style="vars"
+      role="dialog"
+      aria-live="polite"
+    >
+      <!-- fechar (só quando aberto) -->
+      <button v-if="open" class="close" aria-label="Fechar" @click="closeAndRemember">
         <svg viewBox="0 0 24 24" aria-hidden="true">
           <line x1="6" y1="6" x2="18" y2="18" />
           <line x1="18" y1="6" x2="6" y2="18" />
@@ -76,7 +108,12 @@ onMounted(() => { open.value = false })
 
       <!-- conteúdo (logo e textos só quando aberto) -->
       <div class="logo-wrap">
-        <img class="logo" :src="icon" alt="" @error="(e:any)=> e.target?.remove?.()" />
+        <img
+          class="logo"
+          :src="icon"
+          alt=""
+          @error="(e:any)=> e.target?.remove?.()"
+        />
       </div>
       <div class="text" @click="open = true">
         <strong class="title">{{ title }}</strong>
@@ -94,10 +131,21 @@ onMounted(() => { open.value = false })
         {{ ctaText }}
       </component>
 
-      <button v-if="!open" class="hit" aria-label="Abrir" @click="open = true"></button>
+      <button
+        v-if="!open"
+        class="hit"
+        aria-label="Abrir"
+        @click="open = true"
+      ></button>
     </div>
 
-    <div v-if="open" class="overlay" @click="open = false" aria-hidden="true"></div>
+    <!-- overlay só fecha, não grava no storage -->
+    <div
+      v-if="open && visible"
+      class="overlay"
+      @click="closeOnly"
+      aria-hidden="true"
+    ></div>
   </teleport>
 </template>
 
