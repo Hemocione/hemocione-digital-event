@@ -448,11 +448,6 @@ export async function markDonationsAsSent(eventSlug: string) {
 }
 
 export async function getPointsOndeDoar(oldEvents: boolean = false) {
-  const cached = getEventsCache.get(oldEvents);
-  if (cached && cached.generatedAt.getTime() + EVENTS_CACHE_TTL >= Date.now()) {
-    return cached.data;
-  }
-
   const filter = {
     private: { $ne: true },
     ...(oldEvents
@@ -470,14 +465,9 @@ export async function getPointsOndeDoar(oldEvents: boolean = false) {
     name: event.name,
     startAt: event.startAt,
     endAt: event.endAt,
+    slug: event.slug,
+    active: event.active,
     location: event.location || null,
   }));
-
-  // update cache
-  getEventsCache.set(oldEvents, {
-    generatedAt: new Date(),
-    data: simplifiedEvents,
-  });
-
   return simplifiedEvents;
 }
