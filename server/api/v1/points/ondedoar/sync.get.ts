@@ -5,5 +5,5 @@ export default defineEventHandler(async (event) => {
   const { old } = query;
   const shouldGetOldEvents = String(old) === "true";
   const events = await getPointsOndeDoar(shouldGetOldEvents);
-  return events.filter((x) => x.location !== null);
+  return events;
 });
