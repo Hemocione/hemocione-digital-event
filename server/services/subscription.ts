@@ -36,6 +36,16 @@ export function getEventSubscriptions(eventSlug: string) {
     .lean();
 }
 
+export async function getEventSubscriptionUserIds(eventSlug: string) {
+  const subs = await Subscription.find({
+    eventSlug,
+    deletedAt: null,
+  })
+    .select({ hemocioneId: 1 })
+    .lean();
+  return subs.map((s) => s.hemocioneId).filter(Boolean) as string[];
+}
+
 export type UserSubscriptions = Awaited<
   ReturnType<typeof getUserSubscriptions>
 >;
@@ -104,10 +114,15 @@ export async function createSubscription(
   });
 
   if (schedule.lastQuestionnairePreScreening) {
-    subscription.lastQuestionnairePreScreening = schedule.lastQuestionnairePreScreening;
+    const { formResponseId, status, answeredAt } = schedule.lastQuestionnairePreScreening;
+    subscription.lastQuestionnairePreScreening = {
+      formResponseId: formResponseId as any,
+      status,
+      answeredAt,
+    } as any;
   } else if (schedule.formResponseId && schedule.status) {
     subscription.lastQuestionnairePreScreening = {
-      formResponseId: schedule.formResponseId,
+      formResponseId: schedule.formResponseId as any,
       status: schedule.status,
       answeredAt: new Date(),
     };

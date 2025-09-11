@@ -93,6 +93,28 @@ export function getEventsToSendDonations() {
     .lean();
 }
 
+export function getEventsToSendUpcomingNotifications() {
+  const now = new Date();
+  const in24h = new Date(now.getTime() + 1000 * 60 * 60 * 24);
+  const in24hPlus15 = new Date(now.getTime() + 1000 * 60 * 60 * 24 + 1000 * 60 * 15);
+  return Event.find({
+    active: true,
+    startAt: { $gte: in24h, $lte: in24hPlus15 },
+    "subscription.enabled": true,
+    notificationsUpcomingSentAt: null,
+  })
+    .select({ _id: 1, slug: 1, startAt: 1 })
+    .lean();
+}
+
+export async function markUpcomingNotificationsAsSent(eventSlug: string) {
+  return await Event.findOneAndUpdate(
+    { slug: eventSlug },
+    { notificationsUpcomingSentAt: new Date() },
+    { lean: true },
+  );
+}
+
 export async function incrementEventExternalVolunteersOccupiedSlots(
   eventSlug: string,
   increment: number,

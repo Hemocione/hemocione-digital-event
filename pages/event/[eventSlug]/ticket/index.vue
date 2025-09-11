@@ -156,6 +156,35 @@
       </CommonCard>
     </article>
   </main>
+
+  <!-- Confirmation Dialog -->
+  <ElDialog
+    v-model="showCancelDialog"
+    title="Confirmar cancelamento"
+    width="max(25vw, 300px)"
+    :close-on-click-modal="false"
+    :close-on-press-escape="false"
+    :show-close="false"
+    :style="{ borderRadius: '8px', marginTop: '30vh' }"
+  >
+    <p>Tem certeza que deseja cancelar seu agendamento?</p>
+    <p>Esta ação não pode ser desfeita.</p>
+    
+    <template #footer>
+      <div class="dialog-footer">
+        <ElButton @click="showCancelDialog = false">
+          Manter agendamento
+        </ElButton>
+        <ElButton 
+          class="cancel-button"
+          :loading="state.loading"
+          @click="confirmCancel"
+        >
+          Cancelar
+        </ElButton>
+      </div>
+    </template>
+  </ElDialog>
 </template>
 
 <script setup lang="ts">
@@ -199,6 +228,7 @@ if (!subscription) {
 useServerSeoMeta({ title: `Agendamento - ${eventConfig?.name}` });
 
 const state = reactive({ loading: false });
+const showCancelDialog = ref(false);
 
 const lastAnsweredAt = computed(() => {
   const date = subscription?.lastQuestionnairePreScreening?.answeredAt;
@@ -251,6 +281,22 @@ const isAbleToDonate = computed(() => {
 });
 
 async function cancelSubscription() {
+  // Show confirmation dialog if shouldCancelWithConfirmation is true
+  if (shouldCancelWithConfirmation) {
+    console.log("shouldCancelWithConfirmation", shouldCancelWithConfirmation);
+    showCancelDialog.value = true;
+    return;
+  }
+
+  await performCancel();
+}
+
+async function confirmCancel() {
+  showCancelDialog.value = false;
+  await performCancel();
+}
+
+async function performCancel() {
   state.loading = true;
 
   try {
@@ -293,9 +339,10 @@ const lastQuestionnairePreScreening = lastPreScreening
   : undefined;
 
 const shouldCancel = route.query.shouldCancel === "true";
+const shouldCancelWithConfirmation = route.query.shouldCancelWithConfirmation === "true";
 
 onMounted(async () => {
-  if (shouldCancel) {
+  if (shouldCancel || shouldCancelWithConfirmation) {
     await nextTick();
     if (isAllowedToCancel.value && !state.loading) {
       cancelSubscription();
@@ -429,4 +476,40 @@ article {
     border-radius: 8px;
   }
 }
+
+.dialog-footer {
+  display: flex;
+  justify-content: flex-end;
+  gap: 12px;
+}
+
+@media screen and (max-width: 500px) {
+  .dialog-footer {
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+  }
+  
+  .dialog-footer .el-button {
+    width: 100%;
+    max-width: 100%;
+  }
+}
+
+.cancel-button {
+  background-color: var(--hemo-color-primary) !important;
+  border-color: var(--hemo-color-primary) !important;
+  color: var(--hemo-color-white) !important;
+}
+
+.cancel-button:hover {
+  background-color: var(--hemo-color-primary-dark) !important;
+  border-color: var(--hemo-color-primary-dark) !important;
+}
+
+.cancel-button:focus {
+  background-color: var(--hemo-color-primary) !important;
+  border-color: var(--hemo-color-primary) !important;
+}
+
 </style>
