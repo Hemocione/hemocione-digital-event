@@ -5,7 +5,7 @@
       <SidePillTag
         title="Hemocione"
         cta-text="INSTALAR APP"
-        store-url="https://apps.apple.com/app/idXXXXXXXXX"
+        store-url="https://link.hemocione.com.br/download-app"
         icon="/images/logo.svg"
       />
     </ClientOnly>
