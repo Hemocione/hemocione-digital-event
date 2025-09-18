@@ -67,6 +67,8 @@ const search = ref(String(searchQuery || ""));
 // Location functionality
 const locationPermissionGranted = ref(false);
 const userCity = ref("");
+const userState = ref("");
+const userCoordinates = ref<{ lat: number; lng: number } | null>(null);
 
 watch(search, () => {
   router.push({ query: { search: search.value } });
@@ -76,6 +78,19 @@ const { data: currentEvents } = await useFetch("/api/v1/event");
 const cleanSearch = computed(() => {
   return getCleanText(search.value);
 });
+
+// Função para calcular distância entre duas coordenadas (em km)
+const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
+  const R = 6371; // Raio da Terra em km
+  const dLat = (lat2 - lat1) * Math.PI / 180;
+  const dLng = (lng2 - lng1) * Math.PI / 180;
+  const a = 
+    Math.sin(dLat/2) * Math.sin(dLat/2) +
+    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
+    Math.sin(dLng/2) * Math.sin(dLng/2);
+  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+  return R * c;
+};
 
 const requestLocationPermission = async () => {
   if (!navigator.geolocation) {
@@ -93,67 +108,85 @@ const requestLocationPermission = async () => {
       `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=pt`
     );
     const data = await response.json();
+    console.log("API Response:", data);
     
     // Tentar obter a cidade mais específica possível
     let detectedCity = data.city || data.locality || data.principalSubdivision || "";
     
-    // Se retornou região metropolitana, tentar extrair a cidade específica
-    if (detectedCity.includes("Região Metropolitana")) {
-      // Para o Rio de Janeiro, vamos usar uma abordagem diferente
-      // Vamos tentar usar coordenadas para determinar a cidade mais próxima
-      const lat = position.coords.latitude;
-      const lng = position.coords.longitude;
-      
-      // Coordenadas aproximadas de algumas cidades do RJ
-      const rjCities = [
-        { name: "Rio de Janeiro", lat: -22.9068, lng: -43.1729 },
-        { name: "Niterói", lat: -22.8833, lng: -43.1036 },
-        { name: "São Gonçalo", lat: -22.8269, lng: -43.0539 },
-        { name: "Duque de Caxias", lat: -22.7858, lng: -43.3117 },
-        { name: "Nova Iguaçu", lat: -22.7592, lng: -43.4511 },
-        { name: "São João de Meriti", lat: -22.8039, lng: -43.3722 },
-        { name: "Belford Roxo", lat: -22.7639, lng: -43.3992 },
-        { name: "Queimados", lat: -22.7161, lng: -43.5553 },
-        { name: "Japeri", lat: -22.6436, lng: -43.6531 },
-        { name: "Paracambi", lat: -22.6089, lng: -43.7108 },
-        { name: "Seropédica", lat: -22.7431, lng: -43.7075 },
-        { name: "Itaguaí", lat: -22.8519, lng: -43.7753 },
-        { name: "Mangaratiba", lat: -22.9594, lng: -44.0406 },
-        { name: "Maricá", lat: -22.9194, lng: -42.8186 },
-        { name: "Itaboraí", lat: -22.7444, lng: -42.8592 },
-        { name: "Tanguá", lat: -22.7303, lng: -42.7142 },
-        { name: "Magé", lat: -22.6531, lng: -43.0408 },
-        { name: "Guapimirim", lat: -22.5367, lng: -42.9819 },
-        { name: "Cachoeiras de Macacu", lat: -22.4619, lng: -42.6531 },
-        { name: "Rio Bonito", lat: -22.7081, lng: -42.6092 },
-        { name: "Silva Jardim", lat: -22.6508, lng: -42.3917 },
-        { name: "Casimiro de Abreu", lat: -22.4806, lng: -42.2042 },
-        { name: "Araruama", lat: -22.8728, lng: -42.3431 },
-        { name: "Saquarema", lat: -22.9208, lng: -42.5106 },
-        { name: "Arraial do Cabo", lat: -22.9658, lng: -42.0278 },
-        { name: "Cabo Frio", lat: -22.8789, lng: -42.0189 },
-        { name: "Búzios", lat: -22.7531, lng: -41.8819 },
-        { name: "Iguaba Grande", lat: -22.8419, lng: -42.2281 },
-        { name: "São Pedro da Aldeia", lat: -22.8389, lng: -42.1028 },
-        { name: "Armação dos Búzios", lat: -22.7531, lng: -41.8819 }
-      ];
-      
-      // Encontrar a cidade mais próxima
-      let closestCity = rjCities[0];
-      let minDistance = Math.sqrt(Math.pow(lat - closestCity.lat, 2) + Math.pow(lng - closestCity.lng, 2));
-      
-      for (const city of rjCities) {
-        const distance = Math.sqrt(Math.pow(lat - city.lat, 2) + Math.pow(lng - city.lng, 2));
-        if (distance < minDistance) {
-          minDistance = distance;
-          closestCity = city;
+    // Se retornou algo genérico como "Brasil", tentar usar uma API diferente
+    if (detectedCity.includes("Brasil") || detectedCity.includes("Brazil") || detectedCity.length < 3) {
+      try {
+        // Tentar usar OpenStreetMap Nominatim como fallback
+        const osmResponse = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}&accept-language=pt-BR,pt,en`
+        );
+        const osmData = await osmResponse.json();
+        console.log("OSM Response:", osmData);
+        
+        // Tentar extrair cidade do endereço do OSM
+        if (osmData.address) {
+          const address = osmData.address;
+          detectedCity = address.city || 
+                        address.town || 
+                        address.village || 
+                        address.municipality || 
+                        address.county || 
+                        address.state || 
+                        "";
         }
+      } catch (error) {
+        console.warn("Erro ao usar OSM:", error);
       }
-      
-      detectedCity = closestCity.name;
+    }
+    
+    // Se ainda não temos uma cidade específica, tentar a API detalhada
+    if (detectedCity.includes("Região Metropolitana") || detectedCity.includes("Brasil") || detectedCity.length < 3) {
+      try {
+        const detailedResponse = await fetch(
+          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=pt&localityInfo=true`
+        );
+        const detailedData = await detailedResponse.json();
+        console.log("Detailed API Response:", detailedData);
+        
+        // Tentar obter informações mais específicas
+        if (detailedData.localityInfo?.administrative) {
+          const admin = detailedData.localityInfo.administrative;
+          // Procurar por cidade mais específica
+          for (const level of admin) {
+            if (level.name && 
+                !level.name.includes("Região Metropolitana") && 
+                !level.name.includes("Estado") && 
+                !level.name.includes("Brasil") &&
+                level.name.length > 3) {
+              detectedCity = level.name;
+              break;
+            }
+          }
+        }
+      } catch (error) {
+        console.warn("Não foi possível obter cidade específica:", error);
+      }
+    }
+    
+    console.log("Detected City:", detectedCity);
+    
+    // Validar se a cidade detectada é válida
+    const invalidCities = ["Brasil", "Brazil", "Estado", "Região", "Metropolitana"];
+    const isValidCity = detectedCity && 
+                       detectedCity.length > 3 && 
+                       !invalidCities.some(invalid => detectedCity.includes(invalid));
+    
+    if (!isValidCity) {
+      ElMessage.error("Não foi possível detectar sua cidade específica. Tente novamente.");
+      return;
     }
     
     userCity.value = detectedCity;
+    userState.value = data.principalSubdivision || "";
+    userCoordinates.value = {
+      lat: position.coords.latitude,
+      lng: position.coords.longitude
+    };
     locationPermissionGranted.value = true;
     
     ElMessage.success(`Eventos próximos a ${userCity.value} aparecerão primeiro!`);
@@ -173,36 +206,16 @@ const filteredEvents = computed(() => {
     });
   }
   
-  // Se a localização foi permitida e há uma cidade, ordenar por proximidade
-  if (locationPermissionGranted.value && userCity.value && events) {
-    events = [...events].sort((a, b) => {
-      const aCity = getCleanText(a.location?.city || "");
-      const bCity = getCleanText(b.location?.city || "");
+  // Se a localização foi permitida e há uma cidade, filtrar apenas eventos da mesma cidade
+  if (locationPermissionGranted.value && userCity.value && !cleanSearch.value && events) {
+    events = events.filter((event) => {
+      const eventCity = getCleanText(event.location?.city || "");
       const userCityClean = getCleanText(userCity.value);
       
-      // Eventos da mesma cidade primeiro
-      const aIsSameCity = aCity === userCityClean || aCity.includes(userCityClean) || userCityClean.includes(aCity);
-      const bIsSameCity = bCity === userCityClean || bCity.includes(userCityClean) || userCityClean.includes(bCity);
-      
-      if (aIsSameCity && !bIsSameCity) return -1;
-      if (!aIsSameCity && bIsSameCity) return 1;
-      
-      // Se ambos são da mesma cidade, manter ordem original
-      if (aIsSameCity && bIsSameCity) return 0;
-      
-      // Se ambos não são da mesma cidade, tentar ordenar por proximidade geográfica
-      // Para o Rio de Janeiro, vamos usar uma ordenação baseada em distância aproximada
-      if (userCityClean.includes("Rio de Janeiro") || userCityClean.includes("Maricá") || userCityClean.includes("Niterói")) {
-        const rjMetroCities = ["Rio de Janeiro", "Niterói", "São Gonçalo", "Maricá", "Duque de Caxias", "Nova Iguaçu"];
-        const aIsRjMetro = rjMetroCities.some(city => aCity.includes(city));
-        const bIsRjMetro = rjMetroCities.some(city => bCity.includes(city));
-        
-        if (aIsRjMetro && !bIsRjMetro) return -1;
-        if (!aIsRjMetro && bIsRjMetro) return 1;
-      }
-      
-      // Manter ordem original para outros casos
-      return 0;
+      // Verificar se é a mesma cidade (comparação bidirecional)
+      return eventCity === userCityClean || 
+             eventCity.includes(userCityClean) || 
+             userCityClean.includes(eventCity);
     });
   }
   
@@ -210,6 +223,9 @@ const filteredEvents = computed(() => {
 });
 
 const noEventsText = computed(() => {
+  if (locationPermissionGranted.value && userCity.value && !cleanSearch.value) {
+    return `Nenhum evento encontrado em ${userCity.value}.`;
+  }
   if (cleanSearch.value && currentEvents.value?.length) {
     return "Nenhum evento encontrado com o termo pesquisado.";
   }
