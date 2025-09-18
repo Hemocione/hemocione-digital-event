@@ -54,7 +54,6 @@ export default inngest.createFunction(
         method: "POST",
         body: {
           targets: { userIds },
-          data: eventData,
           channels: {
             push: { 
               enabled: true, 
@@ -62,7 +61,7 @@ export default inngest.createFunction(
                 message: { 
                   template_id: oneSignalTemplateId, 
                   name: "upcoming_event",
-                  data: eventData
+                  custom_data: eventData
                 } 
               } 
             },
