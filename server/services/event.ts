@@ -235,8 +235,8 @@ export async function getEventBySlug(
   options: {
     lean?: boolean;
   } = {
-    lean: true,
-  },
+      lean: true,
+    },
 ) {
   const cacheKey = `${eventSlug}:${getCacheKeyFromParams({
     eventSlug,
@@ -385,13 +385,13 @@ export async function getEvents(oldEvents: boolean = false) {
 
 const allActiveEventsCache:
   | {
-      generatedAt: Date;
-      data: EventsFromDb;
-    }
+    generatedAt: Date;
+    data: EventsFromDb;
+  }
   | {
-      generatedAt: null;
-      data: null;
-    } = {
+    generatedAt: null;
+    data: null;
+  } = {
   generatedAt: null,
   data: null,
 };
@@ -445,4 +445,29 @@ export async function markDonationsAsSent(eventSlug: string) {
       lean: true,
     },
   );
+}
+
+export async function getPointsOndeDoar(oldEvents: boolean = false) {
+  const filter = {
+    private: { $ne: true },
+    location: { $ne: null },
+    ...(oldEvents
+      ? { endAt: { $lte: new Date() } }
+      : { endAt: { $gte: new Date() } }),
+  };
+  const sort = oldEvents
+    ? { startAt: -1, endAt: -1, _id: -1 }
+    : { startAt: 1, endAt: 1, _id: 1 };
+
+  const events = await getEventsFromDBPromise(filter, sort);
+
+  const simplifiedEvents = events.map((event) => ({
+    name: event.name,
+    startAt: event.startAt,
+    endAt: event.endAt,
+    slug: event.slug,
+    active: event.active,
+    location: event.location || null,
+  }));
+  return simplifiedEvents;
 }
