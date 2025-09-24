@@ -461,7 +461,6 @@ export async function getPointsOndeDoar(oldEvents: boolean = false) {
 
   const events = await getEventsFromDBPromise(filter, sort);
 
-  // Transform to return only name, dates, location, and active status
   const simplifiedEvents = events.map((event) => ({
     name: event.name,
     startAt: event.startAt,
