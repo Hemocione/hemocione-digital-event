@@ -4,11 +4,11 @@
       <h1 class="events-title">Eventos</h1>
       <div class="search-container">
         <ElButton
-          v-if="!locationPermissionGranted"
-          @click="requestLocationPermission"
+          @click="toggleLocationFilter"
           size="large"
-          class="location-button"
-          title="Buscar eventos próximos"
+          :type="locationPermissionGranted ? 'primary' : 'default'"
+          :class="['location-button', { 'location-active': locationPermissionGranted }]"
+          :title="locationPermissionGranted ? `Filtrando por: ${userCity}` : 'Buscar eventos próximos'"
         >
           <svg class="location-icon" viewBox="0 0 1024 1024" fill="currentColor">
             <path d="M512 928c23.936 0 117.504-68.352 192.064-153.152C803.456 661.888 864 535.808 864 416c0-189.632-155.84-320-352-320S160 226.368 160 416c0 120.32 60.544 246.4 159.936 359.232C394.432 859.84 488 928 512 928m0-435.2a64 64 0 1 0 0-128 64 64 0 0 0 0 128m0 140.8a204.8 204.8 0 1 1 0-409.6 204.8 204.8 0 0 1 0 409.6"/>
@@ -64,7 +64,6 @@ const router = useRouter();
 const searchQuery = route.query.search;
 const search = ref(String(searchQuery || ""));
 
-// Location functionality
 const locationPermissionGranted = ref(false);
 const userCity = ref("");
 const userState = ref("");
@@ -79,9 +78,8 @@ const cleanSearch = computed(() => {
   return getCleanText(search.value);
 });
 
-// Função para calcular distância entre duas coordenadas (em km)
 const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
-  const R = 6371; // Raio da Terra em km
+  const R = 6371;
   const dLat = (lat2 - lat1) * Math.PI / 180;
   const dLng = (lng2 - lng1) * Math.PI / 180;
   const a = 
@@ -90,6 +88,18 @@ const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: numbe
     Math.sin(dLng/2) * Math.sin(dLng/2);
   const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
   return R * c;
+};
+
+const toggleLocationFilter = async () => {
+  if (locationPermissionGranted.value) {
+    locationPermissionGranted.value = false;
+    userCity.value = "";
+    userState.value = "";
+    userCoordinates.value = null;
+    ElMessage.info("Filtro de localização desativado. Mostrando todos os eventos.");
+  } else {
+    await requestLocationPermission();
+  }
 };
 
 const requestLocationPermission = async () => {
@@ -267,6 +277,16 @@ definePageMeta({
   --el-button-hover-text-color: var(--hemo-color-text-primary);
   min-width: 40px;
   height: 40px;
+  transition: all 0.3s ease;
+}
+
+.location-button.location-active {
+  --el-button-bg-color: var(--hemo-color-white);
+  --el-button-border-color: #dc2626;
+  --el-button-text-color: #dc2626;
+  --el-button-hover-bg-color: var(--hemo-color-black-5);
+  --el-button-hover-border-color: #b91c1c;
+  --el-button-hover-text-color: #b91c1c;
 }
 
 .location-icon {
