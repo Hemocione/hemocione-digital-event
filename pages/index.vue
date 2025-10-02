@@ -24,8 +24,7 @@
         />
       </div>
     </header>
-    <div v-if="filteredEvents?.length" class="events-wrapper">
-      <!-- TODO: add transition group here -->
+    <div v-if="filteredEvents?.length" ref="eventsContainer" class="events-wrapper">
       <EventsListCard
         v-for="event in filteredEvents"
         :key="event._id"
@@ -68,11 +67,19 @@ const locationPermissionGranted = ref(false);
 const userCity = ref("");
 const userState = ref("");
 const userCoordinates = ref<{ lat: number; lng: number } | null>(null);
+const eventsContainer = ref<HTMLElement | null>(null);
 
 watch(search, () => {
   router.push({ query: { search: search.value } });
 });
 const { data: currentEvents } = await useFetch("/api/v1/event");
+
+onMounted(async () => {
+  if (eventsContainer.value) {
+    const { autoAnimate } = await import('@formkit/auto-animate');
+    autoAnimate(eventsContainer.value);
+  }
+});
 
 const cleanSearch = computed(() => {
   return getCleanText(search.value);
@@ -111,27 +118,20 @@ const requestLocationPermission = async () => {
       navigator.geolocation.getCurrentPosition(resolve, reject);
     });
 
-    // Usar uma API de geocoding reversa para obter a cidade
     const response = await fetch(
       `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=pt`
     );
     const data = await response.json();
-    console.log("API Response:", data);
     
-    // Tentar obter a cidade mais específica possível
     let detectedCity = data.city || data.locality || data.principalSubdivision || "";
     
-    // Se retornou algo genérico como "Brasil", tentar usar uma API diferente
     if (detectedCity.includes("Brasil") || detectedCity.includes("Brazil") || detectedCity.length < 3) {
       try {
-        // Tentar usar OpenStreetMap Nominatim como fallback
         const osmResponse = await fetch(
           `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}&accept-language=pt-BR,pt,en`
         );
         const osmData = await osmResponse.json();
-        console.log("OSM Response:", osmData);
         
-        // Tentar extrair cidade do endereço do OSM
         if (osmData.address) {
           const address = osmData.address;
           detectedCity = address.city || 
@@ -147,19 +147,15 @@ const requestLocationPermission = async () => {
       }
     }
     
-    // Se ainda não temos uma cidade específica, tentar a API detalhada
     if (detectedCity.includes("Região Metropolitana") || detectedCity.includes("Brasil") || detectedCity.length < 3) {
       try {
         const detailedResponse = await fetch(
           `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=pt&localityInfo=true`
         );
         const detailedData = await detailedResponse.json();
-        console.log("Detailed API Response:", detailedData);
         
-        // Tentar obter informações mais específicas
         if (detailedData.localityInfo?.administrative) {
           const admin = detailedData.localityInfo.administrative;
-          // Procurar por cidade mais específica
           for (const level of admin) {
             if (level.name && 
                 !level.name.includes("Região Metropolitana") && 
@@ -176,9 +172,6 @@ const requestLocationPermission = async () => {
       }
     }
     
-    console.log("Detected City:", detectedCity);
-    
-    // Validar se a cidade detectada é válida
     const invalidCities = ["Brasil", "Brazil", "Estado", "Região", "Metropolitana"];
     const isValidCity = detectedCity && 
                        detectedCity.length > 3 && 
@@ -203,7 +196,6 @@ const requestLocationPermission = async () => {
 const filteredEvents = computed(() => {
   let events = currentEvents.value;
   
-  // Se há uma busca por texto, aplicar o filtro de texto
   if (cleanSearch.value) {
     events = events?.filter((event) => {
       const eventBaseString = `${event.name}${event?.location?.address || ""}${event.location?.state || ""}${event.location?.city || ""}`;
@@ -211,13 +203,11 @@ const filteredEvents = computed(() => {
     });
   }
   
-  // Se a localização foi permitida e há uma cidade, filtrar apenas eventos da mesma cidade
   if (locationPermissionGranted.value && userCity.value && !cleanSearch.value && events) {
     events = events.filter((event) => {
       const eventCity = getCleanText(event.location?.city || "");
       const userCityClean = getCleanText(userCity.value);
       
-      // Verificar se é a mesma cidade (comparação bidirecional)
       return eventCity === userCityClean || 
              eventCity.includes(userCityClean) || 
              userCityClean.includes(eventCity);
