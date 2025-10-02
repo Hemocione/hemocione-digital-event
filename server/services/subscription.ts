@@ -160,3 +160,40 @@ export async function deleteSubscription(
 
   return subscription.toObject();
 }
+
+export function getSubscriptionsToSendUpcomingNotifications() {
+  const now = new Date();
+  
+  // Get tomorrow's date range (00:00 to 23:59)
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0); // Start of tomorrow
+  
+  const endOfTomorrow = new Date(tomorrow);
+  endOfTomorrow.setHours(23, 59, 59, 999); // End of tomorrow
+  
+  return Subscription.find({
+    deletedAt: null,
+    "schedule.startAt": { $gte: tomorrow, $lte: endOfTomorrow },
+    notificationsUpcomingSentAt: null,
+  })
+    .select({
+      _id: 1,
+      eventSlug: 1,
+      hemocioneId: 1,
+      name: 1,
+      email: 1,
+      phone: 1,
+      document: 1,
+      schedule: 1,
+    })
+    .lean();
+}
+
+export async function markSubscriptionUpcomingNotificationAsSent(subscriptionId: string) {
+  return await Subscription.findByIdAndUpdate(
+    subscriptionId,
+    { notificationsUpcomingSentAt: new Date() },
+    { lean: true },
+  );
+}

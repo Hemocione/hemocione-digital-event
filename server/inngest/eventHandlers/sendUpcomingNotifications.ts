@@ -1,6 +1,6 @@
 import { inngest } from "~/server/inngest/client";
-import { getEventBySlug, markUpcomingNotificationsAsSent } from "~/server/services/event";
-import { getEventSubscriptions } from "~/server/services/subscription";
+import { getEventBySlug } from "~/server/services/event";
+import { getEventSubscriptions, markSubscriptionUpcomingNotificationAsSent } from "~/server/services/subscription";
 
 export const eventName = "notifications/send-upcoming" as const;
 
@@ -25,7 +25,24 @@ export default inngest.createFunction(
     const subscriptions = await getEventSubscriptions(slug);
     if (!subscriptions.length) return { skipped: true, reason: "No subscribers" };
     
-    const userIds = subscriptions.map(s => s.hemocioneId).filter(Boolean) as string[];
+    // Filter subscriptions that need notifications (schedule.startAt is tomorrow and not yet notified)
+    const now = new Date();
+    const tomorrow = new Date(now);
+    tomorrow.setDate(tomorrow.getDate() + 1);
+    tomorrow.setHours(0, 0, 0, 0);
+    
+    const endOfTomorrow = new Date(tomorrow);
+    endOfTomorrow.setHours(23, 59, 59, 999);
+    
+    const subscriptionsToNotify = subscriptions.filter(sub => 
+      sub.schedule.startAt >= tomorrow && 
+      sub.schedule.startAt <= endOfTomorrow &&
+      !sub.notificationsUpcomingSentAt
+    );
+    
+    if (!subscriptionsToNotify.length) return { skipped: true, reason: "No subscriptions need notifications" };
+    
+    const userIds = subscriptionsToNotify.map(s => s.hemocioneId).filter(Boolean) as string[];
 
     const config = useRuntimeConfig();
     const hemocioneIdBaseUrl = config.hemocioneIdBaseUrl;
@@ -45,7 +62,7 @@ export default inngest.createFunction(
         startAt: hemoEvent.startAt,
         endAt: hemoEvent.endAt,
         location: hemoEvent.location,
-        userSubscriptions: subscriptions.map(sub => ({
+        userSubscriptions: subscriptionsToNotify.map(sub => ({
           userId: sub.hemocioneId,
           scheduledStartAt: sub.schedule.startAt,
           scheduledEndAt: sub.schedule.endAt,
@@ -76,7 +93,7 @@ export default inngest.createFunction(
                 templateComponents: [
                   {
                     type: "body",
-                    parameters: subscriptions.map(sub => [
+                    parameters: subscriptionsToNotify.map(sub => [
                       { type: "text", text: hemoEvent.name },
                       { type: "text", text: new Date(sub.schedule.startAt).toLocaleDateString('pt-BR') },
                       { type: "text", text: new Date(sub.schedule.startAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) }
@@ -93,7 +110,13 @@ export default inngest.createFunction(
       });
     });
 
-    await markUpcomingNotificationsAsSent(slug);
+    // Mark each subscription as notified
+    await Promise.all(
+      subscriptionsToNotify.map(sub => 
+        markSubscriptionUpcomingNotificationAsSent(String(sub._id))
+      )
+    );
+    
     return { notifiedCount: userIds.length };
   }
 );

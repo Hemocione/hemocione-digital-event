@@ -77,6 +77,11 @@ const SubscriptionSchema = new Schema(
       required: false,
       default: null,
     },
+    notificationsUpcomingSentAt: {
+      type: Date,
+      required: false,
+      default: null,
+    },
   },
   {
     timestamps: true,
