@@ -6,7 +6,7 @@
         <ElButton
           @click="toggleLocationFilter"
           size="large"
-          :type="locationPermissionGranted ? 'primary' : 'default'"
+          type="default"
           :class="['location-button', { 'location-active': locationPermissionGranted }]"
           :title="locationPermissionGranted ? `Filtrando por: ${userCity}` : 'Buscar eventos próximos'"
         >
@@ -96,7 +96,6 @@ const toggleLocationFilter = async () => {
     userCity.value = "";
     userState.value = "";
     userCoordinates.value = null;
-    ElMessage.info("Filtro de localização desativado. Mostrando todos os eventos.");
   } else {
     await requestLocationPermission();
   }
@@ -104,7 +103,6 @@ const toggleLocationFilter = async () => {
 
 const requestLocationPermission = async () => {
   if (!navigator.geolocation) {
-    ElMessage.error("Geolocalização não é suportada neste navegador.");
     return;
   }
 
@@ -187,7 +185,6 @@ const requestLocationPermission = async () => {
                        !invalidCities.some(invalid => detectedCity.includes(invalid));
     
     if (!isValidCity) {
-      ElMessage.error("Não foi possível detectar sua cidade específica. Tente novamente.");
       return;
     }
     
@@ -198,8 +195,6 @@ const requestLocationPermission = async () => {
       lng: position.coords.longitude
     };
     locationPermissionGranted.value = true;
-    
-    ElMessage.success(`Eventos próximos a ${userCity.value} aparecerão primeiro!`);
   } catch (error) {
     ElMessage.error("Não foi possível obter sua localização. Verifique as permissões do navegador.");
   }
@@ -269,30 +264,36 @@ definePageMeta({
 }
 
 .location-button {
-  --el-button-bg-color: var(--hemo-color-white);
-  --el-button-border-color: var(--hemo-color-black-10);
+  --el-button-bg-color: transparent;
+  --el-button-border-color: transparent;
   --el-button-text-color: var(--hemo-color-text-secondary);
-  --el-button-hover-bg-color: var(--hemo-color-black-5);
-  --el-button-hover-border-color: var(--hemo-color-black-20);
-  --el-button-hover-text-color: var(--hemo-color-text-primary);
+  --el-button-hover-bg-color: transparent;
+  --el-button-hover-border-color: transparent;
+  --el-button-hover-text-color: #fca5a5;
+  --el-button-active-bg-color: transparent;
+  --el-button-active-border-color: transparent;
+  --el-button-active-text-color: #dc2626;
   min-width: 40px;
   height: 40px;
   transition: all 0.3s ease;
 }
 
 .location-button.location-active {
-  --el-button-bg-color: var(--hemo-color-white);
-  --el-button-border-color: #dc2626;
+  --el-button-bg-color: transparent;
+  --el-button-border-color: transparent;
   --el-button-text-color: #dc2626;
-  --el-button-hover-bg-color: var(--hemo-color-black-5);
-  --el-button-hover-border-color: #b91c1c;
-  --el-button-hover-text-color: #b91c1c;
+  --el-button-hover-bg-color: transparent;
+  --el-button-hover-border-color: transparent;
+  --el-button-hover-text-color: #fca5a5;
+  --el-button-active-bg-color: transparent;
+  --el-button-active-border-color: transparent;
+  --el-button-active-text-color: #dc2626;
 }
 
 .location-icon {
   width: 22px;
   height: 22px;
-  color: var(--hemo-color-text-secondary);
+  color: inherit;
 }
 
 .search-input {
