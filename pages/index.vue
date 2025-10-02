@@ -304,6 +304,10 @@ definePageMeta({
   --el-input-text-color: var(--hemo-color-text-secondary);
   --el-input-icon-color: var(--hemo-color-text-secondary);
 }
+
+.search-input :deep(.el-input__prefix-inner) {
+  padding-left: 0;
+}
 .events-header {
   width: 100%;
   display: flex;
