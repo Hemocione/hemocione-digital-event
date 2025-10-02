@@ -95,11 +95,18 @@ export function getEventsToSendDonations() {
 
 export function getEventsToSendUpcomingNotifications() {
   const now = new Date();
-  const in24h = new Date(now.getTime() + 1000 * 60 * 60 * 24);
-  const in24hPlus15 = new Date(now.getTime() + 1000 * 60 * 60 * 24 + 1000 * 60 * 15);
+  
+  // Get tomorrow's date range (00:00 to 23:59)
+  const tomorrow = new Date(now);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  tomorrow.setHours(0, 0, 0, 0); // Start of tomorrow
+  
+  const endOfTomorrow = new Date(tomorrow);
+  endOfTomorrow.setHours(23, 59, 59, 999); // End of tomorrow
+  
   return Event.find({
     active: true,
-    startAt: { $gte: in24h, $lte: in24hPlus15 },
+    startAt: { $gte: tomorrow, $lte: endOfTomorrow },
     "subscription.enabled": true,
     notificationsUpcomingSentAt: null,
   })

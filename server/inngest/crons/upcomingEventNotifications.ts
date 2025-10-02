@@ -8,7 +8,7 @@ export default inngest.createFunction(
     id: "find-events-to-send-upcoming-notifications",
   },
   {
-    cron: "*/15 * * * *", // every 15 minutes
+    cron: "0 14 * * *", // every day at 2 PM
   },
   async () => {
     const events = await getEventsToSendUpcomingNotifications();

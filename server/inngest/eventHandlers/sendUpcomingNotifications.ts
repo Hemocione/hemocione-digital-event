@@ -33,6 +33,10 @@ export default inngest.createFunction(
     const oneSignalTemplateId = config.oneSignalTemplateId;
     const whatsappTemplateName = config.whatsappTemplateName;
 
+    if (!backofficeToken || !hemocioneIdBaseUrl) {
+      return { skipped: true, reason: "Missing Hemocione ID credentials/config" };
+    }
+
     await step.run("call-hemocione-id", async () => {
       // Prepare event data with user-specific subscription times
       const eventData = {

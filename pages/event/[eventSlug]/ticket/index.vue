@@ -155,36 +155,35 @@
         </template>
       </CommonCard>
     </article>
+    <!-- Confirmation Dialog -->
+    <ElDialog
+      v-model="showCancelDialog"
+      title="Confirmar cancelamento"
+      width="max(25vw, 300px)"
+      :close-on-click-modal="false"
+      :close-on-press-escape="false"
+      :show-close="false"
+      :style="{ borderRadius: '8px', marginTop: '30vh' }"
+    >
+      <p>Tem certeza que deseja cancelar seu agendamento?</p>
+      <p>Esta ação não pode ser desfeita.</p>
+      
+      <template #footer>
+        <div class="dialog-footer">
+          <ElButton @click="showCancelDialog = false">
+            Manter agendamento
+          </ElButton>
+          <ElButton 
+            class="cancel-button"
+            :loading="state.loading"
+            @click="confirmCancel"
+          >
+            Cancelar
+          </ElButton>
+        </div>
+      </template>
+    </ElDialog>
   </main>
-
-  <!-- Confirmation Dialog -->
-  <ElDialog
-    v-model="showCancelDialog"
-    title="Confirmar cancelamento"
-    width="max(25vw, 300px)"
-    :close-on-click-modal="false"
-    :close-on-press-escape="false"
-    :show-close="false"
-    :style="{ borderRadius: '8px', marginTop: '30vh' }"
-  >
-    <p>Tem certeza que deseja cancelar seu agendamento?</p>
-    <p>Esta ação não pode ser desfeita.</p>
-    
-    <template #footer>
-      <div class="dialog-footer">
-        <ElButton @click="showCancelDialog = false">
-          Manter agendamento
-        </ElButton>
-        <ElButton 
-          class="cancel-button"
-          :loading="state.loading"
-          @click="confirmCancel"
-        >
-          Cancelar
-        </ElButton>
-      </div>
-    </template>
-  </ElDialog>
 </template>
 
 <script setup lang="ts">
