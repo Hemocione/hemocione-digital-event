@@ -41,6 +41,7 @@
     "@vercel/functions": "^1.4.0",
     "apexcharts": "^3.48.0",
     "aws-sdk": "^2.1497.0",
+    "crypto": "^1.0.1",
     "dayjs": "^1.11.9",
     "element-plus": "^2.3.12",
     "eslint": "^8.48.0",
