@@ -1,5 +1,6 @@
 import { assertSecretAuth, useHemocioneUserAuth } from "~/server/services/auth";
 import { uploadImage } from "~/server/services/cdn";
+import { randomUUID } from "crypto";
 
 export default defineEventHandler(async (event) => {
   const headers = getRequestHeaders(event);
@@ -17,7 +18,8 @@ export default defineEventHandler(async (event) => {
     assertSecretAuth(event);
   }
 
-  const extraPrefix = user ? `users/${user.id}` : "private";
+  const uuid = randomUUID();
+  const extraPrefix = `${user ? "users" : "private"}/${uuid}`;
   const url = await uploadImage(event, extraPrefix);
   return {
     url,
