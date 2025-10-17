@@ -4,11 +4,11 @@
       <h1 class="events-title">Eventos</h1>
       <div class="search-container">
         <ElButton
+          v-if="hasGeolocation"
           @click="toggleLocationFilter"
           size="large"
           type="default"
           :class="['location-button', { 'location-active': locationPermissionGranted }]"
-          :title="locationPermissionGranted ? `Filtrando por: ${userCity}` : 'Buscar eventos próximos'"
         >
           <svg class="location-icon" viewBox="0 0 1024 1024" fill="currentColor">
             <path d="M512 928c23.936 0 117.504-68.352 192.064-153.152C803.456 661.888 864 535.808 864 416c0-189.632-155.84-320-352-320S160 226.368 160 416c0 120.32 60.544 246.4 159.936 359.232C394.432 859.84 488 928 512 928m0-435.2a64 64 0 1 0 0-128 64 64 0 0 0 0 128m0 140.8a204.8 204.8 0 1 1 0-409.6 204.8 204.8 0 0 1 0 409.6"/>
@@ -68,6 +68,7 @@ const userCity = ref("");
 const userState = ref("");
 const userCoordinates = ref<{ lat: number; lng: number } | null>(null);
 const eventsContainer = ref<HTMLElement | null>(null);
+const hasGeolocation = ref(false);
 
 watch(search, () => {
   router.push({ query: { search: search.value } });
@@ -75,6 +76,8 @@ watch(search, () => {
 const { data: currentEvents } = await useFetch("/api/v1/event");
 
 onMounted(async () => {
+  hasGeolocation.value = !!navigator.geolocation;
+  
   if (eventsContainer.value) {
     const { autoAnimate } = await import('@formkit/auto-animate');
     autoAnimate(eventsContainer.value);
@@ -84,18 +87,6 @@ onMounted(async () => {
 const cleanSearch = computed(() => {
   return getCleanText(search.value);
 });
-
-const calculateDistance = (lat1: number, lng1: number, lat2: number, lng2: number): number => {
-  const R = 6371;
-  const dLat = (lat2 - lat1) * Math.PI / 180;
-  const dLng = (lng2 - lng1) * Math.PI / 180;
-  const a = 
-    Math.sin(dLat/2) * Math.sin(dLat/2) +
-    Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) * 
-    Math.sin(dLng/2) * Math.sin(dLng/2);
-  const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
-  return R * c;
-};
 
 const toggleLocationFilter = async () => {
   if (locationPermissionGranted.value) {
@@ -109,9 +100,6 @@ const toggleLocationFilter = async () => {
 };
 
 const requestLocationPermission = async () => {
-  if (!navigator.geolocation) {
-    return;
-  }
 
   try {
     const position = await new Promise<GeolocationPosition>((resolve, reject) => {
