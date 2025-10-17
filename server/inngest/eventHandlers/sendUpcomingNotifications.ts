@@ -46,8 +46,11 @@ export default inngest.createFunction(
     const oneSignalTemplateId = config.oneSignalTemplateId;
     const whatsappTemplateName = config.whatsappTemplateName;
 
-    if (!backofficeToken || !hemocioneIdBaseUrl) {
-      return { skipped: true, reason: "Missing Hemocione ID credentials/config" };
+    if (!backofficeToken || !hemocioneIdBaseUrl || !oneSignalTemplateId || !whatsappTemplateName) {
+      return {
+        skipped: true,
+        reason: "Missing Hemocione ID credentials/config (token, URL, or template IDs)"
+      };
     }
 
     // Process notifications in batches to avoid overloading the system
