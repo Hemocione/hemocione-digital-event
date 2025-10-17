@@ -1,6 +1,6 @@
 import { inngest } from "~/server/inngest/client";
 import { getEventBySlug } from "~/server/services/event";
-import { getEventSubscriptions, markSubscriptionUpcomingNotificationAsSent } from "~/server/services/subscription";
+import { getEventSubscriptions, markMultipleSubscriptionsUpcomingNotificationAsSent } from "~/server/services/subscription";
 import { getBrazilTomorrowStart, getBrazilTomorrowEnd, formatBrazilDate, formatBrazilTime } from "~/server/utils/brazilTimezone";
 
 export const eventName = "notifications/send-upcoming" as const;
@@ -117,12 +117,9 @@ export default inngest.createFunction(
       });
     }
 
-    // Mark each subscription as notified
-    await Promise.all(
-      subscriptionsToNotify.map(sub => 
-        markSubscriptionUpcomingNotificationAsSent(String(sub._id))
-      )
-    );
+    // Mark all subscriptions as notified in a single database operation
+    const subscriptionIds = subscriptionsToNotify.map(sub => String(sub._id));
+    await markMultipleSubscriptionsUpcomingNotificationAsSent(subscriptionIds);
     
     return { 
       notifiedCount: processedCount,

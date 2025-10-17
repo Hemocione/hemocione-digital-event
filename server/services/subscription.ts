@@ -191,3 +191,10 @@ export async function markSubscriptionUpcomingNotificationAsSent(subscriptionId:
     { lean: true },
   );
 }
+
+export async function markMultipleSubscriptionsUpcomingNotificationAsSent(subscriptionIds: string[]) {
+  return await Subscription.updateMany(
+    { _id: { $in: subscriptionIds } },
+    { notificationsUpcomingSentAt: new Date() },
+  );
+}
