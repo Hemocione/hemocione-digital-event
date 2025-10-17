@@ -51,7 +51,7 @@ export default inngest.createFunction(
     }
 
     // Process notifications in batches to avoid overloading the system
-    const BATCH_SIZE = 100; // Process up to 50 users at a time
+    const BATCH_SIZE = 200; // Process up to 50 users at a time
     let processedCount = 0;
     
     for (let i = 0; i < subscriptionsToNotify.length; i += BATCH_SIZE) {
