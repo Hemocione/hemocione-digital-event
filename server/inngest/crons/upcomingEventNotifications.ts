@@ -1,5 +1,5 @@
 import { inngest } from "~/server/inngest/client";
-import { getSubscriptionsToSendUpcomingNotifications } from "~/server/services/subscription";
+import { getEventsToSendUpcomingNotifications } from "~/server/services/event";
 import { eventName as sendUpcomingEventName } from "~/server/inngest/eventHandlers/sendUpcomingNotifications";
 
 export default inngest.createFunction(
@@ -8,36 +8,24 @@ export default inngest.createFunction(
     id: "find-events-to-send-upcoming-notifications",
   },
   {
-    cron: "0 14 * * *", // every day at 2 PM
+    cron: "0 16 * * *", // every day at 1 PM Brazil time (16:00 UTC)
   },
   async () => {
-    const subscriptions = await getSubscriptionsToSendUpcomingNotifications();
+    const events = await getEventsToSendUpcomingNotifications();
     
-    // Group subscriptions by eventSlug to process them efficiently
-    const subscriptionsByEvent = subscriptions.reduce((acc, subscription) => {
-      if (!acc[subscription.eventSlug]) {
-        acc[subscription.eventSlug] = [];
-      }
-      acc[subscription.eventSlug].push(subscription);
-      return acc;
-    }, {} as Record<string, typeof subscriptions>);
-
-    // Send one notification per event (the handler will process all subscriptions for that event)
-    for (const [eventSlug, eventSubscriptions] of Object.entries(subscriptionsByEvent)) {
+    // Send one notification event per event (the handler will process subscriptions individually)
+    for (const event of events) {
       await inngest.send({
         name: sendUpcomingEventName,
         data: {
-          slug: eventSlug,
+          slug: event.slug,
         },
       });
     }
     
     return {
-      subscriptionsBeingProcessedCount: subscriptions.length,
-      eventsBeingProcessedCount: Object.keys(subscriptionsByEvent).length,
-      eventsBeingProcessed: Object.keys(subscriptionsByEvent),
+      eventsBeingProcessedCount: events.length,
+      eventsBeingProcessed: events.map(e => e.slug),
     };
   },
 );
-
-

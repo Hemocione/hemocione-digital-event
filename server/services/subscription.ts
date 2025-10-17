@@ -2,6 +2,7 @@ import { Subscription } from "../models/subscription";
 import type { HemocioneUserAuthTokenData } from "./auth";
 import { getEventBySlug, incrementEventScheduleOccupiedSlots } from "./event";
 import { getCleanFullName } from "~/utils/getCleanFullName";
+import { getBrazilTodayStart, getBrazilTomorrowStart, getBrazilTomorrowEnd } from "../utils/brazilTimezone";
 
 export async function getUserSubscriptions(hemocioneId: string) {
   return await Subscription.find({
@@ -67,8 +68,7 @@ export async function getUserNextSubscription({
 }: {
   hemocioneId: string;
 }) {
-  const currentStartOfDay = new Date();
-  currentStartOfDay.setHours(0, 0, 0, 0);
+  const currentStartOfDay = getBrazilTodayStart();
   const subscription = await Subscription.findOne({
     hemocioneId,
     deletedAt: null,
@@ -162,19 +162,13 @@ export async function deleteSubscription(
 }
 
 export function getSubscriptionsToSendUpcomingNotifications() {
-  const now = new Date();
-  
-  // Get tomorrow's date range (00:00 to 23:59)
-  const tomorrow = new Date(now);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  tomorrow.setHours(0, 0, 0, 0); // Start of tomorrow
-  
-  const endOfTomorrow = new Date(tomorrow);
-  endOfTomorrow.setHours(23, 59, 59, 999); // End of tomorrow
+  // Get tomorrow's date range in Brazil timezone (00:00 to 23:59)
+  const tomorrowStart = getBrazilTomorrowStart();
+  const tomorrowEnd = getBrazilTomorrowEnd();
   
   return Subscription.find({
     deletedAt: null,
-    "schedule.startAt": { $gte: tomorrow, $lte: endOfTomorrow },
+    "schedule.startAt": { $gte: tomorrowStart, $lte: tomorrowEnd },
     notificationsUpcomingSentAt: null,
   })
     .select({

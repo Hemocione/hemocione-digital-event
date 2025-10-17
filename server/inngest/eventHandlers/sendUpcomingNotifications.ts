@@ -1,6 +1,7 @@
 import { inngest } from "~/server/inngest/client";
 import { getEventBySlug } from "~/server/services/event";
 import { getEventSubscriptions, markSubscriptionUpcomingNotificationAsSent } from "~/server/services/subscription";
+import { getBrazilTomorrowStart, getBrazilTomorrowEnd, formatBrazilDate, formatBrazilTime } from "~/server/utils/brazilTimezone";
 
 export const eventName = "notifications/send-upcoming" as const;
 
@@ -26,17 +27,12 @@ export default inngest.createFunction(
     if (!subscriptions.length) return { skipped: true, reason: "No subscribers" };
     
     // Filter subscriptions that need notifications (schedule.startAt is tomorrow and not yet notified)
-    const now = new Date();
-    const tomorrow = new Date(now);
-    tomorrow.setDate(tomorrow.getDate() + 1);
-    tomorrow.setHours(0, 0, 0, 0);
-    
-    const endOfTomorrow = new Date(tomorrow);
-    endOfTomorrow.setHours(23, 59, 59, 999);
+    const tomorrowStart = getBrazilTomorrowStart();
+    const tomorrowEnd = getBrazilTomorrowEnd();
     
     const subscriptionsToNotify = subscriptions.filter(sub => 
-      sub.schedule.startAt >= tomorrow && 
-      sub.schedule.startAt <= endOfTomorrow &&
+      sub.schedule.startAt >= tomorrowStart && 
+      sub.schedule.startAt <= tomorrowEnd &&
       !sub.notificationsUpcomingSentAt
     );
     
@@ -54,61 +50,72 @@ export default inngest.createFunction(
       return { skipped: true, reason: "Missing Hemocione ID credentials/config" };
     }
 
-    await step.run("call-hemocione-id", async () => {
-      // Prepare event data with user-specific subscription times
-      const eventData = {
-        slug: hemoEvent.slug,
-        name: hemoEvent.name,
-        startAt: hemoEvent.startAt,
-        endAt: hemoEvent.endAt,
-        location: hemoEvent.location,
-        userSubscriptions: subscriptionsToNotify.map(sub => ({
-          userId: sub.hemocioneId,
-          scheduledStartAt: sub.schedule.startAt,
-          scheduledEndAt: sub.schedule.endAt,
-          scheduledDate: new Date(sub.schedule.startAt).toLocaleDateString('pt-BR'),
-          scheduledTime: new Date(sub.schedule.startAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' })
-        }))
-      };
+    // Process notifications in batches to avoid overloading the system
+    const BATCH_SIZE = 100; // Process up to 50 users at a time
+    let processedCount = 0;
+    
+    for (let i = 0; i < subscriptionsToNotify.length; i += BATCH_SIZE) {
+      const batch = subscriptionsToNotify.slice(i, i + BATCH_SIZE);
+      const batchUserIds = batch.map(s => s.hemocioneId).filter(Boolean) as string[];
+      
+      await step.run(`send-notifications-batch-${Math.floor(i / BATCH_SIZE) + 1}`, async () => {
+        // Prepare event data with user-specific subscription times for this batch
+        const eventData = {
+          slug: hemoEvent.slug,
+          name: hemoEvent.name,
+          startAt: hemoEvent.startAt,
+          endAt: hemoEvent.endAt,
+          location: hemoEvent.location,
+          userSubscriptions: batch.map(sub => ({
+            userId: sub.hemocioneId,
+            scheduledStartAt: sub.schedule.startAt,
+            scheduledEndAt: sub.schedule.endAt,
+            scheduledDate: formatBrazilDate(sub.schedule.startAt),
+            scheduledTime: formatBrazilTime(sub.schedule.startAt)
+          }))
+        };
 
-      await $fetch(`${hemocioneIdBaseUrl}/notifications/upcoming-event`, {
-        method: "POST",
-        body: {
-          targets: { userIds },
-          channels: {
-            push: { 
-              enabled: true, 
-              payload: { 
-                message: { 
-                  template_id: oneSignalTemplateId, 
-                  name: "upcoming_event",
-                  custom_data: eventData
+        await $fetch(`${hemocioneIdBaseUrl}/notifications/upcoming-event`, {
+          method: "POST",
+          body: {
+            targets: { userIds: batchUserIds },
+            channels: {
+              push: { 
+                enabled: true, 
+                payload: { 
+                  message: { 
+                    template_id: oneSignalTemplateId, 
+                    name: "upcoming_event",
+                    custom_data: eventData
+                  } 
                 } 
-              } 
-            },
-            zap: { 
-              enabled: true, 
-              payload: { 
-                templateName: whatsappTemplateName, 
-                templateComponents: [
-                  {
-                    type: "body",
-                    parameters: subscriptionsToNotify.map(sub => [
-                      { type: "text", text: hemoEvent.name },
-                      { type: "text", text: new Date(sub.schedule.startAt).toLocaleDateString('pt-BR') },
-                      { type: "text", text: new Date(sub.schedule.startAt).toLocaleTimeString('pt-BR', { hour: '2-digit', minute: '2-digit' }) }
-                    ])
-                  }
-                ]
-              } 
+              },
+              zap: { 
+                enabled: true, 
+                payload: { 
+                  templateName: whatsappTemplateName, 
+                  templateComponents: [
+                    {
+                      type: "body",
+                      parameters: batch.map(sub => [
+                        { type: "text", text: hemoEvent.name },
+                        { type: "text", text: formatBrazilDate(sub.schedule.startAt) },
+                        { type: "text", text: formatBrazilTime(sub.schedule.startAt) }
+                      ])
+                    }
+                  ]
+                } 
+              }
             }
-          }
-        },
-        headers: {
-          Authorization: `Bearer ${backofficeToken}`,
-        },
+          },
+          headers: {
+            Authorization: `Bearer ${backofficeToken}`,
+          },
+        });
+        
+        processedCount += batchUserIds.length;
       });
-    });
+    }
 
     // Mark each subscription as notified
     await Promise.all(
@@ -117,7 +124,11 @@ export default inngest.createFunction(
       )
     );
     
-    return { notifiedCount: userIds.length };
+    return { 
+      notifiedCount: processedCount,
+      totalSubscriptions: subscriptionsToNotify.length,
+      batchesProcessed: Math.ceil(subscriptionsToNotify.length / BATCH_SIZE)
+    };
   }
 );
 

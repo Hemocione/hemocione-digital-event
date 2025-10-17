@@ -4,6 +4,7 @@ import { Event } from "../models/event";
 import { getTimeBlocks } from "~/utils/getTimeBlocks";
 import { getCacheKeyFromParams } from "~/utils/getCacheKeyFromParams";
 import { getRandomString } from "~/utils/getRandomString";
+import { getBrazilTomorrowStart, getBrazilTomorrowEnd } from "../utils/brazilTimezone";
 
 export interface CreateEventDTO {
   name: string;
@@ -94,19 +95,13 @@ export function getEventsToSendDonations() {
 }
 
 export function getEventsToSendUpcomingNotifications() {
-  const now = new Date();
-  
-  // Get tomorrow's date range (00:00 to 23:59)
-  const tomorrow = new Date(now);
-  tomorrow.setDate(tomorrow.getDate() + 1);
-  tomorrow.setHours(0, 0, 0, 0); // Start of tomorrow
-  
-  const endOfTomorrow = new Date(tomorrow);
-  endOfTomorrow.setHours(23, 59, 59, 999); // End of tomorrow
+  // Get tomorrow's date range in Brazil timezone (00:00 to 23:59)
+  const tomorrowStart = getBrazilTomorrowStart();
+  const tomorrowEnd = getBrazilTomorrowEnd();
   
   return Event.find({
     active: true,
-    startAt: { $gte: tomorrow, $lte: endOfTomorrow },
+    startAt: { $gte: tomorrowStart, $lte: tomorrowEnd },
     "subscription.enabled": true,
     notificationsUpcomingSentAt: null,
   })
