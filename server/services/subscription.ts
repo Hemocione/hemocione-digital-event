@@ -26,6 +26,7 @@ export function getEventSubscriptions(eventSlug: string) {
     deletedAt: null,
   })
     .select({
+      _id: 1,
       hemocioneId: 1,
       eventSlug: 1,
       name: 1,
@@ -33,6 +34,7 @@ export function getEventSubscriptions(eventSlug: string) {
       phone: 1,
       document: 1,
       schedule: 1,
+      notificationsUpcomingSentAt: 1,
     })
     .lean();
 }
