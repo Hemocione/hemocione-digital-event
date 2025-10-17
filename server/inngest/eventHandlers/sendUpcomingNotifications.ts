@@ -1,7 +1,7 @@
 import { inngest } from "~/server/inngest/client";
 import { getEventBySlug } from "~/server/services/event";
 import { getEventSubscriptions, markMultipleSubscriptionsUpcomingNotificationAsSent } from "~/server/services/subscription";
-import { getBrazilTomorrowStart, getBrazilTomorrowEnd, formatBrazilDate, formatBrazilTime } from "~/server/utils/brazilTimezone";
+import { formatBrazilDate, formatBrazilTime } from "~/server/utils/brazilTimezone";
 
 export const eventName = "notifications/send-upcoming" as const;
 
@@ -26,13 +26,8 @@ export default inngest.createFunction(
     const subscriptions = await getEventSubscriptions(slug);
     if (!subscriptions.length) return { skipped: true, reason: "No subscribers" };
     
-    // Filter subscriptions that need notifications (schedule.startAt is tomorrow and not yet notified)
-    const tomorrowStart = getBrazilTomorrowStart();
-    const tomorrowEnd = getBrazilTomorrowEnd();
-    
+    // Filter subscriptions that need notifications (haven't been notified yet)
     const subscriptionsToNotify = subscriptions.filter(sub => 
-      sub.schedule.startAt >= tomorrowStart && 
-      sub.schedule.startAt <= tomorrowEnd &&
       !sub.notificationsUpcomingSentAt
     );
     

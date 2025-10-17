@@ -2,7 +2,7 @@ import { Subscription } from "../models/subscription";
 import type { HemocioneUserAuthTokenData } from "./auth";
 import { getEventBySlug, incrementEventScheduleOccupiedSlots } from "./event";
 import { getCleanFullName } from "~/utils/getCleanFullName";
-import { getBrazilTodayStart, getBrazilTomorrowStart, getBrazilTomorrowEnd } from "../utils/brazilTimezone";
+import { getBrazilTodayStart } from "../utils/brazilTimezone";
 
 export async function getUserSubscriptions(hemocioneId: string) {
   return await Subscription.find({
@@ -161,28 +161,6 @@ export async function deleteSubscription(
   return subscription.toObject();
 }
 
-export function getSubscriptionsToSendUpcomingNotifications() {
-  // Get tomorrow's date range in Brazil timezone (00:00 to 23:59)
-  const tomorrowStart = getBrazilTomorrowStart();
-  const tomorrowEnd = getBrazilTomorrowEnd();
-  
-  return Subscription.find({
-    deletedAt: null,
-    "schedule.startAt": { $gte: tomorrowStart, $lte: tomorrowEnd },
-    notificationsUpcomingSentAt: null,
-  })
-    .select({
-      _id: 1,
-      eventSlug: 1,
-      hemocioneId: 1,
-      name: 1,
-      email: 1,
-      phone: 1,
-      document: 1,
-      schedule: 1,
-    })
-    .lean();
-}
 
 export async function markSubscriptionUpcomingNotificationAsSent(subscriptionId: string) {
   return await Subscription.findByIdAndUpdate(
