@@ -269,8 +269,8 @@ definePageMeta({
 }
 
 .location-icon {
-  width: 22px;
-  height: 22px;
+  width: 28px;
+  height: 28px;
   color: inherit;
 }
 
