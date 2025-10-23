@@ -88,7 +88,7 @@ onMounted(async () => {
   }
   
   if (hasGeolocation.value) {
-    await getLocationData();
+    await requestLocationPermission();
   }
 });
 
