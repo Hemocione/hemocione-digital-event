@@ -82,6 +82,10 @@ onMounted(async () => {
     const { autoAnimate } = await import('@formkit/auto-animate');
     autoAnimate(eventsContainer.value);
   }
+  
+  if (hasGeolocation.value) {
+    await getLocationData();
+  }
 });
 
 const cleanSearch = computed(() => {
@@ -100,7 +104,11 @@ const toggleLocationFilter = async () => {
 };
 
 const requestLocationPermission = async () => {
+  await getLocationData();
+  locationPermissionGranted.value = true;
+};
 
+const getLocationData = async () => {
   try {
     const position = await new Promise<GeolocationPosition>((resolve, reject) => {
       navigator.geolocation.getCurrentPosition(resolve, reject);
@@ -175,7 +183,6 @@ const requestLocationPermission = async () => {
       lat: position.coords.latitude,
       lng: position.coords.longitude
     };
-    locationPermissionGranted.value = true;
   } catch (error) {
     ElMessage.error("Não foi possível obter sua localização. Verifique as permissões do navegador.");
   }
