@@ -14,7 +14,7 @@ export interface SendUpcomingNotifications {
 export default inngest.createFunction(
   { name: "Send Upcoming Event Notifications", id: "send-upcoming-notifications" },
   { event: eventName },
-  async ({ event, step }) => {
+  async ({ event }) => {
     const { slug } = event.data;
 
     const hemoEvent = await getEventBySlug(slug);
@@ -48,92 +48,74 @@ export default inngest.createFunction(
       };
     }
 
-    // Process notifications in batches to avoid overloading the system
-    const BATCH_SIZE = 200; // Process up to 200 users at a time
-    const sentSubscriptionIds: string[] = [];
-    
-    for (let i = 0; i < subscriptionsToNotify.length; i += BATCH_SIZE) {
-      const batch = subscriptionsToNotify.slice(i, i + BATCH_SIZE);
-      const batchUserIds = batch.map(s => s.hemocioneId).filter(Boolean) as string[];
-      
-      await step.run(`send-notifications-batch-${Math.floor(i / BATCH_SIZE) + 1}`, async () => {
-        try {
-          // Prepare event data with user-specific subscription times for this batch
-          const eventData = {
-            slug: hemoEvent.slug,
-            name: hemoEvent.name,
-            startAt: hemoEvent.startAt,
-            endAt: hemoEvent.endAt,
-            location: hemoEvent.location,
-            userSubscriptions: batch.map(sub => ({
-              userId: sub.hemocioneId,
-              scheduledStartAt: sub.schedule.startAt,
-              scheduledEndAt: sub.schedule.endAt,
-              scheduledDate: formatBrazilDate(sub.schedule.startAt),
-              scheduledTime: formatBrazilTime(sub.schedule.startAt)
-            }))
-          };
+    try {
+      // Prepare event data with user-specific subscription times
+      const eventData = {
+        slug: hemoEvent.slug,
+        name: hemoEvent.name,
+        startAt: hemoEvent.startAt,
+        endAt: hemoEvent.endAt,
+        location: hemoEvent.location,
+        userSubscriptions: subscriptionsToNotify.map(sub => ({
+          userId: sub.hemocioneId,
+          scheduledStartAt: sub.schedule.startAt,
+          scheduledEndAt: sub.schedule.endAt,
+          scheduledDate: formatBrazilDate(sub.schedule.startAt),
+          scheduledTime: formatBrazilTime(sub.schedule.startAt)
+        }))
+      };
 
-          await $fetch(`${hemocioneIdBaseUrl}/notifications/upcoming-event`, {
-            method: "POST",
-            body: {
-              targets: { userIds: batchUserIds },
-              channels: {
-                push: { 
-                  enabled: true, 
-                  payload: { 
-                    message: { 
-                      template_id: oneSignalTemplateId, 
-                      name: "upcoming_event",
-                      custom_data: eventData
-                    } 
-                  } 
-                },
-                zap: { 
-                  enabled: true, 
-                  payload: { 
-                    templateName: whatsappTemplateName, 
-                    templateComponents: [
-                      {
-                        type: "body",
-                        parameters: batch.map(sub => [
-                          { type: "text", text: hemoEvent.name },
-                          { type: "text", text: formatBrazilDate(sub.schedule.startAt) },
-                          { type: "text", text: formatBrazilTime(sub.schedule.startAt) }
-                        ])
-                      }
-                    ]
-                  } 
-                }
-              }
+      await $fetch(`${hemocioneIdBaseUrl}/notifications/upcoming-event`, {
+        method: "POST",
+        body: {
+          targets: { userIds },
+          channels: {
+            push: { 
+              enabled: true, 
+              payload: { 
+                message: { 
+                  template_id: oneSignalTemplateId, 
+                  name: "upcoming_event",
+                  custom_data: eventData
+                } 
+              } 
             },
-            headers: {
-              Authorization: `Bearer ${backofficeToken}`,
-            },
-          });
-          
-          // If successful, add all subscription IDs from this batch
-          sentSubscriptionIds.push(...batch.map(sub => String(sub._id)));
-          
-        } catch (error) {
-          // If batch fails, don't add any IDs - they can be retried later
-          console.error(`Failed to send notifications for batch ${Math.floor(i / BATCH_SIZE) + 1}:`, error);
-          throw error; // Re-throw to mark the step as failed
-        }
+            zap: { 
+              enabled: true, 
+              payload: { 
+                templateName: whatsappTemplateName, 
+                templateComponents: [
+                  {
+                    type: "body",
+                    parameters: subscriptionsToNotify.map(sub => [
+                      { type: "text", text: hemoEvent.name },
+                      { type: "text", text: formatBrazilDate(sub.schedule.startAt) },
+                      { type: "text", text: formatBrazilTime(sub.schedule.startAt) }
+                    ])
+                  }
+                ]
+              } 
+            }
+          }
+        },
+        headers: {
+          Authorization: `Bearer ${backofficeToken}`,
+        },
       });
-    }
-
-    // Mark only successfully sent subscriptions as notified
-    if (sentSubscriptionIds.length > 0) {
+      
+      // Mark all subscriptions as notified
+      const sentSubscriptionIds = subscriptionsToNotify.map(sub => String(sub._id));
       await markMultipleSubscriptionsUpcomingNotificationAsSent(sentSubscriptionIds);
+      
+      return { 
+        notifiedCount: sentSubscriptionIds.length,
+        totalSubscriptions: subscriptionsToNotify.length
+      };
+      
+    } catch (error) {
+      console.error("Failed to send notifications:", error);
+      throw error;
     }
-    
-    return { 
-      notifiedCount: sentSubscriptionIds.length,
-      totalSubscriptions: subscriptionsToNotify.length,
-      failedCount: subscriptionsToNotify.length - sentSubscriptionIds.length,
-      batchesProcessed: Math.ceil(subscriptionsToNotify.length / BATCH_SIZE)
-    };
   }
 );
 
