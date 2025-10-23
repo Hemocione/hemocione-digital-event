@@ -33,7 +33,7 @@ const props = withDefaults(defineProps<{
   // ---- defaults (os que você passava no app.vue) ----
   top: 96,
   right: 16,
-  rightClosed: 0,
+  rightClosed: -250, // mais deslocado para esconder mais do componente
   edgeNudge: 0.5,
   height: 100,
   openWidth: 320,
@@ -84,7 +84,7 @@ onMounted(() => {
     visible.value = false
   } else {
     visible.value = true
-    open.value = false
+    open.value = false // sempre começa fechado (pela metade)
   }
 })
 </script>
@@ -147,7 +147,7 @@ onMounted(() => {
   top: var(--top);
   right: calc(var(--rightClosed) - var(--nudge)); 
   height: var(--h);
-  width: var(--peekW);                            
+  width: min(var(--openW), 90vw);                            
   background: var(--hemo-color-secondary);
   display: grid;
   grid-auto-flow: column;
@@ -157,17 +157,15 @@ onMounted(() => {
   z-index: 9999;
 
   border: var(--stroke) solid var(--hemo-color-pinkish-red);
-  border-right: 0;
   border-top-left-radius: var(--radius);
   border-bottom-left-radius: var(--radius);
-  border-top-right-radius: 0;                   
-  border-bottom-right-radius: 0;
+  border-top-right-radius: var(--radius);          
+  border-bottom-right-radius: var(--radius);
 
   box-shadow: 0 14px 40px rgba(0,0,0,.20);
-  overflow: hidden;
+  overflow: visible;
 
   transition:
-    width .35s cubic-bezier(.2,.8,.2,1),
     right .35s cubic-bezier(.2,.8,.2,1),
     left .35s cubic-bezier(.2,.8,.2,1),
     transform .35s cubic-bezier(.2,.8,.2,1);
@@ -177,11 +175,6 @@ onMounted(() => {
   left: 50%;
   right: auto;
   transform: translateX(-50%);                    
-  width: min(var(--openW), 90vw);                  
-  border-right: var(--stroke) solid var(--color);
-  border-top-right-radius: var(--radius);          
-  border-bottom-right-radius: var(--radius);
-  overflow: visible;  
 }
 
 .logo { width: 32px; height: 32px; border-radius: 9999px; }
