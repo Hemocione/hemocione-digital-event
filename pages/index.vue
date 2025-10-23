@@ -2,27 +2,29 @@
   <div class="events-page">
     <header class="events-header">
       <h1 class="events-title">Eventos</h1>
-      <div class="search-container">
-        <ElButton
-          v-if="hasGeolocation"
-          @click="toggleLocationFilter"
-          size="large"
-          type="default"
-          :class="['location-button', { 'location-active': locationPermissionGranted }]"
-        >
-          <svg class="location-icon" viewBox="0 0 1024 1024" fill="currentColor">
-            <path d="M512 928c23.936 0 117.504-68.352 192.064-153.152C803.456 661.888 864 535.808 864 416c0-189.632-155.84-320-352-320S160 226.368 160 416c0 120.32 60.544 246.4 159.936 359.232C394.432 859.84 488 928 512 928m0-435.2a64 64 0 1 0 0-128 64 64 0 0 0 0 128m0 140.8a204.8 204.8 0 1 1 0-409.6 204.8 204.8 0 0 1 0 409.6"/>
-          </svg>
-        </ElButton>
-        <ElInput
-          v-model="search"
-          placeholder="Buscar eventos"
-          clearable
-          size="large"
-          :prefix-icon="ElIconSearch"
-          class="search-input"
-        />
-      </div>
+      <ClientOnly>
+        <div class="search-container">
+          <ElButton
+            v-if="hasGeolocation"
+            @click="toggleLocationFilter"
+            size="large"
+            type="default"
+            :class="['location-button', { 'location-active': locationPermissionGranted }]"
+          >
+            <svg class="location-icon" viewBox="0 0 1024 1024" fill="currentColor">
+              <path d="M512 928c23.936 0 117.504-68.352 192.064-153.152C803.456 661.888 864 535.808 864 416c0-189.632-155.84-320-352-320S160 226.368 160 416c0 120.32 60.544 246.4 159.936 359.232C394.432 859.84 488 928 512 928m0-435.2a64 64 0 1 0 0-128 64 64 0 0 0 0 128m0 140.8a204.8 204.8 0 1 1 0-409.6 204.8 204.8 0 0 1 0 409.6"/>
+            </svg>
+          </ElButton>
+          <ElInput
+            v-model="search"
+            placeholder="Buscar eventos"
+            clearable
+            size="large"
+            :prefix-icon="Search"
+            class="search-input"
+          />
+        </div>
+      </ClientOnly>
     </header>
     <div v-if="filteredEvents?.length" ref="eventsContainer" class="events-wrapper">
       <EventsListCard
@@ -58,6 +60,8 @@
 </template>
 
 <script setup lang="ts">
+import { Search } from '@element-plus/icons-vue';
+
 const route = useRoute();
 const router = useRouter();
 const searchQuery = route.query.search;
