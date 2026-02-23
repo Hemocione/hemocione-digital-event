@@ -229,7 +229,9 @@ function goToPreScreeningOrSchedule(eventSlug: string) {
   const userId = userStore.user?.id;
 
   if (!userId) {
-    console.warn("Usuário não identificado, não é possível verificar localStorage.");
+    console.warn(
+      "Usuário não identificado, não é possível verificar localStorage.",
+    );
     navigateTo(`/event/${eventSlug}/pre-screening`);
     return;
   }

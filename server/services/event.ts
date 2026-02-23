@@ -4,7 +4,6 @@ import { Event } from "../models/event";
 import { getTimeBlocks } from "~/utils/getTimeBlocks";
 import { getCacheKeyFromParams } from "~/utils/getCacheKeyFromParams";
 import { getRandomString } from "~/utils/getRandomString";
-import { getBrazilTomorrowEnd } from "../utils/brazilTimezone";
 
 export interface CreateEventDTO {
   name: string;
@@ -95,14 +94,14 @@ export function getEventsToSendDonations() {
 }
 
 export function getEventsToSendUpcomingNotifications() {
-  // Get events that start before end of tomorrow and haven't ended yet
-  const endOfTomorrow = getBrazilTomorrowEnd();
+  // Use a rolling 24h window from now so the cron schedule doesn't affect correctness
   const now = new Date();
-  
+  const in24h = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
   return Event.find({
     active: true,
-    startAt: { $lte: endOfTomorrow },        // Start before end of tomorrow
-    endAt: { $gt: now },                     // Haven't ended yet
+    startAt: { $gt: now, $lte: in24h }, // starts within the next 24 hours
+    endAt: { $gt: now }, // hasn't ended yet
     "subscription.enabled": true,
     notificationsUpcomingSentAt: null,
   })

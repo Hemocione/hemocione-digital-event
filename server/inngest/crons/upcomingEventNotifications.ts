@@ -12,7 +12,7 @@ export default inngest.createFunction(
   },
   async () => {
     const events = await getEventsToSendUpcomingNotifications();
-    
+
     // Send one notification event per event (the handler will process subscriptions individually)
     for (const event of events) {
       await inngest.send({
@@ -22,10 +22,10 @@ export default inngest.createFunction(
         },
       });
     }
-    
+
     return {
       eventsBeingProcessedCount: events.length,
-      eventsBeingProcessed: events.map(e => e.slug),
+      eventsBeingProcessed: events.map((e) => e.slug),
     };
   },
 );

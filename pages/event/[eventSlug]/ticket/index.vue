@@ -12,8 +12,8 @@
           >
         </section>
         <ElButton
-          class="default"
           v-if="isAllowedToCancel"
+          class="default"
           :loading="state.loading"
           @click="cancelSubscription"
         >
@@ -167,13 +167,13 @@
     >
       <p>Tem certeza que deseja cancelar seu agendamento?</p>
       <p>Esta ação não pode ser desfeita.</p>
-      
+
       <template #footer>
         <div class="dialog-footer">
           <ElButton @click="showCancelDialog = false">
             Manter agendamento
           </ElButton>
-          <ElButton 
+          <ElButton
             class="cancel-button"
             :loading="state.loading"
             @click="confirmCancel"
@@ -338,7 +338,8 @@ const lastQuestionnairePreScreening = lastPreScreening
   : undefined;
 
 const shouldCancel = route.query.shouldCancel === "true";
-const shouldCancelWithConfirmation = route.query.shouldCancelWithConfirmation === "true";
+const shouldCancelWithConfirmation =
+  route.query.shouldCancelWithConfirmation === "true";
 
 onMounted(async () => {
   if (shouldCancel || shouldCancelWithConfirmation) {
@@ -488,7 +489,7 @@ article {
     align-items: center;
     gap: 8px;
   }
-  
+
   .dialog-footer .el-button {
     width: 100%;
     max-width: 100%;
@@ -510,5 +511,4 @@ article {
   background-color: var(--hemo-color-primary) !important;
   border-color: var(--hemo-color-primary) !important;
 }
-
 </style>

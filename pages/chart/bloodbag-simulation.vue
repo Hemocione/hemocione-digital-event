@@ -3,7 +3,7 @@
     class="bloodbag-page"
     :style="hideQrCode ? 'justify-content: center' : ''"
   >
-    <div class="social-media" v-if="layout === 'horizontal'">
+    <div v-if="layout === 'horizontal'" class="social-media">
       <div class="social-network">
         <NuxtImg src="/images/social/instagram.png" alt="instagram" />
         <span>@hemocione</span>
@@ -18,7 +18,7 @@
       class="loader"
       :class="layout"
     >
-      <span class="counter" v-if="counterRef">{{ counterRef }}</span>
+      <span v-if="counterRef" class="counter">{{ counterRef }}</span>
     </BloodBagLoader>
 
     <section class="additional-infos" :class="layout">
@@ -37,7 +37,7 @@
           @click="decrement"
         />
       </div>
-      <div class="know-more shadow" v-if="!hideQrCode">
+      <div v-if="!hideQrCode" class="know-more shadow">
         <div class="wrapper-qrcode">
           <!-- TODO: make QRCode receive parameter -->
           <HemoQrCode

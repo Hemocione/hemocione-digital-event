@@ -1,8 +1,8 @@
 import { Subscription } from "../models/subscription";
+import { getBrazilTodayStart } from "../utils/brazilTimezone";
 import type { HemocioneUserAuthTokenData } from "./auth";
 import { getEventBySlug, incrementEventScheduleOccupiedSlots } from "./event";
 import { getCleanFullName } from "~/utils/getCleanFullName";
-import { getBrazilTodayStart } from "../utils/brazilTimezone";
 
 export async function getUserSubscriptions(hemocioneId: string) {
   return await Subscription.find({
@@ -116,7 +116,8 @@ export async function createSubscription(
   });
 
   if (schedule.lastQuestionnairePreScreening) {
-    const { formResponseId, status, answeredAt } = schedule.lastQuestionnairePreScreening;
+    const { formResponseId, status, answeredAt } =
+      schedule.lastQuestionnairePreScreening;
     subscription.lastQuestionnairePreScreening = {
       formResponseId: formResponseId as any,
       status,
@@ -163,8 +164,9 @@ export async function deleteSubscription(
   return subscription.toObject();
 }
 
-
-export async function markSubscriptionUpcomingNotificationAsSent(subscriptionId: string) {
+export async function markSubscriptionUpcomingNotificationAsSent(
+  subscriptionId: string,
+) {
   return await Subscription.findByIdAndUpdate(
     subscriptionId,
     { notificationsUpcomingSentAt: new Date() },
@@ -172,7 +174,9 @@ export async function markSubscriptionUpcomingNotificationAsSent(subscriptionId:
   );
 }
 
-export async function markMultipleSubscriptionsUpcomingNotificationAsSent(subscriptionIds: string[]) {
+export async function markMultipleSubscriptionsUpcomingNotificationAsSent(
+  subscriptionIds: string[],
+) {
   return await Subscription.updateMany(
     { _id: { $in: subscriptionIds } },
     { notificationsUpcomingSentAt: new Date() },

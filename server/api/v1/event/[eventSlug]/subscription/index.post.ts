@@ -6,7 +6,8 @@ export default defineEventHandler(async (event) => {
   const user = useHemocioneUserAuth(event);
   const eventSlug = String(getRouterParam(event, "eventSlug"));
   const body = await readBody(event);
-  const { scheduleId, formResponseId, status, lastQuestionnairePreScreening } = body;
+  const { scheduleId, formResponseId, status, lastQuestionnairePreScreening } =
+    body;
 
   if (!scheduleId) {
     throw createError({ statusCode: 422, statusMessage: "Invalid body" });
@@ -49,6 +50,6 @@ export default defineEventHandler(async (event) => {
     formResponseId,
     status,
     lastQuestionnairePreScreening,
-  });  
+  });
   return subscription;
 });

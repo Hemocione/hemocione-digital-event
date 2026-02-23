@@ -10,7 +10,7 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  let user: ReturnType<typeof useHemocioneUserAuth> | undefined = undefined;
+  let user: ReturnType<typeof useHemocioneUserAuth> | undefined;
   try {
     user = useHemocioneUserAuth(event);
   } catch (e) {

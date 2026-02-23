@@ -9,7 +9,7 @@
 export function getBrazilNow(): Date {
   const now = new Date();
   // Brazil is UTC-3, so we need to subtract 3 hours from UTC
-  const brazilTime = new Date(now.getTime() - (3 * 60 * 60 * 1000));
+  const brazilTime = new Date(now.getTime() - 3 * 60 * 60 * 1000);
   return brazilTime;
 }
 
@@ -21,9 +21,9 @@ export function getBrazilTomorrowStart(): Date {
   const tomorrow = new Date(brazilNow);
   tomorrow.setDate(tomorrow.getDate() + 1);
   tomorrow.setHours(0, 0, 0, 0);
-  
+
   // Convert back to UTC for database storage
-  return new Date(tomorrow.getTime() + (3 * 60 * 60 * 1000));
+  return new Date(tomorrow.getTime() + 3 * 60 * 60 * 1000);
 }
 
 /**
@@ -34,9 +34,9 @@ export function getBrazilTomorrowEnd(): Date {
   const tomorrow = new Date(brazilNow);
   tomorrow.setDate(tomorrow.getDate() + 1);
   tomorrow.setHours(23, 59, 59, 999);
-  
+
   // Convert back to UTC for database storage
-  return new Date(tomorrow.getTime() + (3 * 60 * 60 * 1000));
+  return new Date(tomorrow.getTime() + 3 * 60 * 60 * 1000);
 }
 
 /**
@@ -46,17 +46,17 @@ export function getBrazilTodayStart(): Date {
   const brazilNow = getBrazilNow();
   const today = new Date(brazilNow);
   today.setHours(0, 0, 0, 0);
-  
+
   // Convert back to UTC for database storage
-  return new Date(today.getTime() + (3 * 60 * 60 * 1000));
+  return new Date(today.getTime() + 3 * 60 * 60 * 1000);
 }
 
 /**
  * Format a date to Brazil timezone for display
  */
 export function formatBrazilDate(date: Date): string {
-  return date.toLocaleDateString('pt-BR', {
-    timeZone: 'America/Sao_Paulo'
+  return date.toLocaleDateString("pt-BR", {
+    timeZone: "America/Sao_Paulo",
   });
 }
 
@@ -64,9 +64,9 @@ export function formatBrazilDate(date: Date): string {
  * Format a time to Brazil timezone for display
  */
 export function formatBrazilTime(date: Date): string {
-  return date.toLocaleTimeString('pt-BR', {
-    hour: '2-digit',
-    minute: '2-digit',
-    timeZone: 'America/Sao_Paulo'
+  return date.toLocaleTimeString("pt-BR", {
+    hour: "2-digit",
+    minute: "2-digit",
+    timeZone: "America/Sao_Paulo",
   });
 }

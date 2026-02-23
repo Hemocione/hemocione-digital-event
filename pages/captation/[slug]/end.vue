@@ -6,6 +6,40 @@
   </div>
 </template>
 
+<script setup lang="ts">
+definePageMeta({
+  layout: false,
+});
+const route = useRoute();
+const slug = String(route.params.slug);
+assertEntityType(slug);
+
+const hemocioneSiteUrl = useRuntimeConfig().public.hemocioneSiteUrl;
+const captationData = getCaptationDataFromLocalStorage();
+deleteCaptationDataFromLocalStorage(); // always delete the data from local storage after the end page is accesed and the captationData is read
+
+const goToCorrectUrl = async () => {
+  if (captationData?.leadId && captationData?.uuid) {
+    const digitalStandUrl = getDigitalStandTicketUrl(
+      captationData.leadId,
+      captationData.uuid,
+    );
+    await navigateTo(digitalStandUrl, {
+      external: true,
+    });
+  } else {
+    await navigateTo(hemocioneSiteUrl, {
+      external: true,
+    });
+  }
+};
+
+useFetch("/api/v1/captation/" + slug + "/end", {
+  method: "POST",
+  body: captationData,
+}).finally(goToCorrectUrl);
+</script>
+
 <style scoped>
 .loading-animation {
   display: flex;
@@ -43,37 +77,3 @@
   }
 }
 </style>
-
-<script setup lang="ts">
-definePageMeta({
-  layout: false,
-});
-const route = useRoute();
-const slug = String(route.params.slug);
-assertEntityType(slug);
-
-const hemocioneSiteUrl = useRuntimeConfig().public.hemocioneSiteUrl;
-const captationData = getCaptationDataFromLocalStorage();
-deleteCaptationDataFromLocalStorage(); // always delete the data from local storage after the end page is accesed and the captationData is read
-
-const goToCorrectUrl = async () => {
-  if (captationData?.leadId && captationData?.uuid) {
-    const digitalStandUrl = getDigitalStandTicketUrl(
-      captationData.leadId,
-      captationData.uuid,
-    );
-    await navigateTo(digitalStandUrl, {
-      external: true,
-    });
-  } else {
-    await navigateTo(hemocioneSiteUrl, {
-      external: true,
-    });
-  }
-};
-
-useFetch("/api/v1/captation/" + slug + "/end", {
-  method: "POST",
-  body: captationData,
-}).finally(goToCorrectUrl);
-</script>

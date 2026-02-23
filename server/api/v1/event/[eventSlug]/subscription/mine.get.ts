@@ -12,7 +12,7 @@ export default defineEventHandler(async (event) => {
   const user = useHemocioneUserAuth(event);
   const eventSlug = String(getRouterParam(event, "eventSlug"));
 
-  const query = getQuery(event)
+  const query = getQuery(event);
 
   const subscription = await getUserEventSubscription(eventSlug, user.id);
   if (!subscription) {
@@ -22,7 +22,12 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  if (query.formResponseId && query.status && subscription.lastQuestionnairePreScreening?.formResponseId !== query.formResponseId) {
+  if (
+    query.formResponseId &&
+    query.status &&
+    subscription.lastQuestionnairePreScreening?.formResponseId !==
+      query.formResponseId
+  ) {
     const parsed = querySchema.safeParse(query);
 
     if (!parsed.success) {
@@ -31,19 +36,20 @@ export default defineEventHandler(async (event) => {
         statusMessage: "Invalid request data",
         data: parsed.error.errors,
       });
-    }  
-   
+    }
+
     subscription.lastQuestionnairePreScreening = {
-      formResponseId: new Types.ObjectId(parsed.data.formResponseId) as unknown as {
+      formResponseId: new Types.ObjectId(
+        parsed.data.formResponseId,
+      ) as unknown as {
         prototype?: Types.ObjectId;
-      },    
+      },
       status: parsed.data.status,
       answeredAt: new Date(),
     };
-    
-      await subscription.save();
+
+    await subscription.save();
   }
 
-  
   return subscription.toObject();
 });

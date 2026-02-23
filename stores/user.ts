@@ -67,11 +67,11 @@ export const useUserStore = defineStore("user", {
       lastQuestionnairePreScreening?: LastQuestionnairePreScreening,
     ) {
       const body: {
-            scheduleId: string;
-            formResponseId?: string;
-            status?: "able-to-donate" | "unable-to-donate";
-            lastQuestionnairePreScreening?: LastQuestionnairePreScreening;
-          } = {
+        scheduleId: string;
+        formResponseId?: string;
+        status?: "able-to-donate" | "unable-to-donate";
+        lastQuestionnairePreScreening?: LastQuestionnairePreScreening;
+      } = {
         scheduleId,
         formResponseId,
         status,
