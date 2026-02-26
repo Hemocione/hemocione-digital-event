@@ -2,17 +2,31 @@
   <div class="events-page">
     <header class="events-header">
       <h1 class="events-title">Eventos</h1>
-      <ElInput
-        v-model="search"
-        placeholder="Buscar eventos"
-        clearable
-        size="large"
-        :prefix-icon="ElIconSearch"
-        class="search-input"
-      />
+      <ClientOnly>
+        <div class="search-container">
+          <ElButton
+            v-if="hasGeolocation"
+            @click="toggleLocationFilter"
+            size="large"
+            type="default"
+            :class="['location-button', { 'location-active': locationPermissionGranted }]"
+          >
+            <svg class="location-icon" viewBox="0 0 1024 1024" fill="currentColor">
+              <path d="M512 928c23.936 0 117.504-68.352 192.064-153.152C803.456 661.888 864 535.808 864 416c0-189.632-155.84-320-352-320S160 226.368 160 416c0 120.32 60.544 246.4 159.936 359.232C394.432 859.84 488 928 512 928m0-435.2a64 64 0 1 0 0-128 64 64 0 0 0 0 128m0 140.8a204.8 204.8 0 1 1 0-409.6 204.8 204.8 0 0 1 0 409.6"/>
+            </svg>
+          </ElButton>
+          <ElInput
+            v-model="search"
+            placeholder="Buscar eventos"
+            clearable
+            size="large"
+            :prefix-icon="Search"
+            class="search-input"
+          />
+        </div>
+      </ClientOnly>
     </header>
-    <div v-if="filteredEvents?.length" class="events-wrapper">
-      <!-- TODO: add transition group here -->
+    <div v-if="filteredEvents?.length" ref="eventsContainer" class="events-wrapper">
       <EventsListCard
         v-for="event in filteredEvents"
         :key="event._id"
@@ -46,31 +60,166 @@
 </template>
 
 <script setup lang="ts">
+import { Search } from '@element-plus/icons-vue';
+
 const route = useRoute();
 const router = useRouter();
 const searchQuery = route.query.search;
 const search = ref(String(searchQuery || ""));
+
+const locationPermissionGranted = ref(false);
+const userCity = ref("");
+const userState = ref("");
+const userCoordinates = ref<{ lat: number; lng: number } | null>(null);
+const eventsContainer = ref<HTMLElement | null>(null);
+const hasGeolocation = ref(false);
 
 watch(search, () => {
   router.push({ query: { search: search.value } });
 });
 const { data: currentEvents } = await useFetch("/api/v1/event");
 
+onMounted(async () => {
+  hasGeolocation.value = !!navigator.geolocation;
+  
+  if (eventsContainer.value) {
+    const { autoAnimate } = await import('@formkit/auto-animate');
+    autoAnimate(eventsContainer.value);
+  }
+  
+  if (hasGeolocation.value) {
+    await requestLocationPermission();
+  }
+});
+
 const cleanSearch = computed(() => {
   return getCleanText(search.value);
 });
 
-const filteredEvents = computed(() => {
-  if (!cleanSearch.value) {
-    return currentEvents.value;
+const toggleLocationFilter = async () => {
+  if (locationPermissionGranted.value) {
+    locationPermissionGranted.value = false;
+    userCity.value = "";
+    userState.value = "";
+    userCoordinates.value = null;
+  } else {
+    await requestLocationPermission();
   }
-  return currentEvents.value?.filter((event) => {
-    const eventBaseString = `${event.name}${event?.location?.address || ""}${event.location?.state || ""}${event.location?.city || ""}`;
-    return getCleanText(eventBaseString).includes(cleanSearch.value);
-  });
+};
+
+const requestLocationPermission = async () => {
+  await getLocationData();
+  locationPermissionGranted.value = true;
+};
+
+const getLocationData = async () => {
+  try {
+    const position = await new Promise<GeolocationPosition>((resolve, reject) => {
+      navigator.geolocation.getCurrentPosition(resolve, reject);
+    });
+
+    const response = await fetch(
+      `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=pt`
+    );
+    const data = await response.json();
+    
+    let detectedCity = data.city || data.locality || data.principalSubdivision || "";
+    
+    if (detectedCity.includes("Brasil") || detectedCity.includes("Brazil") || detectedCity.length < 3) {
+      try {
+        const osmResponse = await fetch(
+          `https://nominatim.openstreetmap.org/reverse?format=json&lat=${position.coords.latitude}&lon=${position.coords.longitude}&accept-language=pt-BR,pt,en`
+        );
+        const osmData = await osmResponse.json();
+        
+        if (osmData.address) {
+          const address = osmData.address;
+          detectedCity = address.city || 
+                        address.town || 
+                        address.village || 
+                        address.municipality || 
+                        address.county || 
+                        address.state || 
+                        "";
+        }
+      } catch (error) {
+        console.warn("Erro ao usar OSM:", error);
+      }
+    }
+    
+    if (detectedCity.includes("Região Metropolitana") || detectedCity.includes("Brasil") || detectedCity.length < 3) {
+      try {
+        const detailedResponse = await fetch(
+          `https://api.bigdatacloud.net/data/reverse-geocode-client?latitude=${position.coords.latitude}&longitude=${position.coords.longitude}&localityLanguage=pt&localityInfo=true`
+        );
+        const detailedData = await detailedResponse.json();
+        
+        if (detailedData.localityInfo?.administrative) {
+          const admin = detailedData.localityInfo.administrative;
+          for (const level of admin) {
+            if (level.name && 
+                !level.name.includes("Região Metropolitana") && 
+                !level.name.includes("Estado") && 
+                !level.name.includes("Brasil") &&
+                level.name.length > 3) {
+              detectedCity = level.name;
+              break;
+            }
+          }
+        }
+      } catch (error) {
+        console.warn("Não foi possível obter cidade específica:", error);
+      }
+    }
+    
+    const invalidCities = ["Brasil", "Brazil", "Estado", "Região", "Metropolitana"];
+    const isValidCity = detectedCity && 
+                       detectedCity.length > 3 && 
+                       !invalidCities.some(invalid => detectedCity.includes(invalid));
+    
+    if (!isValidCity) {
+      return;
+    }
+    
+    userCity.value = detectedCity;
+    userState.value = data.principalSubdivision || "";
+    userCoordinates.value = {
+      lat: position.coords.latitude,
+      lng: position.coords.longitude
+    };
+  } catch (error) {
+    ElMessage.error("Não foi possível obter sua localização. Verifique as permissões do navegador.");
+  }
+};
+
+const filteredEvents = computed(() => {
+  let events = currentEvents.value;
+  
+  if (cleanSearch.value) {
+    events = events?.filter((event) => {
+      const eventBaseString = `${event.name}${event?.location?.address || ""}${event.location?.state || ""}${event.location?.city || ""}`;
+      return getCleanText(eventBaseString).includes(cleanSearch.value);
+    });
+  }
+  
+  if (locationPermissionGranted.value && userCity.value && !cleanSearch.value && events) {
+    events = events.filter((event) => {
+      const eventCity = getCleanText(event.location?.city || "");
+      const userCityClean = getCleanText(userCity.value);
+      
+      return eventCity === userCityClean || 
+             eventCity.includes(userCityClean) || 
+             userCityClean.includes(eventCity);
+    });
+  }
+  
+  return events;
 });
 
 const noEventsText = computed(() => {
+  if (locationPermissionGranted.value && userCity.value && !cleanSearch.value) {
+    return `Nenhum evento encontrado em ${userCity.value}.`;
+  }
   if (cleanSearch.value && currentEvents.value?.length) {
     return "Nenhum evento encontrado com o termo pesquisado.";
   }
@@ -96,14 +245,57 @@ definePageMeta({
   padding: 1rem;
 }
 
+.search-container {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin-bottom: 1rem;
+}
+
+.location-button {
+  --el-button-bg-color: transparent;
+  --el-button-border-color: transparent;
+  --el-button-text-color: var(--hemo-color-text-secondary);
+  --el-button-hover-bg-color: transparent;
+  --el-button-hover-border-color: transparent;
+  --el-button-hover-text-color: #fca5a5;
+  --el-button-active-bg-color: transparent;
+  --el-button-active-border-color: transparent;
+  --el-button-active-text-color: #dc2626;
+  min-width: 40px;
+  height: 40px;
+  transition: all 0.3s ease;
+}
+
+.location-button.location-active {
+  --el-button-bg-color: transparent;
+  --el-button-border-color: transparent;
+  --el-button-text-color: #dc2626;
+  --el-button-hover-bg-color: transparent;
+  --el-button-hover-border-color: transparent;
+  --el-button-hover-text-color: #fca5a5;
+  --el-button-active-bg-color: transparent;
+  --el-button-active-border-color: transparent;
+  --el-button-active-text-color: #dc2626;
+}
+
+.location-icon {
+  width: 28px;
+  height: 28px;
+  color: inherit;
+}
+
 .search-input {
   width: 100%;
   max-width: 300px;
-  margin-bottom: 1rem;
   --el-input-bg-color: var(--hemo-color-white);
   --el-border-color: var(--hemo-color-black-10);
   --el-input-text-color: var(--hemo-color-text-secondary);
   --el-input-icon-color: var(--hemo-color-text-secondary);
+}
+
+.search-input :deep(.el-input__prefix-inner) {
+  padding-left: 0;
 }
 .events-header {
   width: 100%;
