@@ -92,6 +92,16 @@ const EventSchema = new Schema(
           type: String,
           required: true,
         },
+        coordinates: {
+          lat: {
+            type: Number,
+            required: false,
+          },
+          lng: {
+            type: Number,
+            required: false,
+          },
+        },
       },
       required: false,
     },
