@@ -26,8 +26,7 @@
 </template>
 
 <script setup lang="ts">
-import { useRouter } from "vue-router";
-import { useRoute } from "vue-router";
+import { useRouter, useRoute } from "vue-router";
 import { useEventStore } from "~/stores/event";
 
 definePageMeta({

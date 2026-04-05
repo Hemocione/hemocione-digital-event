@@ -21,12 +21,12 @@
       </div>
     </article>
     <SchedulesFooter
-    :event-slug="eventSlug"
-    :selected-schedule-id="state.selectedScheduleId"
-    :form-response-id="formResponseId"
-    :status="status"
-    :last-questionnaire-pre-screening="lastQuestionnairePreScreening"
-  />
+      :event-slug="eventSlug"
+      :selected-schedule-id="state.selectedScheduleId"
+      :form-response-id="formResponseId"
+      :status="status"
+      :last-questionnaire-pre-screening="lastQuestionnairePreScreening"
+    />
   </main>
 </template>
 
@@ -45,14 +45,17 @@ const eventSlug = route.params.eventSlug as string;
 const userStore = useUserStore();
 
 const formResponseId = route.query.formResponseId as string | undefined;
-const status = route.query.status as "able-to-donate" | "unable-to-donate" | undefined;
+const status = route.query.status as
+  | "able-to-donate"
+  | "unable-to-donate"
+  | undefined;
 
 const eventStore = useEventStore();
 const eventConfig = await eventStore.getEvent(eventSlug);
 
 const subscription = await userStore.getSubscription(eventSlug, {
   formResponseId,
-  status
+  status,
 });
 
 if (subscription) {

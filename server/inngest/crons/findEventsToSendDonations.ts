@@ -22,7 +22,7 @@ export default inngest.createFunction(
     }
     return {
       eventsBeingProcessedCount: events.length,
-      eventsBeingProcessed: events.map((event) => event.slug)
-    }
+      eventsBeingProcessed: events.map((event) => event.slug),
+    };
   },
 );

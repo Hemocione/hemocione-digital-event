@@ -56,13 +56,16 @@ const buttons = computed((): Button[] => [
     type: "primary",
     visible: isCanDonateOn.value,
     action: () =>
-      goToCanDonate("event-flow-schedule", props.eventSlug, eventConfig?.startAt),
+      goToCanDonate(
+        "event-flow-schedule",
+        props.eventSlug,
+        eventConfig?.startAt,
+      ),
   },
 ]);
 
-
 const visibleButtons = computed(() =>
-  buttons.value.filter((btn) => btn.visible)
+  buttons.value.filter((btn) => btn.visible),
 );
 
 function goToSchedule() {

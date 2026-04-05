@@ -31,9 +31,9 @@
           type="primary"
           size="large"
           class="continue-button"
-          @click="goToCaptationForm"
           :loading="goingToCaptationForm"
           :disabled="goingToCaptationForm"
+          @click="goToCaptationForm"
         >
           Garantir minha visita
         </el-button>

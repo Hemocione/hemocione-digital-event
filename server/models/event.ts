@@ -160,10 +160,15 @@ const EventSchema = new Schema(
       required: false,
       default: null,
     },
-    preScreening: { 
-      disabled: { 
+    notificationsUpcomingSentAt: {
+      type: Date,
+      required: false,
+      default: null,
+    },
+    preScreening: {
+      disabled: {
         type: Boolean,
-        required: false, 
+        required: false,
         default: false,
       },
       mandatory: {
@@ -171,7 +176,7 @@ const EventSchema = new Schema(
         required: false,
         default: false,
       },
-    },   
+    },
   },
   {
     timestamps: true,

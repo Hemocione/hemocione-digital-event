@@ -26,8 +26,8 @@
     </CommonCoolFooter>
 
     <el-dialog
-      style="border-radius: 1rem"
       v-model="dialogVisible"
+      style="border-radius: 1rem"
       width="350"
       align-center
     >
@@ -45,8 +45,7 @@
 </template>
 
 <script setup lang="ts">
-import { computed, reactive } from "vue";
-import { ref } from "vue";
+import { computed, reactive, ref } from "vue";
 import { ElMessageBox } from "element-plus";
 
 definePageMeta({

@@ -1,4 +1,5 @@
 import { Subscription } from "../models/subscription";
+import { getBrazilTodayStart } from "../utils/brazilTimezone";
 import type { HemocioneUserAuthTokenData } from "./auth";
 import { getEventBySlug, incrementEventScheduleOccupiedSlots } from "./event";
 import { getCleanFullName } from "~/utils/getCleanFullName";
@@ -25,6 +26,7 @@ export function getEventSubscriptions(eventSlug: string) {
     deletedAt: null,
   })
     .select({
+      _id: 1,
       hemocioneId: 1,
       eventSlug: 1,
       name: 1,
@@ -32,8 +34,19 @@ export function getEventSubscriptions(eventSlug: string) {
       phone: 1,
       document: 1,
       schedule: 1,
+      notificationsUpcomingSentAt: 1,
     })
     .lean();
+}
+
+export async function getEventSubscriptionUserIds(eventSlug: string) {
+  const subs = await Subscription.find({
+    eventSlug,
+    deletedAt: null,
+  })
+    .select({ hemocioneId: 1 })
+    .lean();
+  return subs.map((s) => s.hemocioneId).filter(Boolean) as string[];
 }
 
 export type UserSubscriptions = Awaited<
@@ -57,8 +70,7 @@ export async function getUserNextSubscription({
 }: {
   hemocioneId: string;
 }) {
-  const currentStartOfDay = new Date();
-  currentStartOfDay.setHours(0, 0, 0, 0);
+  const currentStartOfDay = getBrazilTodayStart();
   const subscription = await Subscription.findOne({
     hemocioneId,
     deletedAt: null,
@@ -104,10 +116,16 @@ export async function createSubscription(
   });
 
   if (schedule.lastQuestionnairePreScreening) {
-    subscription.lastQuestionnairePreScreening = schedule.lastQuestionnairePreScreening;
+    const { formResponseId, status, answeredAt } =
+      schedule.lastQuestionnairePreScreening;
+    subscription.lastQuestionnairePreScreening = {
+      formResponseId: formResponseId as any,
+      status,
+      answeredAt,
+    } as any;
   } else if (schedule.formResponseId && schedule.status) {
     subscription.lastQuestionnairePreScreening = {
-      formResponseId: schedule.formResponseId,
+      formResponseId: schedule.formResponseId as any,
       status: schedule.status,
       answeredAt: new Date(),
     };
@@ -144,4 +162,23 @@ export async function deleteSubscription(
   );
 
   return subscription.toObject();
+}
+
+export async function markSubscriptionUpcomingNotificationAsSent(
+  subscriptionId: string,
+) {
+  return await Subscription.findByIdAndUpdate(
+    subscriptionId,
+    { notificationsUpcomingSentAt: new Date() },
+    { lean: true },
+  );
+}
+
+export async function markMultipleSubscriptionsUpcomingNotificationAsSent(
+  subscriptionIds: string[],
+) {
+  return await Subscription.updateMany(
+    { _id: { $in: subscriptionIds } },
+    { notificationsUpcomingSentAt: new Date() },
+  );
 }

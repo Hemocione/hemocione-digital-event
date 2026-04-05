@@ -8,7 +8,7 @@ export default defineEventHandler(async (event) => {
   const body = await readBody(event);
 
   const { leadId, uuid } = body;
-  let promises: Promise<void>[] = [];
+  const promises: Promise<void>[] = [];
   if (leadId && uuid) {
     promises.push(updateStatus(leadId, uuid, "success"));
   }

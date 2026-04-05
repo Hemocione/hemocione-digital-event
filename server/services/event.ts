@@ -93,6 +93,30 @@ export function getEventsToSendDonations() {
     .lean();
 }
 
+export function getEventsToSendUpcomingNotifications() {
+  // Use a rolling 24h window from now so the cron schedule doesn't affect correctness
+  const now = new Date();
+  const in24h = new Date(Date.now() + 24 * 60 * 60 * 1000);
+
+  return Event.find({
+    active: true,
+    startAt: { $gt: now, $lte: in24h }, // starts within the next 24 hours
+    endAt: { $gt: now }, // hasn't ended yet
+    "subscription.enabled": true,
+    notificationsUpcomingSentAt: null,
+  })
+    .select({ _id: 1, slug: 1, startAt: 1 })
+    .lean();
+}
+
+export async function markUpcomingNotificationsAsSent(eventSlug: string) {
+  return await Event.findOneAndUpdate(
+    { slug: eventSlug },
+    { notificationsUpcomingSentAt: new Date() },
+    { lean: true },
+  );
+}
+
 export async function incrementEventExternalVolunteersOccupiedSlots(
   eventSlug: string,
   increment: number,

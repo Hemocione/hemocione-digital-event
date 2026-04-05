@@ -1,6 +1,7 @@
 <template>
   <p class="disclaimer">
-    Atenção! O horário agendado é uma estimativa que nos ajuda a organizar o evento. Imprevistos e atrasos podem ocorrer.
+    Atenção! O horário agendado é uma estimativa que nos ajuda a organizar o
+    evento. Imprevistos e atrasos podem ocorrer.
   </p>
 </template>
 

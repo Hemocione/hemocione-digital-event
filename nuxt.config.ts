@@ -79,6 +79,12 @@ export default defineNuxtConfig({
     donationsQueueUrl: process.env.DONATIONS_QUEUE_URL ?? "secret-queue-url",
     externalVolunteersSlackWebhook:
       process.env.EXTERNAL_VOLUNTEERS_SLACK_WEBHOOK ?? "",
+    hemocioneIdBaseUrl:
+      process.env.HEMOCIONE_ID_API_URL ??
+      "https://hemocione-id-dev.cpt.hemocione.com.br",
+    hemocioneIdBackofficeToken: process.env.HEMOCIONE_ID_BACKOFFICE_TOKEN ?? "",
+    oneSignalTemplateId: process.env.ONE_SIGNAL_TEMPLATE_ID ?? "",
+    whatsappTemplateName: process.env.WHATSAPP_TEMPLATE_NAME ?? "evento_24h",
   },
 
   modules: [

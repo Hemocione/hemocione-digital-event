@@ -1,14 +1,23 @@
 <template>
   <!-- <CommonCoolFooter height="fit-content" desktop-border-radius="0"> -->
-    <ElButton type="default" size="large" @click="goToCalendar"
-      >
-      <NuxtImg class="list-image" src="images/calendar-icon.svg" alt="list icon" height="30" />
-      Adicionar ao Calendário
-    </ElButton>
-    <ElButton type="default" size="large" @click="toggleShareDrawer">
-      <NuxtImg class="list-image" src="images/share.svg" alt="list icon" height="30" />
-      Compartilhar evento
-    </ElButton>
+  <ElButton type="default" size="large" @click="goToCalendar">
+    <NuxtImg
+      class="list-image"
+      src="images/calendar-icon.svg"
+      alt="list icon"
+      height="30"
+    />
+    Adicionar ao Calendário
+  </ElButton>
+  <ElButton type="default" size="large" @click="toggleShareDrawer">
+    <NuxtImg
+      class="list-image"
+      src="images/share.svg"
+      alt="list icon"
+      height="30"
+    />
+    Compartilhar evento
+  </ElButton>
   <!-- </CommonCoolFooter> -->
   <ElDrawer
     v-model="shareDrawerVisible"

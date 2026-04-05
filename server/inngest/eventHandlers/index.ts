@@ -28,12 +28,19 @@ import type {
 } from "./computeEventDonations";
 import computeEventDonations from "./computeEventDonations";
 
+import type {
+  SendUpcomingNotifications,
+  eventName as sendUpcomingEventName,
+} from "./sendUpcomingNotifications";
+import sendUpcomingNotifications from "./sendUpcomingNotifications";
+
 export interface Events {
   [queueParticipantsCalledEventName]: QueueParticipantsCalledEvent;
   [notifyEventName]: NotifyCalledParticipant;
   [notifyCloseToCallEventName]: NotifyCloseToCallParticipant;
   [notifyNewEventName]: NotifyNewParticipant;
   [computeEventDonationsEventName]: ComputeEventDonations;
+  [sendUpcomingEventName]: SendUpcomingNotifications;
 }
 
 const eventHandlers = [
@@ -41,7 +48,8 @@ const eventHandlers = [
   notifyCalledParticipant,
   notifyCloseToCallParticipant,
   notifyNewParticipant,
-  computeEventDonations
+  computeEventDonations,
+  sendUpcomingNotifications,
 ];
 
 export default eventHandlers;

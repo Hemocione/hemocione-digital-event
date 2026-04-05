@@ -28,11 +28,11 @@ interface Event {
     slots: number;
     occupiedSlots: number;
     htmlExplanationText?: string;
-  }
+  };
   preScreening?: {
     disabled: boolean | null;
     mandatory: boolean | null;
-  }
+  };
 }
 
 export const useEventStore = defineStore("event", {
@@ -78,12 +78,10 @@ export const useEventStore = defineStore("event", {
   },
 });
 
-
-
 export const hasAvailableSlots = (event: Event): boolean => {
   if (event.subscription?.enabled) {
-    return event.subscription.schedules.some(schedule => 
-      schedule.slots > schedule.occupiedSlots
+    return event.subscription.schedules.some(
+      (schedule) => schedule.slots > schedule.occupiedSlots,
     );
   }
   return false;

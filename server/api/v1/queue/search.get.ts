@@ -5,6 +5,8 @@ export default defineEventHandler(async (event) => {
     queueParticipationIds: string[];
   };
 
-  const queueParticipation = await getQueueParticipationsByIds(queueParticipationIds ?? []);
-  return queueParticipation
+  const queueParticipation = await getQueueParticipationsByIds(
+    queueParticipationIds ?? [],
+  );
+  return queueParticipation;
 });

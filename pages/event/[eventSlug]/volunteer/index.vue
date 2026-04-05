@@ -2,7 +2,7 @@
   <main v-if="eventConfig" class="schedules-page">
     <CommonEventHeader :event-name="eventConfig.name" @back="goBack" />
     <!-- <img :src="eventConfig.banner" alt="Event Banner" class="event-banner" /> -->
-    <div v-html="htmlExplanationText" class="volunteer-text"></div>
+    <div class="volunteer-text" v-html="htmlExplanationText"></div>
     <CommonCoolFooter>
       <ElButton
         v-for="button in buttons"
@@ -60,7 +60,7 @@ const buttons = computed((): Button[] => {
       type: "primary",
       visible: true,
       action: goTovolunteerParaGrupoZap,
-      disabled: !isVolunteer && !Boolean(availableSlots.value),
+      disabled: !isVolunteer && !availableSlots.value,
     },
   ];
   return computedButtons.filter((button) => button.visible) as Button[];
