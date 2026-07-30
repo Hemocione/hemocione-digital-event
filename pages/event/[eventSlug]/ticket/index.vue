@@ -34,6 +34,7 @@
                 'event-ticket-adhoc',
                 eventSlug,
                 eventConfig.startAt,
+                eventConfig.registerDonationUrl,
               )
           "
         >
@@ -79,6 +80,7 @@
                   'event-ticket-adhoc',
                   eventSlug,
                   eventConfig.startAt,
+                  eventConfig.registerDonationUrl,
                 )
             "
           >
@@ -109,6 +111,7 @@
                   'event-ticket-adhoc',
                   eventSlug,
                   eventConfig.startAt,
+                  eventConfig.registerDonationUrl,
                 )
             "
           >
@@ -142,6 +145,7 @@
                   'event-ticket-adhoc',
                   eventSlug,
                   eventConfig.startAt,
+                  eventConfig.registerDonationUrl,
                 )
             "
           >

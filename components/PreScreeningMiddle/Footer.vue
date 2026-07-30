@@ -56,7 +56,12 @@ const buttons = computed((): Button[] => [
     type: "primary",
     visible: isCanDonateOn.value,
     action: () =>
-      goToCanDonate("event-flow-schedule", props.eventSlug, eventConfig?.startAt),
+      goToCanDonate(
+        "event-flow-schedule",
+        props.eventSlug,
+        eventConfig?.startAt,
+        eventConfig?.registerDonationUrl,
+      ),
   },
 ]);
 

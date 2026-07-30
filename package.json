@@ -10,9 +10,12 @@
     "lint:js": "eslint --ext \".ts,.vue\" --ignore-path .gitignore .",
     "lint:prettier": "prettier --check .",
     "lint": "yarn lint:js && yarn lint:prettier",
-    "lint:fix": "prettier --write --list-different . && yarn lint:js --fix"
+    "lint:fix": "prettier --write --list-different . && yarn lint:js --fix",
+    "test": "vitest run",
+    "test:watch": "vitest"
   },
   "devDependencies": {
+    "vitest": "^2.1.8",
     "@aws-sdk/client-s3": "^3.428.0",
     "@aws-sdk/client-sns": "^3.405.0",
     "@aws-sdk/client-sqs": "^3.600.0",
