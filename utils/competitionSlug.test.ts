@@ -28,7 +28,9 @@ describe("extractCompetitionSlug", () => {
 
   it("ignora query e hash", () => {
     expect(
-      extractCompetitionSlug("https://copa.hemocione.com.br/competition/abc?x=1#y"),
+      extractCompetitionSlug(
+        "https://copa.hemocione.com.br/competition/abc?x=1#y",
+      ),
     ).toBe("abc");
   });
 
