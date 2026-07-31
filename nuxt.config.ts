@@ -96,7 +96,10 @@ export default defineNuxtConfig({
   nitro: {
     preset: "vercel",
     plugins: ["~/server/plugins/mongoose.ts"],
-    errorHandler: "~/errorHandler.ts",
+    // O arquivo vive em server/errorHandler.ts. O `~` resolve para a raiz do
+    // projeto, entao "~/errorHandler.ts" apontava para um caminho inexistente e
+    // o nitro-opentelemetry falhava ao criar o alias #nitro-error-handler.
+    errorHandler: "~/server/errorHandler.ts",
     otel: {
       preset: {
         name: "custom",
