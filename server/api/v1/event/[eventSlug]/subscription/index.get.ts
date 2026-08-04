@@ -1,3 +1,4 @@
+import { Types } from "mongoose";
 import { assertSecretAuth } from "~/server/services/auth";
 import { getEventBySlug } from "~/server/services/event";
 import { listEventSubscriptions } from "~/server/services/subscription";
@@ -46,8 +47,18 @@ export default defineEventHandler(async (event) => {
 
   const query = getQuery(event);
 
+  // `schedule._id` e um ObjectId. Um valor malformado chega ao Mongoose e vira
+  // CastError, ou seja, 500 para o que e erro de quem chamou.
+  const scheduleId = query.scheduleId ? String(query.scheduleId) : undefined;
+  if (scheduleId !== undefined && !Types.ObjectId.isValid(scheduleId)) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "Invalid scheduleId",
+    });
+  }
+
   return await listEventSubscriptions(eventSlug, {
-    ...(query.scheduleId ? { scheduleId: String(query.scheduleId) } : {}),
+    ...(scheduleId ? { scheduleId } : {}),
     take: lerInteiro(query.take, TAKE_PADRAO, 1, TAKE_MAXIMO),
     skip: lerInteiro(query.skip, 0, 0, Number.MAX_SAFE_INTEGER),
   });
