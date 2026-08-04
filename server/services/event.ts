@@ -328,6 +328,10 @@ export async function setEventDefaultSchedule(
   const subscription = { schedules };
   event.set({ subscription });
   const hemoEvent = await event.save();
+
+  // Sem invalidar, a leitura seguinte devolve o evento sem os horarios que
+  // acabaram de ser gerados.
+  removeEventFromCache(eventSlug);
   return hemoEvent.toObject();
 }
 
@@ -443,7 +447,7 @@ export function getEventsBySlugs(eventSlugs: string[]) {
 }
 
 export async function markDonationsAsSent(eventSlug: string) {
-  return await Event.findOneAndUpdate(
+  const event = await Event.findOneAndUpdate(
     {
       slug: eventSlug,
     },
@@ -454,6 +458,12 @@ export async function markDonationsAsSent(eventSlug: string) {
       lean: true,
     },
   );
+
+  // donationsSentAt e a guarda de idempotencia do cron de doacoes, e o cron a
+  // le por getEventBySlug. Sem invalidar, uma segunda execucao dentro do TTL
+  // le donationsSentAt vazio do cache e reenvia as doacoes do evento.
+  removeEventFromCache(eventSlug);
+  return event;
 }
 
 export async function getPointsOndeDoar(oldEvents: boolean = false) {
