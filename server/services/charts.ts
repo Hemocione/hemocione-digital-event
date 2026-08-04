@@ -1,7 +1,7 @@
 import dayjs from "dayjs";
 import { getCalledQueueParticipants } from "./queueParticipants";
 
-const datasetTypes = ["line", "candlestick"] as const;
+export const datasetTypes = ["line", "candlestick"] as const;
 export type DatasetType = (typeof datasetTypes)[number];
 interface CandlestickSet {
   timestamp: string;
