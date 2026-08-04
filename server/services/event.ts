@@ -260,7 +260,7 @@ export async function getEventBySlug(
 }
 
 export async function deleteEventBySlug(eventSlug: string) {
-  return await Event.findOneAndUpdate(
+  const event = await Event.findOneAndUpdate(
     {
       slug: eventSlug,
     },
@@ -271,6 +271,11 @@ export async function deleteEventBySlug(eventSlug: string) {
       lean: true,
     },
   );
+
+  // Sem invalidar, o cache segue servindo o evento como ativo ate o TTL, e o
+  // evento desativado continua alcancavel por slug depois de deletado.
+  removeEventFromCache(eventSlug);
+  return event;
 }
 
 export async function updateEventBySlug(
@@ -281,7 +286,11 @@ export async function updateEventBySlug(
   if (!event) return null;
 
   event.set({ ...data, queue: { ...event.queue, ...data.queue } });
-  return (await event.save()).toObject();
+  const saved = (await event.save()).toObject();
+
+  // Sem invalidar, uma leitura seguinte devolve o evento anterior a edicao.
+  removeEventFromCache(eventSlug);
+  return saved;
 }
 
 export async function createEvent(data: CreateEventDTO) {
@@ -319,6 +328,10 @@ export async function setEventDefaultSchedule(
   const subscription = { schedules };
   event.set({ subscription });
   const hemoEvent = await event.save();
+
+  // Sem invalidar, a leitura seguinte devolve o evento sem os horarios que
+  // acabaram de ser gerados.
+  removeEventFromCache(eventSlug);
   return hemoEvent.toObject();
 }
 
@@ -434,7 +447,7 @@ export function getEventsBySlugs(eventSlugs: string[]) {
 }
 
 export async function markDonationsAsSent(eventSlug: string) {
-  return await Event.findOneAndUpdate(
+  const event = await Event.findOneAndUpdate(
     {
       slug: eventSlug,
     },
@@ -445,6 +458,12 @@ export async function markDonationsAsSent(eventSlug: string) {
       lean: true,
     },
   );
+
+  // donationsSentAt e a guarda de idempotencia do cron de doacoes, e o cron a
+  // le por getEventBySlug. Sem invalidar, uma segunda execucao dentro do TTL
+  // le donationsSentAt vazio do cache e reenvia as doacoes do evento.
+  removeEventFromCache(eventSlug);
+  return event;
 }
 
 export async function getPointsOndeDoar(oldEvents: boolean = false) {
