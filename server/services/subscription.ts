@@ -36,6 +36,49 @@ export function getEventSubscriptions(eventSlug: string) {
     .lean();
 }
 
+/**
+ * Lista paginada das inscricoes de um evento, para uso do backoffice.
+ *
+ * Separada de `getEventSubscriptions` de proposito: aquela e consumida pelo
+ * cron que computa doacoes do evento e precisa do conjunto inteiro, sem
+ * paginacao. Mudar a assinatura dela para atender aqui quebraria o cron.
+ */
+export async function listEventSubscriptions(
+  eventSlug: string,
+  options: { scheduleId?: string; take: number; skip: number },
+) {
+  const { scheduleId, take, skip } = options;
+  const filter = {
+    eventSlug,
+    deletedAt: null,
+    ...(scheduleId ? { "schedule._id": scheduleId } : {}),
+  };
+
+  // A contagem usa o mesmo filtro da pagina: quem opera o evento precisa saber
+  // quantas inscricoes existem, nao so quantas vieram nesta pagina.
+  const [total, items] = await Promise.all([
+    Subscription.countDocuments(filter),
+    Subscription.find(filter)
+      .select({
+        hemocioneId: 1,
+        eventSlug: 1,
+        name: 1,
+        email: 1,
+        phone: 1,
+        document: 1,
+        code: 1,
+        schedule: 1,
+        createdAt: 1,
+      })
+      .sort({ "schedule.startAt": 1, createdAt: 1 })
+      .skip(skip)
+      .limit(take)
+      .lean(),
+  ]);
+
+  return { total, items };
+}
+
 export type UserSubscriptions = Awaited<
   ReturnType<typeof getUserSubscriptions>
 >;
