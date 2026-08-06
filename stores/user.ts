@@ -121,7 +121,12 @@ export const useUserStore = defineStore("user", {
         this.subscriptions.set(eventSlug, subscription);
         return subscription;
       } catch (err: any) {
-        if (err?.data?.statusCode === 404) {
+        const statusCode = err?.data?.statusCode ?? err?.statusCode;
+
+        // 404 = sem subscription; 401 = sem token ou token inválido/expirado.
+        // Em ambos os casos tratamos como "não inscrito / deslogado" e seguimos
+        // sem subscription, em vez de propagar o erro e travar a página.
+        if (statusCode === 404 || statusCode === 401) {
           return null;
         }
 
