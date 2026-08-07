@@ -118,6 +118,16 @@ const EventSchema = new Schema(
       required: false,
       default: null,
     },
+    bloodBanksLocationId: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    institutionId: {
+      type: String,
+      required: false,
+      default: null,
+    },
     subscription: {
       enabled: {
         type: Boolean,

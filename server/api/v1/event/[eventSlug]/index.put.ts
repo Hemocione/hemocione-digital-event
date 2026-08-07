@@ -42,6 +42,26 @@ function assertUpdateEventDTO(body: unknown): asserts body is UpdateEventDTO {
       });
     }
   }
+
+  if (
+    "bloodBanksLocationId" in body &&
+    (typeof body.bloodBanksLocationId !== "string" || !isUuid(body.bloodBanksLocationId))
+  ) {
+    throw createError({
+      statusCode: 422,
+      statusMessage: "Invalid bloodBanksLocationId",
+    });
+  }
+
+  if (
+    "institutionId" in body &&
+    (typeof body.institutionId !== "string" || !isUuid(body.institutionId))
+  ) {
+    throw createError({
+      statusCode: 422,
+      statusMessage: "Invalid institutionId",
+    });
+  }
 }
 
 export default defineEventHandler(async (event) => {

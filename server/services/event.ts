@@ -23,6 +23,8 @@ export interface CreateEventDTO {
   registerDonationUrl?: string;
   registerDonationDateLimit?: string;
   private?: boolean;
+  bloodBanksLocationId?: string;
+  institutionId?: string;
 }
 
 export interface UpdateEventDTO {
@@ -47,6 +49,8 @@ export interface UpdateEventDTO {
   registerDonationUrl?: string;
   registerDonationDateLimit?: string;
   private?: boolean;
+  bloodBanksLocationId?: string;
+  institutionId?: string;
 }
 
 export function getEventsForSync(data: {
