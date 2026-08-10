@@ -35,12 +35,15 @@
         :participants="participants"
       />
       <h1 style="padding: 1rem" class="text-heading">Localização</h1>
-      <GoogleMapsAddress
+      <InteractiveMap
         v-if="addressText"
         class="map"
         :address="addressText"
+        :coordinates="eventConfig.location?.coordinates"
+        :event-slug="eventSlug"
+        :event-name="eventConfig.name"
       />
-      <div class="map-subtitle">
+      <div v-if="!eventConfig.location?.coordinates" class="map-subtitle">
         <h2 class="text-subheading">
           {{ eventConfig.name }}
         </h2>

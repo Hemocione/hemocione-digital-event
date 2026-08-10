@@ -19,6 +19,10 @@ export interface CreateEventDTO {
     address: string;
     city: string;
     state: string;
+    coordinates?: {
+      lat: number;
+      lng: number;
+    };
   };
   registerDonationUrl?: string;
   registerDonationDateLimit?: string;
@@ -42,6 +46,10 @@ export interface UpdateEventDTO {
     address: string;
     city: string;
     state: string;
+    coordinates?: {
+      lat: number;
+      lng: number;
+    };
   };
   subscription?: {
     enabled?: boolean;
@@ -493,4 +501,50 @@ export async function getPointsOndeDoar(oldEvents: boolean = false) {
     location: event.location || null,
   }));
   return simplifiedEvents;
+}
+
+// Get events that will start within the next X hours
+export async function getEventsStartingWithinHours(
+  hours: number,
+  additionalHoursWindow: number = 1,
+) {
+  const now = new Date();
+  const targetTime = new Date(now.getTime() + hours * 60 * 60 * 1000);
+  const windowEnd = new Date(
+    targetTime.getTime() + additionalHoursWindow * 60 * 60 * 1000,
+  );
+
+  return Event.find({
+    startAt: {
+      $gte: targetTime,
+      $lte: windowEnd,
+    },
+    active: true,
+    canceledAt: null,
+  })
+    .select({
+      _id: 1,
+      name: 1,
+      slug: 1,
+      startAt: 1,
+      endAt: 1,
+      location: 1,
+      subscription: 1,
+    })
+    .lean();
+}
+
+// Get events starting in exactly 24 hours (with 1 hour window)
+export async function getEventsStartingIn24h() {
+  return getEventsStartingWithinHours(24, 1);
+}
+
+// Get events starting in exactly 2 hours (with 30 min window)
+export async function getEventsStartingIn2h() {
+  return getEventsStartingWithinHours(2, 0.5);
+}
+
+// Get events starting in exactly 1 hour (with 30 min window)
+export async function getEventsStartingIn1h() {
+  return getEventsStartingWithinHours(1, 0.5);
 }

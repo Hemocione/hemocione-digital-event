@@ -1,5 +1,6 @@
 import findEventsToSendDonations from "./findEventsToSendDonations";
+import findEventsToSendReminders from "./findEventsToSendReminders";
 
-const cronHandlers = [findEventsToSendDonations];
+const cronHandlers = [findEventsToSendDonations, findEventsToSendReminders];
 
 export default cronHandlers;

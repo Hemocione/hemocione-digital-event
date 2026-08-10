@@ -18,6 +18,10 @@ Acesse em produção: **[eventos.hemocione.com.br](https://eventos.hemocione.com
 - **Captação de parceiros** (escolas, empresas, faculdades)
 - **Integração com Hemocione ID** — autenticação e sincronização de doações
 - **Notificações** por SMS e WhatsApp ao ser chamado na fila
+- **Lembretes de evento** — notificações automáticas 24h, 2h e 1h antes do evento
+- **Mapa interativo** — visualização da localização do evento com navegação
+- **Cálculo de distância** — cálculo de distância até o evento com rotas (Google Maps/Waze)
+- **Preferências de notificação** — controle de canais de comunicação do usuário
 - **SEO e Schema.org** — eventos indexáveis pelo Google
 
 ---
@@ -224,6 +228,53 @@ hemocione-digital-event/
 | POST | `/api/v1/event/:slug/subscription` | Inscrição em horário |
 | GET | `/api/v1/subscription/mine/next` | Próxima inscrição do usuário |
 | POST | `/api/v1/image/upload` | Upload de imagem para CDN |
+| POST | `/api/v1/event/:slug/location` | Calcula distância até o evento |
+| GET | `/api/v1/notifications/preferences` | Preferências de notificação do usuário |
+| PUT | `/api/v1/notifications/preferences` | Atualiza preferências de notificação |
+
+---
+
+## 🔔 Sistema de Notificações
+
+O sistema envia notificações automáticas em múltiplos canais:
+
+### Lembretes de Evento
+- **24h antes** — Lembrete principal com informações do evento
+- **2h antes** — Alerta de que o evento está próximo
+- **1h antes** — Lembrete final
+
+### Canais Suportados
+- **SMS** — Via AWS SNS
+- **WhatsApp** — Integração futura (placeholder)
+- **Email** — Integração futura (placeholder)
+- **Push Notification** — Integração futura (placeholder)
+
+### Preferências do Usuário
+Usuários podem configurar:
+- Quais canais desejam receber
+- Horários de lembrete (24h, 2h, 1h)
+- Telefone/email para cada canal
+
+---
+
+## 🗺️ Funcionalidades de Localização
+
+### Mapa Interativo
+- Visualização do local do evento no Google Maps
+- Botão "Ver no Google Maps" para navegação externa
+- Botão "Compartilhar" usando Web Share API
+
+### Cálculo de Distância
+- Solicita permissão de geolocalização do usuário
+- Calcula distância exata até o evento (fórmula de Haversine)
+- Links diretos para rotas no Google Maps e Waze
+- Indicação visual da distância (ex: "Você está a 4.2km do evento")
+
+### Coordenadas Geográficas
+Eventos podem ter coordenadas (lat/lng) cadastradas para:
+- Precisão maior que endereço textual
+- Cálculos de distância precisos
+- Integração com apps de navegação
 
 ---
 
