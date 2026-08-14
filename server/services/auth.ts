@@ -29,6 +29,8 @@ export interface HemocioneUserAuthTokenData {
   phone: string;
   document: string;
   gender: Gender;
+  bloodBankRoles?: { bloodBanksLocationId: string; role: string }[];
+  institutionRoles?: { institutionId: string; role: string }[];
 }
 
 export function useHemocioneUserAuth(event: H3Event) {
@@ -44,7 +46,11 @@ export function useHemocioneUserAuth(event: H3Event) {
   try {
     const hemocioneUser =
       verifyAndReturnData<HemocioneUserAuthTokenData>(token);
-    return hemocioneUser;
+    return {
+      ...hemocioneUser,
+      bloodBankRoles: hemocioneUser.bloodBankRoles ?? [],
+      institutionRoles: hemocioneUser.institutionRoles ?? [],
+    };
   } catch (error) {
     throw createError({
       statusCode: 401,
