@@ -63,6 +63,12 @@ export interface ScheduleOverride {
   slots: number;
 }
 
+export interface CollectionEventSchedule {
+  timeInterval: number;
+  slotsPerInterval: number;
+  overrides?: ScheduleOverride[];
+}
+
 export function getEventsForSync(data: {
   queueIds: (string | Types.ObjectId)[];
   eventSlugs: string[];

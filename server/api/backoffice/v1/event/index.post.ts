@@ -1,5 +1,7 @@
+import { inngest } from "~/server/inngest/client";
 import { assertColetaIntegrationSecret } from "~/server/services/auth";
 import {
+  type CollectionEventSchedule,
   createEventFromCollection,
   type CreateEventFromCollectionDTO,
 } from "~/server/services/event";
@@ -20,10 +22,23 @@ export default defineEventHandler(async (event) => {
     });
   }
 
-  const { event: hemoEvent, created } = await createEventFromCollection(
-    body as CreateEventFromCollectionDTO,
-  );
+  const { schedule, ...eventData } = body as CreateEventFromCollectionDTO & {
+    schedule?: CollectionEventSchedule;
+  };
+  const { event: hemoEvent, created } =
+    await createEventFromCollection(eventData);
   setResponseStatus(event, created ? 201 : 200);
+
+  if (schedule) {
+    await inngest.send({
+      name: "collection-request/event.created",
+      data: {
+        eventSlug: hemoEvent.slug,
+        schedule,
+        enableSubscription: true,
+      },
+    });
+  }
 
   return {
     ...hemoEvent,
