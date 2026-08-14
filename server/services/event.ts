@@ -27,6 +27,10 @@ export interface CreateEventDTO {
   institutionId?: string;
 }
 
+export interface CreateEventFromCollectionDTO extends CreateEventDTO {
+  sourceCollectionRequestId: string;
+}
+
 export interface UpdateEventDTO {
   name?: string;
   startAt?: string | Date;
@@ -313,6 +317,42 @@ export async function createEvent(data: CreateEventDTO) {
   });
 
   return (await Event.create({ ...data, slug })).toObject();
+}
+
+function isDuplicateKeyError(error: unknown) {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    error.code === 11000
+  );
+}
+
+export async function createEventFromCollection(
+  data: CreateEventFromCollectionDTO,
+) {
+  const findExistingEvent = () =>
+    Event.findOne(
+      { sourceCollectionRequestId: data.sourceCollectionRequestId },
+      null,
+      { lean: true },
+    );
+
+  const existingEvent = await findExistingEvent();
+  if (existingEvent) {
+    return { event: existingEvent, created: false };
+  }
+
+  try {
+    return { event: await createEvent(data), created: true };
+  } catch (error) {
+    if (!isDuplicateKeyError(error)) throw error;
+
+    const eventCreatedConcurrently = await findExistingEvent();
+    if (!eventCreatedConcurrently) throw error;
+
+    return { event: eventCreatedConcurrently, created: false };
+  }
 }
 
 export async function setEventDefaultSchedule(
