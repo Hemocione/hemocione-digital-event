@@ -44,6 +44,13 @@ const EventSchema = new Schema(
       required: true,
       unique: true,
     },
+    sourceCollectionRequestId: {
+      type: String,
+      required: false,
+      index: true,
+      unique: true,
+      sparse: true,
+    },
     logo: {
       type: String,
       required: false,
