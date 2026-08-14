@@ -2,8 +2,6 @@ import type { Types } from "mongoose";
 import { inngest } from "../inngest/client";
 import { QueueParticipant } from "../models/queueParticipant";
 import { upsertFBDataOnLead } from "./digitalStand";
-import { pushAttendanceConfirmedFacts } from "./attendanceFacts";
-import { runAsync } from "~/server/utils/runAsync";
 import { completePhone } from "~/utils/completePhone";
 
 export const getUserQueueParticipations = async (data: {
@@ -167,7 +165,7 @@ export async function getCalledQueueParticipants(queueIds: string[]) {
 
 export async function callQueueParticipants(
   participantIds: string[],
-  queueId: string,
+  _queueId: string,
   eventSlug: string,
 ) {
   await QueueParticipant.updateMany(
@@ -196,8 +194,6 @@ export async function callQueueParticipants(
   } catch (e) {
     console.error(e);
   }
-
-  runAsync(pushAttendanceConfirmedFacts(participantIds, queueId));
 }
 
 interface CreateQueueParticipant {

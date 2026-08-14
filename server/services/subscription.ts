@@ -1,6 +1,8 @@
 import { Subscription } from "../models/subscription";
 import type { HemocioneUserAuthTokenData } from "./auth";
 import { getEventBySlug, incrementEventScheduleOccupiedSlots } from "./event";
+import { pushEventParticipationFacts } from "./eventParticipationFacts";
+import { runAsync } from "~/server/utils/runAsync";
 import { getCleanFullName } from "~/utils/getCleanFullName";
 
 export async function getUserSubscriptions(hemocioneId: string) {
@@ -162,6 +164,8 @@ export async function createSubscription(
     String(subscription.schedule._id),
     1,
   );
+
+  runAsync(pushEventParticipationFacts(subscription, user.id));
 
   return subscription.toObject();
 }
