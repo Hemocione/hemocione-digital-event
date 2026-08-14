@@ -165,7 +165,7 @@ export async function getCalledQueueParticipants(queueIds: string[]) {
 
 export async function callQueueParticipants(
   participantIds: string[],
-  queueId: string,
+  _queueId: string,
   eventSlug: string,
 ) {
   await QueueParticipant.updateMany(
