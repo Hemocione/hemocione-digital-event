@@ -1,13 +1,18 @@
 import { createError, type H3Event } from "h3";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { create, findOne } = vi.hoisted(() => ({
+const { create, findOne, send } = vi.hoisted(() => ({
   create: vi.fn(),
   findOne: vi.fn(),
+  send: vi.fn(),
 }));
 
 vi.mock("../server/models/event", () => ({
   Event: { create, findOne },
+}));
+
+vi.mock("../server/inngest/client", () => ({
+  inngest: { send },
 }));
 
 const runtimeConfig = { coletaIntegrationSecret: "coleta-secret" };
@@ -52,6 +57,7 @@ function request(body: unknown = eventBody, secret = "coleta-secret") {
 beforeEach(() => {
   create.mockReset();
   findOne.mockReset();
+  send.mockReset();
 });
 
 describe("POST /api/backoffice/v1/event", () => {
@@ -73,6 +79,35 @@ describe("POST /api/backoffice/v1/event", () => {
     expect(create.mock.calls[0][0]).toMatchObject({
       sourceCollectionRequestId: eventBody.sourceCollectionRequestId,
     });
+    expect(send).not.toHaveBeenCalled();
+  });
+
+  it("dispara a orquestração quando recebe um schedule", async () => {
+    const schedule = {
+      timeInterval: 60,
+      slotsPerInterval: 30,
+      overrides: [{ startTime: "12:00", endTime: "14:00", slots: 10 }],
+    };
+    const createdEvent = {
+      _id: "event-id",
+      name: eventBody.name,
+      slug: "evento-de-coleta",
+      sourceCollectionRequestId: eventBody.sourceCollectionRequestId,
+    };
+    findOne.mockResolvedValue(undefined);
+    create.mockResolvedValue({ toObject: () => createdEvent });
+
+    await handler(request({ ...eventBody, schedule }));
+
+    expect(send).toHaveBeenCalledWith({
+      name: "collection-request/event.created",
+      data: {
+        eventSlug: createdEvent.slug,
+        schedule,
+        enableSubscription: true,
+      },
+    });
+    expect(create.mock.calls[0][0]).not.toHaveProperty("schedule");
   });
 
   it("retorna o mesmo evento com 200 na segunda chamada idempotente", async () => {
