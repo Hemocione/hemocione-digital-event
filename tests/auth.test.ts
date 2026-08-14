@@ -5,7 +5,7 @@ vi.mock("../server/services/jwt", () => ({
   verifyAndReturnData: vi.fn(),
 }));
 
-const runtimeConfig = {};
+const runtimeConfig = { coletaIntegrationSecret: "coleta-secret" };
 const nuxtGlobals = globalThis as typeof globalThis & {
   createError: typeof createError;
   useRuntimeConfig: () => typeof runtimeConfig;
@@ -13,12 +13,37 @@ const nuxtGlobals = globalThis as typeof globalThis & {
 nuxtGlobals.createError = createError;
 nuxtGlobals.useRuntimeConfig = () => runtimeConfig;
 
+let assertColetaIntegrationSecret: typeof import("../server/services/auth").assertColetaIntegrationSecret;
 let useHemocioneUserAuth: typeof import("../server/services/auth").useHemocioneUserAuth;
 let verifyAndReturnData: typeof import("../server/services/jwt").verifyAndReturnData;
 
 beforeAll(async () => {
-  ({ useHemocioneUserAuth } = await import("../server/services/auth"));
+  ({ assertColetaIntegrationSecret, useHemocioneUserAuth } = await import(
+    "../server/services/auth"
+  ));
   ({ verifyAndReturnData } = await import("../server/services/jwt"));
+});
+
+describe("assertColetaIntegrationSecret", () => {
+  it("aceita o secret correto", () => {
+    expect(() =>
+      assertColetaIntegrationSecret(
+        eventWithHeaders({ "x-coleta-integration-secret": "coleta-secret" }),
+      ),
+    ).not.toThrow();
+  });
+
+  it.each([
+    ["secret incorreto", { "x-coleta-integration-secret": "wrong-secret" }],
+    ["secret ausente", {}],
+  ])("rejeita %s com 401", (_case, headers) => {
+    try {
+      assertColetaIntegrationSecret(eventWithHeaders(headers));
+      throw new Error("expected assertColetaIntegrationSecret to throw");
+    } catch (error) {
+      expect(error).toMatchObject({ statusCode: 401 });
+    }
+  });
 });
 
 function eventWithHeaders(headers: Record<string, string>): H3Event {

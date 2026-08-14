@@ -66,6 +66,7 @@ export default defineNuxtConfig({
       process.env.HEMOCIONE_ID_JWT_SECRET_KEY ?? "secret",
     hemocioneIdIntegrationSecret:
       process.env.HEMOCIONE_ID_INTEGRATION_SECRET ?? "secret",
+    coletaIntegrationSecret: process.env.COLETA_INTEGRATION_SECRET ?? "secret",
     hemocioneIdApiUrl:
       process.env.HEMOCIONE_ID_API_URL ?? "http://localhost:8080",
     hemocioneIdFactsSecret: process.env.HEMOCIONE_ID_FACTS_SECRET ?? "secret",

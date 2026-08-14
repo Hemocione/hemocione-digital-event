@@ -70,6 +70,17 @@ export function assertHemocioneIdIntegrationSecret(event: H3Event) {
   }
 }
 
+export function assertColetaIntegrationSecret(event: H3Event) {
+  const headers = event.headers;
+  const secret = headers.get("x-coleta-integration-secret");
+  if (secret !== config.coletaIntegrationSecret) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: "Unauthorized",
+    });
+  }
+}
+
 export function useHemocioneUserAuthOrHemocioneIdIntegrationSecret(
   event: H3Event,
 ) {
