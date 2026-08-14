@@ -53,6 +53,12 @@ export interface UpdateEventDTO {
   institutionId?: string;
 }
 
+export interface ScheduleOverride {
+  startTime: string;
+  endTime: string;
+  slots: number;
+}
+
 export function getEventsForSync(data: {
   queueIds: (string | Types.ObjectId)[];
   eventSlugs: string[];
@@ -313,6 +319,7 @@ export async function setEventDefaultSchedule(
   eventSlug: string,
   timeInterval: number = 60,
   slotsPerInterval: number = 30,
+  overrides?: ScheduleOverride[],
 ) {
   const event = await getEventBySlug(eventSlug, false, { lean: false });
   if (!event) return null;
@@ -327,7 +334,23 @@ export async function setEventDefaultSchedule(
   const timeBlocks = getTimeBlocks(event.startAt, event.endAt, timeInterval);
   const schedules = timeBlocks.map((schedule) => ({
     ...schedule,
-    slots: slotsPerInterval,
+    slots:
+      overrides?.find((override) => {
+        const scheduleStart = new Date(schedule.startAt);
+        const scheduleStartTime =
+          scheduleStart.getHours() * 60 + scheduleStart.getMinutes();
+        const [startHours, startMinutes] = override.startTime
+          .split(":")
+          .map(Number);
+        const [endHours, endMinutes] = override.endTime.split(":").map(Number);
+        const overrideStartTime = startHours * 60 + startMinutes;
+        const overrideEndTime = endHours * 60 + endMinutes;
+
+        return (
+          scheduleStartTime >= overrideStartTime &&
+          scheduleStartTime < overrideEndTime
+        );
+      })?.slots ?? slotsPerInterval,
   }));
   const subscription = { schedules };
   event.set({ subscription });
