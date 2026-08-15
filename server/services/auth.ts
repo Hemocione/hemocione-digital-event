@@ -14,6 +14,22 @@ export function assertSecretAuth(event: H3Event) {
   }
 }
 
+export function assertSecretAuthOrColetaIntegrationSecret(event: H3Event) {
+  const headers = event.headers;
+  const secret = headers.get("x-secret");
+  const coletaIntegrationSecret = headers.get("x-coleta-integration-secret");
+
+  if (
+    secret !== config.secret &&
+    coletaIntegrationSecret !== config.coletaIntegrationSecret
+  ) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: "Unauthorized",
+    });
+  }
+}
+
 const BLOODTYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"] as const;
 export type BloodType = (typeof BLOODTYPES)[number];
 

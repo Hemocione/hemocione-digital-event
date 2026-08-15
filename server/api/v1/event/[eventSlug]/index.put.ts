@@ -1,4 +1,4 @@
-import { assertSecretAuth } from "~/server/services/auth";
+import { assertSecretAuthOrColetaIntegrationSecret } from "~/server/services/auth";
 import { updateEventBySlug } from "~/server/services/event";
 import type { UpdateEventDTO } from "~/server/services/event";
 
@@ -65,7 +65,7 @@ function assertUpdateEventDTO(body: unknown): asserts body is UpdateEventDTO {
 }
 
 export default defineEventHandler(async (event) => {
-  assertSecretAuth(event);
+  assertSecretAuthOrColetaIntegrationSecret(event);
   const body = await readBody(event);
   assertUpdateEventDTO(body);
 
