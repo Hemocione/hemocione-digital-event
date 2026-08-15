@@ -33,15 +33,6 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: "Schedule not found" });
   }
 
-  const hasAvailableSlots = schedule.slots > schedule.occupiedSlots;
-
-  if (!hasAvailableSlots) {
-    throw createError({
-      statusCode: 400,
-      statusMessage: "No available slots for this schedule",
-    });
-  }
-
   const subscription = await createSubscription(eventSlug, user, {
     _id: scheduleId,
     startAt: schedule.startAt,

@@ -1,5 +1,5 @@
 import slugify from "slugify";
-import type { Types } from "mongoose";
+import { Types } from "mongoose";
 import { Event } from "../models/event";
 import { getTimeBlocks } from "~/utils/getTimeBlocks";
 import { getCacheKeyFromParams } from "~/utils/getCacheKeyFromParams";
@@ -139,10 +139,42 @@ export async function incrementEventScheduleOccupiedSlots(
   scheduleId: string,
   increment: number,
 ) {
+  const scheduleIdForExpression = Types.ObjectId.isValid(scheduleId)
+    ? new Types.ObjectId(scheduleId)
+    : scheduleId;
+  const availableSlotFilter =
+    increment > 0
+      ? {
+          $expr: {
+            $gt: [
+              {
+                $size: {
+                  $filter: {
+                    input: "$subscription.schedules",
+                    as: "schedule",
+                    cond: {
+                      $and: [
+                        {
+                          $eq: ["$$schedule._id", scheduleIdForExpression],
+                        },
+                        {
+                          $lt: ["$$schedule.occupiedSlots", "$$schedule.slots"],
+                        },
+                      ],
+                    },
+                  },
+                },
+              },
+              0,
+            ],
+          },
+        }
+      : {};
   const event = await Event.findOneAndUpdate(
     {
       slug: eventSlug,
       "subscription.schedules._id": scheduleId,
+      ...availableSlotFilter,
     },
     {
       $inc: { "subscription.schedules.$.occupiedSlots": increment },
