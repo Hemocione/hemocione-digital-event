@@ -433,7 +433,7 @@ const getEventsFromDBPromise = (
 // for now, caching in memory is enough to avoid unnecessary database queries
 type EventsFromDb = Awaited<ReturnType<typeof getEventsFromDBPromise>>;
 const getEventsCache = new Map<
-  boolean,
+  string,
   {
     generatedAt: Date;
     data: EventsFromDb;
@@ -441,8 +441,12 @@ const getEventsCache = new Map<
 >();
 const EVENTS_CACHE_TTL = 1000 * 60 * 60; // 60 minutes
 
-export async function getEvents(oldEvents: boolean = false) {
-  const cached = getEventsCache.get(oldEvents);
+export async function getEvents(
+  oldEvents: boolean = false,
+  institutionId?: string,
+) {
+  const cacheKey = `${oldEvents}:${institutionId ?? ""}`;
+  const cached = getEventsCache.get(cacheKey);
   if (cached && cached.generatedAt.getTime() + EVENTS_CACHE_TTL >= Date.now()) {
     return cached.data;
   }
@@ -450,6 +454,7 @@ export async function getEvents(oldEvents: boolean = false) {
   // private events are not returned in any listing
   const filter = {
     private: { $ne: true },
+    ...(institutionId ? { institutionId } : {}),
     ...(oldEvents
       ? { endAt: { $lte: new Date() } }
       : { endAt: { $gte: new Date() } }),
@@ -462,7 +467,7 @@ export async function getEvents(oldEvents: boolean = false) {
   const events = await getEventsFromDBPromise(filter, sort);
 
   // update cache
-  getEventsCache.set(oldEvents, {
+  getEventsCache.set(cacheKey, {
     generatedAt: new Date(),
     data: events,
   });
