@@ -1,4 +1,4 @@
-import { assertSecretAuth } from "~/server/services/auth";
+import { assertSecretAuthOrColetaIntegrationSecret } from "~/server/services/auth";
 import { updateEventBySlug } from "~/server/services/event";
 import type { UpdateEventDTO } from "~/server/services/event";
 
@@ -42,10 +42,30 @@ function assertUpdateEventDTO(body: unknown): asserts body is UpdateEventDTO {
       });
     }
   }
+
+  if (
+    "bloodBanksLocationId" in body &&
+    (typeof body.bloodBanksLocationId !== "string" || !isUuid(body.bloodBanksLocationId))
+  ) {
+    throw createError({
+      statusCode: 422,
+      statusMessage: "Invalid bloodBanksLocationId",
+    });
+  }
+
+  if (
+    "institutionId" in body &&
+    (typeof body.institutionId !== "string" || !isUuid(body.institutionId))
+  ) {
+    throw createError({
+      statusCode: 422,
+      statusMessage: "Invalid institutionId",
+    });
+  }
 }
 
 export default defineEventHandler(async (event) => {
-  assertSecretAuth(event);
+  assertSecretAuthOrColetaIntegrationSecret(event);
   const body = await readBody(event);
   assertUpdateEventDTO(body);
 

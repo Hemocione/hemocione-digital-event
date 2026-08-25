@@ -14,6 +14,22 @@ export function assertSecretAuth(event: H3Event) {
   }
 }
 
+export function assertSecretAuthOrColetaIntegrationSecret(event: H3Event) {
+  const headers = event.headers;
+  const secret = headers.get("x-secret");
+  const coletaIntegrationSecret = headers.get("x-coleta-integration-secret");
+
+  if (
+    secret !== config.secret &&
+    coletaIntegrationSecret !== config.coletaIntegrationSecret
+  ) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: "Unauthorized",
+    });
+  }
+}
+
 const BLOODTYPES = ["A+", "A-", "B+", "B-", "AB+", "AB-", "O+", "O-"] as const;
 export type BloodType = (typeof BLOODTYPES)[number];
 
@@ -29,6 +45,8 @@ export interface HemocioneUserAuthTokenData {
   phone: string;
   document: string;
   gender: Gender;
+  bloodBankRoles?: { bloodBanksLocationId: string; role: string }[];
+  institutionRoles?: { institutionId: string; role: string }[];
 }
 
 export function useHemocioneUserAuth(event: H3Event) {
@@ -44,7 +62,11 @@ export function useHemocioneUserAuth(event: H3Event) {
   try {
     const hemocioneUser =
       verifyAndReturnData<HemocioneUserAuthTokenData>(token);
-    return hemocioneUser;
+    return {
+      ...hemocioneUser,
+      bloodBankRoles: hemocioneUser.bloodBankRoles ?? [],
+      institutionRoles: hemocioneUser.institutionRoles ?? [],
+    };
   } catch (error) {
     throw createError({
       statusCode: 401,
@@ -57,6 +79,17 @@ export function assertHemocioneIdIntegrationSecret(event: H3Event) {
   const headers = event.headers;
   const secret = headers.get("x-hemocione-integration-secret");
   if (secret !== config.hemocioneIdIntegrationSecret) {
+    throw createError({
+      statusCode: 401,
+      statusMessage: "Unauthorized",
+    });
+  }
+}
+
+export function assertColetaIntegrationSecret(event: H3Event) {
+  const headers = event.headers;
+  const secret = headers.get("x-coleta-integration-secret");
+  if (secret !== config.coletaIntegrationSecret) {
     throw createError({
       statusCode: 401,
       statusMessage: "Unauthorized",

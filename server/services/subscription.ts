@@ -1,6 +1,8 @@
 import { Subscription } from "../models/subscription";
 import type { HemocioneUserAuthTokenData } from "./auth";
 import { getEventBySlug, incrementEventScheduleOccupiedSlots } from "./event";
+import { pushEventParticipationFacts } from "./eventParticipationFacts";
+import { runAsync } from "~/server/utils/runAsync";
 import { getCleanFullName } from "~/utils/getCleanFullName";
 
 export async function getUserSubscriptions(hemocioneId: string) {
@@ -156,12 +158,31 @@ export async function createSubscription(
     };
   }
 
-  await subscription.save();
-  await incrementEventScheduleOccupiedSlots(
+  const eventWithReservedSlot = await incrementEventScheduleOccupiedSlots(
     eventSlug,
     String(subscription.schedule._id),
     1,
   );
+
+  if (!eventWithReservedSlot) {
+    throw createError({
+      statusCode: 400,
+      statusMessage: "No available slots for this schedule",
+    });
+  }
+
+  try {
+    await subscription.save();
+  } catch (error) {
+    await incrementEventScheduleOccupiedSlots(
+      eventSlug,
+      String(subscription.schedule._id),
+      -1,
+    );
+    throw error;
+  }
+
+  runAsync(pushEventParticipationFacts(subscription, user.id));
 
   return subscription.toObject();
 }

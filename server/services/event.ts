@@ -1,5 +1,5 @@
 import slugify from "slugify";
-import type { Types } from "mongoose";
+import { Types } from "mongoose";
 import { Event } from "../models/event";
 import { getTimeBlocks } from "~/utils/getTimeBlocks";
 import { getCacheKeyFromParams } from "~/utils/getCacheKeyFromParams";
@@ -23,6 +23,12 @@ export interface CreateEventDTO {
   registerDonationUrl?: string;
   registerDonationDateLimit?: string;
   private?: boolean;
+  bloodBanksLocationId?: string;
+  institutionId?: string;
+}
+
+export interface CreateEventFromCollectionDTO extends CreateEventDTO {
+  sourceCollectionRequestId: string;
 }
 
 export interface UpdateEventDTO {
@@ -47,6 +53,20 @@ export interface UpdateEventDTO {
   registerDonationUrl?: string;
   registerDonationDateLimit?: string;
   private?: boolean;
+  bloodBanksLocationId?: string;
+  institutionId?: string;
+}
+
+export interface ScheduleOverride {
+  startTime: string;
+  endTime: string;
+  slots: number;
+}
+
+export interface CollectionEventSchedule {
+  timeInterval: number;
+  slotsPerInterval: number;
+  overrides?: ScheduleOverride[];
 }
 
 export function getEventsForSync(data: {
@@ -119,10 +139,42 @@ export async function incrementEventScheduleOccupiedSlots(
   scheduleId: string,
   increment: number,
 ) {
+  const scheduleIdForExpression = Types.ObjectId.isValid(scheduleId)
+    ? new Types.ObjectId(scheduleId)
+    : scheduleId;
+  const availableSlotFilter =
+    increment > 0
+      ? {
+          $expr: {
+            $gt: [
+              {
+                $size: {
+                  $filter: {
+                    input: "$subscription.schedules",
+                    as: "schedule",
+                    cond: {
+                      $and: [
+                        {
+                          $eq: ["$$schedule._id", scheduleIdForExpression],
+                        },
+                        {
+                          $lt: ["$$schedule.occupiedSlots", "$$schedule.slots"],
+                        },
+                      ],
+                    },
+                  },
+                },
+              },
+              0,
+            ],
+          },
+        }
+      : {};
   const event = await Event.findOneAndUpdate(
     {
       slug: eventSlug,
       "subscription.schedules._id": scheduleId,
+      ...availableSlotFilter,
     },
     {
       $inc: { "subscription.schedules.$.occupiedSlots": increment },
@@ -305,10 +357,47 @@ export async function createEvent(data: CreateEventDTO) {
   return (await Event.create({ ...data, slug })).toObject();
 }
 
+function isDuplicateKeyError(error: unknown) {
+  return (
+    typeof error === "object" &&
+    error !== null &&
+    "code" in error &&
+    error.code === 11000
+  );
+}
+
+export async function createEventFromCollection(
+  data: CreateEventFromCollectionDTO,
+) {
+  const findExistingEvent = () =>
+    Event.findOne(
+      { sourceCollectionRequestId: data.sourceCollectionRequestId },
+      null,
+      { lean: true },
+    );
+
+  const existingEvent = await findExistingEvent();
+  if (existingEvent) {
+    return { event: existingEvent, created: false };
+  }
+
+  try {
+    return { event: await createEvent(data), created: true };
+  } catch (error) {
+    if (!isDuplicateKeyError(error)) throw error;
+
+    const eventCreatedConcurrently = await findExistingEvent();
+    if (!eventCreatedConcurrently) throw error;
+
+    return { event: eventCreatedConcurrently, created: false };
+  }
+}
+
 export async function setEventDefaultSchedule(
   eventSlug: string,
   timeInterval: number = 60,
   slotsPerInterval: number = 30,
+  overrides?: ScheduleOverride[],
 ) {
   const event = await getEventBySlug(eventSlug, false, { lean: false });
   if (!event) return null;
@@ -323,7 +412,23 @@ export async function setEventDefaultSchedule(
   const timeBlocks = getTimeBlocks(event.startAt, event.endAt, timeInterval);
   const schedules = timeBlocks.map((schedule) => ({
     ...schedule,
-    slots: slotsPerInterval,
+    slots:
+      overrides?.find((override) => {
+        const scheduleStart = new Date(schedule.startAt);
+        const scheduleStartTime =
+          scheduleStart.getHours() * 60 + scheduleStart.getMinutes();
+        const [startHours, startMinutes] = override.startTime
+          .split(":")
+          .map(Number);
+        const [endHours, endMinutes] = override.endTime.split(":").map(Number);
+        const overrideStartTime = startHours * 60 + startMinutes;
+        const overrideEndTime = endHours * 60 + endMinutes;
+
+        return (
+          scheduleStartTime >= overrideStartTime &&
+          scheduleStartTime < overrideEndTime
+        );
+      })?.slots ?? slotsPerInterval,
   }));
   const subscription = { schedules };
   event.set({ subscription });
@@ -360,7 +465,7 @@ const getEventsFromDBPromise = (
 // for now, caching in memory is enough to avoid unnecessary database queries
 type EventsFromDb = Awaited<ReturnType<typeof getEventsFromDBPromise>>;
 const getEventsCache = new Map<
-  boolean,
+  string,
   {
     generatedAt: Date;
     data: EventsFromDb;
@@ -368,8 +473,12 @@ const getEventsCache = new Map<
 >();
 const EVENTS_CACHE_TTL = 1000 * 60 * 60; // 60 minutes
 
-export async function getEvents(oldEvents: boolean = false) {
-  const cached = getEventsCache.get(oldEvents);
+export async function getEvents(
+  oldEvents: boolean = false,
+  institutionId?: string,
+) {
+  const cacheKey = `${oldEvents}:${institutionId ?? ""}`;
+  const cached = getEventsCache.get(cacheKey);
   if (cached && cached.generatedAt.getTime() + EVENTS_CACHE_TTL >= Date.now()) {
     return cached.data;
   }
@@ -377,6 +486,7 @@ export async function getEvents(oldEvents: boolean = false) {
   // private events are not returned in any listing
   const filter = {
     private: { $ne: true },
+    ...(institutionId ? { institutionId } : {}),
     ...(oldEvents
       ? { endAt: { $lte: new Date() } }
       : { endAt: { $gte: new Date() } }),
@@ -389,7 +499,7 @@ export async function getEvents(oldEvents: boolean = false) {
   const events = await getEventsFromDBPromise(filter, sort);
 
   // update cache
-  getEventsCache.set(oldEvents, {
+  getEventsCache.set(cacheKey, {
     generatedAt: new Date(),
     data: events,
   });

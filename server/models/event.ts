@@ -44,6 +44,13 @@ const EventSchema = new Schema(
       required: true,
       unique: true,
     },
+    sourceCollectionRequestId: {
+      type: String,
+      required: false,
+      index: true,
+      unique: true,
+      sparse: true,
+    },
     logo: {
       type: String,
       required: false,
@@ -115,6 +122,16 @@ const EventSchema = new Schema(
     },
     registerDonationDateLimit: {
       type: Date,
+      required: false,
+      default: null,
+    },
+    bloodBanksLocationId: {
+      type: String,
+      required: false,
+      default: null,
+    },
+    institutionId: {
+      type: String,
       required: false,
       default: null,
     },
