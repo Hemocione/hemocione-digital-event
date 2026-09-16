@@ -75,6 +75,21 @@ export function useHemocioneUserAuth(event: H3Event) {
   }
 }
 
+export function assertUserBelongsToInstitution(
+  user: { institutionRoles?: { institutionId: string; role: string }[] },
+  institutionId: string,
+) {
+  const hasRole = (user.institutionRoles ?? []).some(
+    (role) => role.institutionId === institutionId,
+  );
+  if (!hasRole) {
+    throw createError({
+      statusCode: 403,
+      statusMessage: "User does not belong to this institution",
+    });
+  }
+}
+
 export function assertHemocioneIdIntegrationSecret(event: H3Event) {
   const headers = event.headers;
   const secret = headers.get("x-hemocione-integration-secret");
