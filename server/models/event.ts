@@ -197,6 +197,10 @@ const EventSchema = new Schema(
 
 EventSchema.index({ active: 1, private: 1, startAt: 1, endAt: 1, _id: 1 });
 
+// Suporta a listagem "eventos da instituição" (passados + futuros) sem table
+// scan — institutionId primeiro (igualdade), depois os campos de filtro/sort.
+EventSchema.index({ institutionId: 1, active: 1, private: 1, startAt: -1 });
+
 // Indexes for sync
 EventSchema.index(
   { "queue._id": 1 },
