@@ -506,6 +506,35 @@ export async function getEvents(
   return events;
 }
 
+const EVENTS_FOR_INSTITUTION_DEFAULT_LIMIT = 20;
+
+/**
+ * Lista todos os eventos (passados e futuros) de uma instituicao, para o
+ * portal de instituicoes. Deliberadamente sem cache: getEventsCache nao tem
+ * invalidacao em create/update de evento, e esta tela precisa refletir um
+ * evento recem-criado de imediato, nao depois de ate 60 minutos.
+ */
+export async function getEventsForInstitution(
+  institutionId: string,
+  options: { page?: number; limit?: number } = {},
+) {
+  const limit = options.limit ?? EVENTS_FOR_INSTITUTION_DEFAULT_LIMIT;
+  const page = options.page ?? 1;
+  const skip = (page - 1) * limit;
+
+  const filter = {
+    institutionId,
+    private: { $ne: true },
+  };
+
+  const [total, items] = await Promise.all([
+    Event.countDocuments(filter),
+    Event.find(filter).sort({ startAt: -1 }).skip(skip).limit(limit).lean(),
+  ]);
+
+  return { total, items };
+}
+
 const allActiveEventsCache:
   | {
     generatedAt: Date;
