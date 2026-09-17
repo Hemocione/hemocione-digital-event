@@ -1,17 +1,12 @@
 import { type H3Event } from "h3";
 import { beforeEach, describe, expect, it, vi } from "vitest";
 
-const { find, useHemocioneUserAuth } = vi.hoisted(() => ({
+const { find } = vi.hoisted(() => ({
   find: vi.fn(),
-  useHemocioneUserAuth: vi.fn(),
 }));
 
 vi.mock("../server/models/event", () => ({
   Event: { find },
-}));
-
-vi.mock("../server/services/auth", () => ({
-  useHemocioneUserAuth,
 }));
 
 type TestEvent = H3Event & {
@@ -42,7 +37,7 @@ const events = [
 
 function request(query: Record<string, unknown> = {}) {
   return {
-    headers: new Headers({ authorization: "Bearer user-token" }),
+    headers: new Headers(),
     query,
   } as TestEvent;
 }
@@ -67,17 +62,14 @@ function mockEventFind() {
 
 beforeEach(() => {
   find.mockReset();
-  useHemocioneUserAuth.mockReset();
-  useHemocioneUserAuth.mockReturnValue({ id: "user-id" });
   mockEventFind();
 });
 
 describe("GET /api/v1/event", () => {
-  it("retorna todos os eventos sem institutionId", async () => {
+  it("é público — retorna todos os eventos sem Authorization header", async () => {
     const response = await handler(request());
 
     expect(response).toEqual(events);
-    expect(useHemocioneUserAuth).toHaveBeenCalledTimes(1);
     expect(find).toHaveBeenCalledWith(
       expect.objectContaining({
         active: true,
@@ -87,7 +79,7 @@ describe("GET /api/v1/event", () => {
     expect(find.mock.calls[0][0]).not.toHaveProperty("institutionId");
   });
 
-  it("filtra por institutionId", async () => {
+  it("filtra por institutionId, sem exigir autenticação", async () => {
     const response = await handler(request({ institutionId: "institution-1" }));
 
     expect(response).toEqual([events[0]]);
