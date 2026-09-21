@@ -1,6 +1,14 @@
 <template>
   <NuxtLayout>
     <NuxtPage />
+    <ClientOnly>
+      <SidePillTag
+        title="Hemocione"
+        cta-text="INSTALAR APP"
+        store-url="https://link.hemocione.com.br/download-app"
+        icon="/images/logo.svg"
+      />
+    </ClientOnly>
   </NuxtLayout>
 </template>
 
