@@ -25,6 +25,7 @@
 <script setup lang="ts">
 definePageMeta({
   layout: false,
+  middleware: ["auth"],
 });
 const route = useRoute();
 // todo: get event from layers community and layersPortal integration

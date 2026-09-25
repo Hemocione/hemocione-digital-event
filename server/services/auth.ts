@@ -75,6 +75,15 @@ export function useHemocioneUserAuth(event: H3Event) {
   }
 }
 
+export function useHemocioneUserAuthOrSecret(event: H3Event) {
+  try {
+    assertSecretAuth(event);
+    return null;
+  } catch {
+    return useHemocioneUserAuth(event);
+  }
+}
+
 export function assertUserBelongsToInstitution(
   user: { institutionRoles?: { institutionId: string; role: string }[] },
   institutionId: string,
