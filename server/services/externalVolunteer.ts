@@ -3,6 +3,7 @@ import type { HemocioneUserAuthTokenData } from "./auth";
 import { incrementEventExternalVolunteersOccupiedSlots } from "./event";
 import { getCleanFullName } from "~/utils/getCleanFullName";
 import { sendSlackMessage } from "~/server/services/slack";
+import { getEventUrl } from "~/server/utils/eventUrl";
 
 // Função para obter um voluntário externo com base no slug do evento e no ID do usuário
 export async function getExternalVolunteer(
@@ -81,7 +82,7 @@ async function sendCreatedVolunteerSlackMessage(payload: {
   const webhook = config.externalVolunteersSlackWebhook;
   if (!webhook) return;
 
-  const eventUrl = `${config.public.siteUrl}/event/${payload.eventSlug}`;
+  const eventUrl = getEventUrl(payload.eventSlug);
   const message =
     `🎉 Novo voluntário externo registrado para o evento ${eventUrl}\n\n` +
     `👤 *Nome*: ${payload.name}\n` +

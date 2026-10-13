@@ -1,3 +1,4 @@
+import { withEventUrl } from "~/server/utils/eventUrl";
 import { getEventBySlug } from "~/server/services/event";
 
 export default defineEventHandler(async (event) => {
@@ -8,7 +9,5 @@ export default defineEventHandler(async (event) => {
     throw createError({ statusCode: 404, statusMessage: "Event not Found" });
   }
 
-  return {
-    ...hemoEvent,
-  };
+  return withEventUrl(hemoEvent);
 });
