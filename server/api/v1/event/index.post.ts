@@ -1,3 +1,4 @@
+import { withEventUrl } from "~/server/utils/eventUrl";
 import { assertSecretAuth } from "~/server/services/auth";
 import { createEvent } from "~/server/services/event";
 import type { CreateEventDTO } from "~/server/services/event";
@@ -91,7 +92,5 @@ export default defineEventHandler(async (event) => {
   assertCreateEventDTO(body);
   const createdEvent = await createEvent(body);
 
-  return {
-    ...createdEvent,
-  };
+  return withEventUrl(createdEvent);
 });

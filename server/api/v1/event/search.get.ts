@@ -1,3 +1,4 @@
+import { withEventUrls } from "~/server/utils/eventUrl";
 import { getEventsBySlugs } from "~/server/services/event";
 
 export default defineEventHandler(async (event) => {
@@ -7,5 +8,5 @@ export default defineEventHandler(async (event) => {
   };
 
   const events = await getEventsBySlugs(eventSlugs ?? []);
-  return events;
+  return withEventUrls(events);
 });

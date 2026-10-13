@@ -1,3 +1,4 @@
+import { withEventUrls } from "~/server/utils/eventUrl";
 import { getEvents } from "~/server/services/event";
 
 export default defineEventHandler(async (event) => {
@@ -8,5 +9,5 @@ export default defineEventHandler(async (event) => {
     ? String(query.institutionId)
     : undefined;
   const events = await getEvents(shouldGetOldEvents, institutionId);
-  return events;
+  return withEventUrls(events);
 });
