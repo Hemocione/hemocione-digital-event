@@ -1,12 +1,11 @@
 import { getAllActiveEvents } from "~/server/services/event";
-
-const config = useRuntimeConfig();
+import { getEventUrl } from "~/server/utils/eventUrl";
 
 export default defineSitemapEventHandler(async () => {
   const events = await getAllActiveEvents();
   const urls = events.map((event) =>
     asSitemapUrl({
-      loc: `${config.public.siteUrl}/event/${event.slug}`,
+      loc: getEventUrl(event.slug),
       changefreq: "weekly",
       priority: 1,
       lastmod: event.updatedAt,

@@ -16,7 +16,11 @@ type TestEvent = H3Event & {
 const nuxtGlobals = globalThis as typeof globalThis & {
   defineEventHandler: (handler: unknown) => unknown;
   getQuery: (event: TestEvent) => Record<string, unknown>;
+  useRuntimeConfig: () => unknown;
 };
+nuxtGlobals.useRuntimeConfig = () => ({
+  public: { siteUrl: "https://eventos.example.com" },
+});
 nuxtGlobals.defineEventHandler = (handler) => handler;
 nuxtGlobals.getQuery = (event) => event.query ?? {};
 
@@ -69,7 +73,12 @@ describe("GET /api/v1/event", () => {
   it("é público — retorna todos os eventos sem Authorization header", async () => {
     const response = await handler(request());
 
-    expect(response).toEqual(events);
+    expect(response).toEqual(
+      events.map((e) => ({
+        ...e,
+        url: `https://eventos.example.com/event/${e.slug}`,
+      })),
+    );
     expect(find).toHaveBeenCalledWith(
       expect.objectContaining({
         active: true,
@@ -82,7 +91,12 @@ describe("GET /api/v1/event", () => {
   it("filtra por institutionId, sem exigir autenticação", async () => {
     const response = await handler(request({ institutionId: "institution-1" }));
 
-    expect(response).toEqual([events[0]]);
+    expect(response).toEqual([
+      {
+        ...events[0],
+        url: "https://eventos.example.com/event/evento-instituicao-1",
+      },
+    ]);
     expect(find).toHaveBeenCalledWith(
       expect.objectContaining({ institutionId: "institution-1" }),
     );
