@@ -49,6 +49,7 @@ import utc from "dayjs/plugin/utc";
 import timezone from "dayjs/plugin/timezone";
 import "dayjs/locale/pt-br";
 import type { TableInstance } from "element-plus";
+import { fetchWithAuth } from "~/utils/fetchWithAuth";
 dayjs.extend(relativeTime);
 dayjs.extend(utc);
 dayjs.extend(timezone);
@@ -120,13 +121,15 @@ const smartRefresh = async (keepSelections = false) => {
 const callSelectedParticipants = async () => {
   callingParticipants.value = true;
   try {
-    await $fetch(
+    const request = fetchWithAuth(
       `/api/v1/event/${props.eventSlug}/queue/${props.queueId}/participant/call`,
       {
         method: "POST",
         body: JSON.stringify({ participantIds: selectedParticipantsIds.value }),
       },
     );
+    if (!request) throw new Error("Missing user token");
+    await request;
     await smartRefresh();
   } catch (error) {
     console.error(error);

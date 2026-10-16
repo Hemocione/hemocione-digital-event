@@ -1,5 +1,4 @@
 import type { Types } from "mongoose";
-import { inngest } from "../inngest/client";
 import { QueueParticipant } from "../models/queueParticipant";
 import { upsertFBDataOnLead } from "./digitalStand";
 import { completePhone } from "~/utils/completePhone";
@@ -165,14 +164,16 @@ export async function getCalledQueueParticipants(queueIds: string[]) {
 
 export async function callQueueParticipants(
   participantIds: string[],
-  _queueId: string,
-  eventSlug: string,
+  queueId: string,
+  _eventSlug: string,
 ) {
   await QueueParticipant.updateMany(
     {
       _id: {
         $in: participantIds,
       },
+      queueId,
+      calledAt: null,
     },
     {
       $set: {
