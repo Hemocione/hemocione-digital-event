@@ -47,6 +47,11 @@
           <span> Verificar se posso doar </span>
         </ElButton>
       </CommonCard>
+      <HemarcioAskButton
+        intent="eventos.preparar"
+        :context="{ product: 'eventos', screen: 'ticket', eventSlug }"
+        label="Tirar dúvidas com o Hemárcio"
+      />
       <EventsDisclaimer />
       <section class="event-info-container">
         <span>Informações do evento</span>
