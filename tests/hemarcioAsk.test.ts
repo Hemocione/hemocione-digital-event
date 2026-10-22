@@ -130,3 +130,30 @@ describe("createSdkLoader com lista de URLs", () => {
     await expect(p).rejects.toThrow();
   });
 });
+
+describe("checagem em voo com a flag desligada", () => {
+  it("nao deixa available virar true depois de desligar", async () => {
+    let enabled = true;
+    let release!: (v: boolean) => void;
+    const sdk = {
+      createHemocioneChat: vi.fn(),
+      canAskHemarcio: vi.fn(() => new Promise<boolean>((r) => (release = r))),
+    };
+    const controller = createHemarcioController({
+      getRoute: () => ({}),
+      isVisible: () => false,
+      isEnabled: () => enabled,
+      buildContext: () => ({}),
+      loadSdk: async () => sdk,
+      chatUrl: "x",
+      warn: vi.fn(),
+    });
+    const pending = controller.sync();
+    await vi.waitFor(() => expect(sdk.canAskHemarcio).toHaveBeenCalled());
+    enabled = false;
+    await controller.sync();
+    release(true);
+    await pending;
+    expect(controller.isAvailable()).toBe(false);
+  });
+});

@@ -15,9 +15,7 @@ export interface HemarcioSdk {
 }
 
 // Falha fechada: se ler window.top lancar (cross-origin), assume iframe.
-export function isInsideIframe(
-  win: { self: unknown; top: unknown } = window,
-): boolean {
+export function isInsideIframe(win: { self: unknown; top: unknown } = window): boolean {
   try {
     return win.self !== win.top;
   } catch {
@@ -100,7 +98,10 @@ export function createHemarcioController<R>(deps: HemarcioControllerDeps<R>) {
   }
 
   async function refreshAvailability(): Promise<void> {
-    if (!(deps.isEnabled?.() ?? false)) return setAvailable(false);
+    if (!(deps.isEnabled?.() ?? false)) {
+      checkSeq++; // invalida checagem em voo
+      return setAvailable(false);
+    }
     // resultado positivo vale enquanto o chat for o mesmo (evita novo handshake a cada rota)
     if (available && checkedChat === chat) return;
     const seq = ++checkSeq;
