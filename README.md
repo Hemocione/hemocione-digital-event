@@ -118,6 +118,12 @@ DONATIONS_QUEUE_URL=
 BUGSNAG_API_KEY=
 SIGNOS_ORGANIZATION_ID=
 
+# --- Chat do Hemárcio (bolha nas páginas do doador) ---
+# Desligado por padrão. Use true para ver a bolha (vale em runtime, sem rebuild).
+NUXT_PUBLIC_HEMARCIO_ENABLED=false
+# Padrão: chat.d.hemocione.com.br em dev/preview e chat.hemocione.com.br em prod
+NUXT_PUBLIC_HEMARCIO_CHAT_URL=https://chat.d.hemocione.com.br
+
 # --- Captação ---
 CAPTATION_FORM_URL_SCHOOL=
 CAPTATION_FORM_URL_COMPANY=
