@@ -4,8 +4,9 @@ export type HemarcioContext = {
   eventSlug?: string;
 };
 
+// share/* sao paginas de imagem OG; /captation/* continua com a bolha (doador)
 const STAFF_PATH =
-  /^\/event\/[^/]+\/(backoffice|volunteer|bloodbag)(\/|$)|^\/chart(\/|$)/;
+  /^\/event\/[^/]+\/(backoffice|volunteer|bloodbag|share)(\/|$)|^\/chart(\/|$)/;
 const SLUG = /^[a-z0-9-]{1,120}$/;
 
 export const isHemarcioEnabled = (enabled: string | boolean | undefined) =>
@@ -30,13 +31,4 @@ export const hemarcioContextFor = (
     return { product: "eventos", page: path, eventSlug: slug };
   }
   return { product: "eventos", page: path };
-};
-
-export const isHemarcioIframed = (input: {
-  inFrame: boolean;
-  query: Record<string, unknown>;
-}): boolean => {
-  const flag = input.query.iframed;
-  const value = Array.isArray(flag) ? flag[0] : flag;
-  return input.inFrame || value === "true";
 };

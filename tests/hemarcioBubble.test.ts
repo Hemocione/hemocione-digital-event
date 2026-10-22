@@ -1,7 +1,6 @@
 import { describe, expect, it } from "vitest";
 import {
   hemarcioContextFor,
-  isHemarcioIframed,
   shouldShowHemarcioBubble,
 } from "~/utils/hemarcioBubble";
 
@@ -23,13 +22,24 @@ describe("shouldShowHemarcioBubble", () => {
   it("esconde dentro de iframe", () => {
     expect(shouldShowHemarcioBubble({ ...base, iframed: true })).toBe(false);
   });
-  it("esconde nas paginas de equipe", () => {
+  it("mantem a bolha em captation e rotas parecidas com share", () => {
+    for (const p of [
+      "/event/doe-rj/captation/school",
+      "/captation/company",
+      "/event/doe-rj/sharepoint",
+    ]) {
+      expect(shouldShowHemarcioBubble({ ...base, path: p })).toBe(true);
+    }
+  });
+  it("esconde nas paginas de equipe e de imagem OG", () => {
     for (const p of [
       "/event/doe-rj/backoffice",
       "/event/doe-rj/volunteer/x",
       "/event/doe-rj/volunteer",
       "/event/doe-rj/bloodbag",
       "/chart/bloodbag",
+      "/event/doe-rj/share/instagram",
+      "/event/doe-rj/share",
     ]) {
       expect(shouldShowHemarcioBubble({ ...base, path: p })).toBe(false);
     }
@@ -59,21 +69,5 @@ describe("hemarcioContextFor", () => {
       product: "eventos",
       page: "/event/X",
     });
-  });
-});
-
-describe("isHemarcioIframed", () => {
-  it("detecta iframe real ou query iframed=true", () => {
-    expect(isHemarcioIframed({ inFrame: true, query: {} })).toBe(true);
-    expect(
-      isHemarcioIframed({ inFrame: false, query: { iframed: "true" } }),
-    ).toBe(true);
-    expect(
-      isHemarcioIframed({ inFrame: false, query: { iframed: ["true"] } }),
-    ).toBe(true);
-    expect(isHemarcioIframed({ inFrame: false, query: {} })).toBe(false);
-    expect(
-      isHemarcioIframed({ inFrame: false, query: { iframed: "false" } }),
-    ).toBe(false);
   });
 });
